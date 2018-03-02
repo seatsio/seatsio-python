@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 with open('README.md') as f:
@@ -11,7 +11,6 @@ setup(
     long_description=readme,
     author_email='hello@seats.io',
     url='https://github.com/seatsio/seatsio-python',
-    packages=find_packages(exclude=('tests')),
     test_suite='tests',
     tests_require=['unittest2']
 )

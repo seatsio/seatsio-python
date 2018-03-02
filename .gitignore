@@ -1,3 +1,6 @@
+/build
 /dist
 /seatsio.egg-info
+/venv
 /.idea
+*.pyc
