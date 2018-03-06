@@ -23,3 +23,4 @@ class ErrorHandlingTest(SeatsioClientTest):
             assertThat(e.message).contains("Error while executing GET unknownProtocol:///charts/unexistingChart")
             assertThat(e.messages).isNone()
             assertThat(e.requestId).isNone()
+            assertThat(e.cause).isNotNone()

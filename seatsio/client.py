@@ -1,5 +1,8 @@
+import json
+
 import unirest
 
+from seatsio.domain import Chart
 from seatsio.exceptions import SeatsioException
 
 
@@ -21,12 +24,25 @@ class Charts:
 
     def retrieve(self, chart_key):
         url = self.baseUrl + "/charts/" + chart_key
-        response = Get(url).basicAuth(self.secretKey, '').execute()
-        # TODO create chart object
+        response = GET(url).basicAuth(self.secretKey, '').execute()
+        return Chart.fromJson(response.body)
+
+    def create(self, name=None, venue_type=None, categories=None):
+        url = self.baseUrl + "/charts"
+        body = {}
+        if name: body.name = name
+        if venue_type: body.venue_type = venue_type
+        if categories: body.categories = categories
+        response = POST(url).basicAuth(self.secretKey, '').body(body).execute()
+        return Chart.fromJson(response.body)
+
+    def addTag(self, key, tag):
+        url = self.baseUrl + "/charts/" + key + "/tags/" + tag
+        response = POST(url).basicAuth(self.secretKey, '').execute()
         return response
 
 
-class Get:
+class GET:
     def __init__(self, url):
         self.httpMethod = "GET"
         self.url = url
@@ -45,5 +61,44 @@ class Get:
     def __try_execute(self):
         try:
             return unirest.get(self.url, auth=self.auth)
-        except Exception:
-            raise SeatsioException(self)
+        except Exception as cause:
+            raise SeatsioException(self, cause=cause)
+
+
+class POST:
+    def __init__(self, url):
+        self.httpMethod = "POST"
+        self.url = url
+        self.bodyObject = None
+
+    def basicAuth(self, username, password):
+        self.auth = (username, password)
+        return self
+
+    def body(self, body):
+        self.bodyObject = body
+        return self
+
+    def execute(self):
+        response = self.__try_execute()
+        if response.code >= 400:
+            raise SeatsioException(self, response)
+        else:
+            return response
+
+    def __try_execute(self):
+        try:
+            if self.bodyObject:
+                return unirest.post(
+                    url=self.url,
+                    auth=self.auth,
+                    headers={"Accept": "application/json"},
+                    params=json.dumps(self.bodyObject)
+                )
+            else:
+                return unirest.post(
+                    url=self.url,
+                    auth=self.auth
+                )
+        except Exception as cause:
+            raise SeatsioException(self, cause=cause)
