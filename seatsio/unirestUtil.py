@@ -15,11 +15,14 @@ class Get:
         return self
 
     def execute(self):
+        response = self.__try_execute()
+        if response.code >= 400:
+            raise SeatsioException(self, response)
+        else:
+            return response
+
+    def __try_execute(self):
         try:
-            response = unirest.get(self.url, auth=self.auth)
-            if response.code >= 400:
-                raise SeatsioException(self, response)
-            else:
-                return response
-        except URLError:
+            return unirest.get(self.url, auth=self.auth)
+        except Exception:
             raise SeatsioException(self)
