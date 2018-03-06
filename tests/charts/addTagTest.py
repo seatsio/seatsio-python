@@ -12,3 +12,11 @@ class AddTagTest(SeatsioClientTest):
 
         retrievedChart = self.client.charts().retrieve(chart.key)
         assertThat(retrievedChart.tags).containsExactlyInAnyOrder("tag1", "tag2")
+
+    def testSpecialCharacters(self):
+        chart = self.client.charts().create()
+
+        self.client.charts().addTag(chart.key, "'tag1:-'<>")
+
+        retrievedChart = self.client.charts().retrieve(chart.key)
+        assertThat(retrievedChart.tags).containsExactlyInAnyOrder("'tag1:-'<>")
