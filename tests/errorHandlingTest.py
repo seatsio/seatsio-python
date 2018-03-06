@@ -10,6 +10,6 @@ class ErrorHandlingTest(SeatsioClientTest):
             self.client.charts().retrieve("unexistingChart")
             self.fail("expected exception")
         except SeatsioException as e:
-            # assertThat(e.message).contains("GET " + self.client.baseUrl + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:")
+            assertThat(e.message).contains("GET " + self.client.baseUrl + "/charts/unexistingChart resulted in a 404 Not Found response. Reason: Chart not found: unexistingChart. Request ID:")
             assertThat(e.messages).hasSize(1).isEqualTo(["Chart not found: unexistingChart"])
             assertThat(e.requestId).isNotNone()
