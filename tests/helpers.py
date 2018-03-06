@@ -1,4 +1,4 @@
-import unittest
+import unittest2
 import unirest
 import json
 import uuid
@@ -8,7 +8,7 @@ from seatsio.client import SeatsioClient
 BASE_URL = "https://api-staging.seats.io"
 
 
-class SeatsioClientTest(unittest.TestCase):
+class SeatsioClientTest(unittest2.TestCase):
 
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
