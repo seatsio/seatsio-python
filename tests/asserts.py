@@ -3,15 +3,19 @@ def assertThat(actual):
         return StringAssert(actual)
     elif isinstance(actual, list):
         return ListAssert(actual)
-
+    else:
+        return AbstractAssert(actual)
 
 class AbstractAssert():
 
     def __init__(self, actual):
         self.actual = actual
 
+    def isNone(self):
+        assert self.actual is None, "expected actual to be None, but it was not: " + str(self.actual)
+
     def isNotNone(self):
-        assert self.actual is not None, "expected actual to be None, but it was " + str(self.actual)
+        assert self.actual is not None, "expected actual to not be None, but it was None"
         return self
 
     def isEqualTo(self, expected):

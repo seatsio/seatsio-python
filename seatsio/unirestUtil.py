@@ -1,3 +1,5 @@
+from urllib2 import URLError
+
 import unirest
 
 from seatsio.exceptions import SeatsioException
@@ -13,9 +15,11 @@ class Get:
         return self
 
     def execute(self):
-        # TODO bver catch RuntimeErrors as well
-        response = unirest.get(self.url, auth=self.auth)
-        if response.code >= 400:
-            raise SeatsioException(self, response)
-        else:
-            return response
+        try:
+            response = unirest.get(self.url, auth=self.auth)
+            if response.code >= 400:
+                raise SeatsioException(self, response)
+            else:
+                return response
+        except URLError:
+            raise SeatsioException(self)
