@@ -35,3 +35,9 @@ class ListAssert(AbstractAssert):
     def hasSize(self, expected):
         assert len(self.actual) == expected, str(self.actual) + " has size [" + str(len(self.actual)) + "], but expected size [" + str(expected) + "]"
         return self
+
+    def containsExactlyInAnyOrder(self, *args):
+        self.hasSize(len(args))
+        for arg in args:
+            assert arg in self.actual, "expected " + str(self.actual) + " to contain " + str(args)
+        return self
