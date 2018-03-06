@@ -1,4 +1,4 @@
-from seatsio import unirestUtil
+from seatsio.unirestUtil import Get
 
 
 class SeatsioClient:
@@ -19,5 +19,6 @@ class Charts():
 
     def retrieve(self, chartKey):
         url = self.baseUrl + "/charts/" + chartKey
-        response = unirestUtil.get(url, self.secretKey)
+        response = Get(url).basicAuth(self.secretKey, '').execute()
+        # TODO create chart object
         return response
