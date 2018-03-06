@@ -1,7 +1,7 @@
 from seatsio.client import SeatsioClient
 from seatsio.exceptions import SeatsioException
-from tests.asserts import assertThat
-from tests.helpers import SeatsioClientTest
+from tests.util.asserts import assertThat
+from tests.seatsioClientTest import SeatsioClientTest
 
 
 class ErrorHandlingTest(SeatsioClientTest):
