@@ -11,6 +11,14 @@ setup(
     long_description=readme,
     author_email='hello@seats.io',
     url='https://github.com/seatsio/seatsio-python',
+
+    packages = [
+        'seatsio'
+    ],
+    install_requires = [
+        "unirest"
+    ],
+
     test_suite='tests',
     tests_require=['unittest2']
 )
