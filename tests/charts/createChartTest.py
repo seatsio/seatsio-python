@@ -29,7 +29,6 @@ class CreateChartTest(SeatsioClientTest):
         assertThat(drawing.venueType).isEqualTo("MIXED")
         assertThat(drawing.categories.list).isEmpty()
 
-
     def testVenueType(self):
         chart = self.client.charts().create(venue_type="BOOTHS")
 
@@ -37,3 +36,18 @@ class CreateChartTest(SeatsioClientTest):
         drawing = self.client.charts().retrievePublishedVersion(chart.key)
         assertThat(drawing.venueType).isEqualTo("BOOTHS")
         assertThat(drawing.categories.list).isEmpty()
+
+    def testCategories(self):
+        chart = self.client.charts().create(
+            categories=[
+                {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
+                {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
+            ])
+
+        assertThat(chart.name).isEqualTo("Untitled chart")
+        drawing = self.client.charts().retrievePublishedVersion(chart.key)
+        assertThat(drawing.venueType).isEqualTo("MIXED")
+        assertThat(drawing.categories.list).containsExactlyInAnyOrder(
+            {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
+            {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
+        )

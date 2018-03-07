@@ -11,7 +11,7 @@ class Chart:
         self.name = bunch.name
         self.publishedVersionThumbnailUrl = bunch.publishedVersionThumbnailUrl
         self.draftVersionThumbnailUrl = getattr(bunch, 'draftVersionThumbnailUrl', None)
-        self.events = None # TODO
-        self.tags = [] #TODO
+        self.events = None  # TODO
+        self.tags = []  # TODO
         self.archived = getattr(bunch, 'archived', False)
 

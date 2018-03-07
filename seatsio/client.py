@@ -1,5 +1,4 @@
-import json
-
+import jsonpickle
 import unirest
 from bunch import bunchify
 
@@ -33,7 +32,7 @@ class Charts:
         body = {}
         if name: body['name'] = name
         if venue_type: body['venueType'] = venue_type
-        if categories: body.categories = categories
+        if categories: body['categories'] = categories
         response = POST(url).basicAuth(self.secretKey, '').body(body).execute()
         return Chart(response.body)
 
@@ -98,11 +97,12 @@ class POST:
     def __try_execute(self):
         try:
             if self.bodyObject:
+                json = jsonpickle.encode(self.bodyObject, unpicklable=False)
                 return unirest.post(
                     url=self.url,
                     auth=self.auth,
                     headers={"Accept": "application/json"},
-                    params=json.dumps(self.bodyObject)
+                    params=json
                 )
             else:
                 return unirest.post(

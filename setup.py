@@ -17,7 +17,8 @@ setup(
     ],
     install_requires = [
         "unirest",
-        "bunch"
+        "bunch",
+        "jsonpickle"
     ],
 
     test_suite='tests',
