@@ -1,6 +1,7 @@
 import json
 
 import unirest
+from bunch import bunchify
 
 from seatsio.domain import Chart
 from seatsio.exceptions import SeatsioException
@@ -25,21 +26,29 @@ class Charts:
     def retrieve(self, chart_key):
         url = self.baseUrl + "/charts/" + chart_key
         response = GET(url).basicAuth(self.secretKey, '').execute()
-        return Chart.fromJson(response.body)
+        return bunchify(response.body)
 
     def create(self, name=None, venue_type=None, categories=None):
         url = self.baseUrl + "/charts"
         body = {}
-        if name: body.name = name
-        if venue_type: body.venue_type = venue_type
+        if name: body['name'] = name
+        if venue_type: body['venueType'] = venue_type
         if categories: body.categories = categories
         response = POST(url).basicAuth(self.secretKey, '').body(body).execute()
-        return Chart.fromJson(response.body)
+        return Chart(response.body)
+
+    def retrievePublishedVersion(self, key):
+        url = self.baseUrl + "/charts/" + key + "/version/published"
+        response = GET(url).basicAuth(self.secretKey, '').execute()
+        return bunchify(response.body)
 
     def addTag(self, key, tag):
         url = self.baseUrl + "/charts/" + key + "/tags/" + tag
         response = POST(url).basicAuth(self.secretKey, '').execute()
         return response
+
+
+
 
 
 class GET:

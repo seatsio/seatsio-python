@@ -16,7 +16,8 @@ setup(
         'seatsio'
     ],
     install_requires = [
-        "unirest"
+        "unirest",
+        "bunch"
     ],
 
     test_suite='tests',

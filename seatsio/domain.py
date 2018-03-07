@@ -1,14 +1,17 @@
+from bunch import bunchify
+
+
 class Chart:
 
-    def __init__(self, id, key, tags):
-        self.id = id
-        self.key = key
-        self.tags = tags
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.id = bunch.id
+        self.key = bunch.key
+        self.status = bunch.status
+        self.name = bunch.name
+        self.publishedVersionThumbnailUrl = bunch.publishedVersionThumbnailUrl
+        self.draftVersionThumbnailUrl = getattr(bunch, 'draftVersionThumbnailUrl', None)
+        self.events = None # TODO
+        self.tags = [] #TODO
+        self.archived = getattr(bunch, 'archived', False)
 
-    @classmethod
-    def fromJson(cls, body):
-        return Chart(
-            id=body["id"],
-            key=body["key"],
-            tags = body["tags"]
-        )
