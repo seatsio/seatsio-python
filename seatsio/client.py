@@ -1,3 +1,5 @@
+import urllib
+
 from bunch import bunchify
 
 from seatsio.domain import Chart, Event
@@ -69,7 +71,7 @@ class Charts(ApiResource):
         self.httpClient.post(url, body)
 
     def add_tag(self, key, tag):
-        url = "/charts/{key}/tags/{tag}".format(key=key, tag=tag)
+        url = "/charts/{key}/tags/{tag}".format(key=key, tag=urllib.quote(tag, safe=''))
         return self.httpClient.post(url)
 
 
