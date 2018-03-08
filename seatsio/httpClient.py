@@ -1,3 +1,5 @@
+import urllib
+
 import jsonpickle
 import unirest
 
@@ -12,17 +14,6 @@ class HttpClient:
     def url(self, relative_url, **url_params):
         return ApiResource(self.secretKey, self.baseUrl, relative_url, **url_params)
 
-    # TODO remove
-    def get(self, url):
-        return GET(self.__create_full_url(url)).auth(self.secretKey, '').execute()
-
-    # TODO remove
-    def post(self, url, body=None):
-        return POST(self.__create_full_url(url)).auth(self.secretKey, '').body(body).execute()
-
-    def __create_full_url(self, relative_url):
-        return self.baseUrl + relative_url
-
 
 class ApiResource:
     def __init__(self, secret_key, base_url, relative_url, **url_params):
@@ -30,10 +21,18 @@ class ApiResource:
         self.secretKey = secret_key
 
     def __create_full_url(self, base_url, relative_url, **url_params):
+        for key in url_params:
+            url_params[key] = urllib.quote(url_params[key], safe='')
         return base_url + relative_url.format(**url_params)
 
     def get(self):
         return GET(self.url).auth(self.secretKey, '').execute()
+
+    def post(self, body=None):
+        if body is None:
+            return POST(self.url).auth(self.secretKey, '').execute()
+        else:
+            return POST(self.url).auth(self.secretKey, '').body(body).execute()
 
 
 class HttpRequest:

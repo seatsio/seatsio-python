@@ -1,5 +1,3 @@
-import urllib
-
 from bunch import bunchify
 
 from seatsio.domain import Chart, Event
@@ -15,7 +13,7 @@ class Client:
         self.events = Events(self.httpClient)
 
 
-class Charts():
+class Charts:
 
     def __init__(self, http_client):
         self.httpClient = http_client
@@ -25,12 +23,10 @@ class Charts():
         return Chart(response.body)
 
     def retrieve_with_events(self, chart_key):
-        url = "/charts/{key}?expand=events".format(key=chart_key)
-        response = self.httpClient.get(url)
+        response = self.httpClient.url("/charts/{key}?expand=events", key=chart_key).get()
         return Chart(response.body)
 
     def create(self, name=None, venue_type=None, categories=None):
-        url = "/charts"
         body = {}
         if name:
             body['name'] = name
@@ -38,34 +34,29 @@ class Charts():
             body['venueType'] = venue_type
         if categories:
             body['categories'] = categories
-        response = self.httpClient.post(url, body)
+        response = self.httpClient.url("/charts").post(body)
         return Chart(response.body)
 
     def retrieve_published_version(self, key):
-        url = "/charts/{key}/version/published".format(key=key)
-        response = self.httpClient.get(url)
+        response = self.httpClient.url("/charts/{key}/version/published", key=key).get()
         return bunchify(response.body)
 
     def copy(self, key):
-        url = "/charts/{key}/version/published/actions/copy".format(key=key)
-        response = self.httpClient.post(url)
+        response = self.httpClient.url("/charts/{key}/version/published/actions/copy", key=key).post()
         return Chart(response.body)
 
     def copy_draft_version(self, key):
-        url = "/charts/{key}/version/draft/actions/copy".format(key=key)
-        response = self.httpClient.post(url)
+        response = self.httpClient.url("/charts/{key}/version/draft/actions/copy", key=key).post()
         return Chart(response.body)
 
     def update(self, key, name):
-        url = "/charts/{key}".format(key=key)
         body = {}
-        if (name):
+        if name:
             body['name'] = name
-        self.httpClient.post(url, body)
+        self.httpClient.url("/charts/{key}", key=key).post(body)
 
     def add_tag(self, key, tag):
-        url = "/charts/{key}/tags/{tag}".format(key=key, tag=urllib.quote(tag, safe=''))
-        return self.httpClient.post(url)
+        return self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
 
 
 class Events:
@@ -74,7 +65,6 @@ class Events:
         self.httpClient = http_client
 
     def create(self, chart_key):
-        url = "/events"
         body = {"chartKey": chart_key}
-        response = self.httpClient.post(url, body)
+        response = self.httpClient.url("/events").post(body)
         return Event(response.body)
