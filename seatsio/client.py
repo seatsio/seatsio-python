@@ -61,6 +61,9 @@ class Charts:
     def add_tag(self, key, tag):
         return self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
 
+    def remove_tag(self, key, tag):
+        self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
+
 
 class Events:
 

@@ -34,6 +34,9 @@ class ApiResource:
         else:
             return POST(self.url, self.secretKey).body(body).execute()
 
+    def delete(self):
+        return DELETE(self.url, self.secretKey).execute()
+
 
 class HttpRequest:
     def __init__(self, method, full_url, secret_key):
@@ -89,5 +92,17 @@ class POST(HttpRequest):
                     url=self.url,
                     auth=(self.secret_key, '')
                 )
+        except Exception as cause:
+            raise SeatsioException(self, cause=cause)
+
+
+class DELETE(HttpRequest):
+
+    def __init__(self, url, secret_key):
+        HttpRequest.__init__(self, "DELETE", url, secret_key)
+
+    def try_execute(self):
+        try:
+            return unirest.delete(self.url, auth=(self.secret_key, ''))
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
