@@ -9,7 +9,7 @@ class GET:
         self.httpMethod = "GET"
         self.url = url
 
-    def basicAuth(self, username, password):
+    def basic_auth(self, username, password):
         self.auth = (username, password)
         return self
 
@@ -33,7 +33,7 @@ class POST:
         self.url = url
         self.bodyObject = None
 
-    def basicAuth(self, username, password):
+    def basic_auth(self, username, password):
         self.auth = (username, password)
         return self
 

@@ -1,5 +1,5 @@
 from tests.seatsioClientTest import SeatsioClientTest
-from tests.util.asserts import assertThat
+from tests.util.asserts import assert_that
 
 
 class CreateChartTest(SeatsioClientTest):
@@ -7,35 +7,35 @@ class CreateChartTest(SeatsioClientTest):
     def testDefaultParameters(self):
         chart = self.client.charts.create()
 
-        assertThat(chart.id).isNotZero()
-        assertThat(chart.key).isNotBlank()
-        assertThat(chart.status).isEqualTo("NOT_USED")
-        assertThat(chart.name).isEqualTo("Untitled chart")
-        assertThat(chart.publishedVersionThumbnailUrl).isNotBlank()
-        assertThat(chart.draftVersionThumbnailUrl).isNone()
-        assertThat(chart.events).isNone()
-        assertThat(chart.tags).isEmpty()
-        assertThat(chart.archived).isFalse()
+        assert_that(chart.id).is_not_zero()
+        assert_that(chart.key).is_not_blank()
+        assert_that(chart.status).is_equal_to("NOT_USED")
+        assert_that(chart.name).is_equal_to("Untitled chart")
+        assert_that(chart.publishedVersionThumbnailUrl).is_not_blank()
+        assert_that(chart.draftVersionThumbnailUrl).is_none()
+        assert_that(chart.events).is_none()
+        assert_that(chart.tags).is_empty()
+        assert_that(chart.archived).is_false()
 
-        drawing = self.client.charts.retrievePublishedVersion(chart.key)
-        assertThat(drawing.venueType).isEqualTo("MIXED")
-        assertThat(drawing.categories.list).isEmpty()
+        drawing = self.client.charts.retrieve_published_version(chart.key)
+        assert_that(drawing.venueType).is_equal_to("MIXED")
+        assert_that(drawing.categories.list).is_empty()
 
     def testName(self):
         chart = self.client.charts.create(name="aChart")
 
-        assertThat(chart.name).isEqualTo("aChart")
-        drawing = self.client.charts.retrievePublishedVersion(chart.key)
-        assertThat(drawing.venueType).isEqualTo("MIXED")
-        assertThat(drawing.categories.list).isEmpty()
+        assert_that(chart.name).is_equal_to("aChart")
+        drawing = self.client.charts.retrieve_published_version(chart.key)
+        assert_that(drawing.venueType).is_equal_to("MIXED")
+        assert_that(drawing.categories.list).is_empty()
 
     def testVenueType(self):
         chart = self.client.charts.create(venue_type="BOOTHS")
 
-        assertThat(chart.name).isEqualTo("Untitled chart")
-        drawing = self.client.charts.retrievePublishedVersion(chart.key)
-        assertThat(drawing.venueType).isEqualTo("BOOTHS")
-        assertThat(drawing.categories.list).isEmpty()
+        assert_that(chart.name).is_equal_to("Untitled chart")
+        drawing = self.client.charts.retrieve_published_version(chart.key)
+        assert_that(drawing.venueType).is_equal_to("BOOTHS")
+        assert_that(drawing.categories.list).is_empty()
 
     def testCategories(self):
         chart = self.client.charts.create(
@@ -44,10 +44,10 @@ class CreateChartTest(SeatsioClientTest):
                 {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
             ])
 
-        assertThat(chart.name).isEqualTo("Untitled chart")
-        drawing = self.client.charts.retrievePublishedVersion(chart.key)
-        assertThat(drawing.venueType).isEqualTo("MIXED")
-        assertThat(drawing.categories.list).containsExactlyInAnyOrder(
+        assert_that(chart.name).is_equal_to("Untitled chart")
+        drawing = self.client.charts.retrieve_published_version(chart.key)
+        assert_that(drawing.venueType).is_equal_to("MIXED")
+        assert_that(drawing.categories.list).contains_exactly_in_any_order(
             {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
             {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
         )

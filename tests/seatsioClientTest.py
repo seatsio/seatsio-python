@@ -12,13 +12,13 @@ class SeatsioClientTest(unittest2.TestCase):
 
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
-        self.user = self.createTestUser()
+        self.user = self.create_test_user()
         self.client = seatsio.Client(self.user["secretKey"], BASE_URL)
 
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()
 
-    def createTestUser(self):
+    def create_test_user(self):
         response = unirest.post(
             BASE_URL + "/system/public/users",
             headers={"Accept": "application/json"},
@@ -27,7 +27,7 @@ class SeatsioClientTest(unittest2.TestCase):
                 "password": "12345678"
             })
         )
-        if (response.code == 200):
+        if response.code == 200:
             return response.body
         else:
             raise Exception("Failed to create a test user")

@@ -14,4 +14,3 @@ class Chart:
         self.events = None  # TODO
         self.tags = []  # TODO
         self.archived = getattr(bunch, 'archived', False)
-
