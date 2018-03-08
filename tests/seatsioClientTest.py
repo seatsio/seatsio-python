@@ -3,7 +3,7 @@ import unirest
 import json
 import uuid
 
-from seatsio.client import SeatsioClient
+import seatsio
 
 BASE_URL = "https://api-staging.seats.io"
 
@@ -13,7 +13,7 @@ class SeatsioClientTest(unittest2.TestCase):
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
         self.user = self.createTestUser()
-        self.client = SeatsioClient(self.user["secretKey"], BASE_URL)
+        self.client = seatsio.Client(self.user["secretKey"], BASE_URL)
 
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()

@@ -4,15 +4,12 @@ from seatsio.domain import Chart
 from seatsio.httpClient import POST, GET
 
 
-class SeatsioClient:
+class Client:
 
-    def __init__(self, secret_key, base_url):
+    def __init__(self, secret_key, base_url = "https://api.seats.io"):
         self.secretKey = secret_key
         self.baseUrl = base_url
-
-    def charts(self):
-        return Charts(self.secretKey, self.baseUrl)
-
+        self.charts = Charts(self.secretKey, self.baseUrl)
 
 class Charts:
 

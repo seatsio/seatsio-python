@@ -1,0 +1,1 @@
+from seatsio.client import Client
