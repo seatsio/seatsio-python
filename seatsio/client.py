@@ -65,6 +65,10 @@ class Charts:
             body['name'] = name
         self.httpClient.url("/charts/{key}", key=key).post(body)
 
+    def list_all_tags(self):
+        response = self.httpClient.url("/charts/tags").get()
+        return response.body["tags"]
+
     def add_tag(self, key, tag):
         return self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
 
