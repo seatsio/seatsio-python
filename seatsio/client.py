@@ -49,6 +49,9 @@ class Charts:
         response = self.httpClient.url("/charts/{key}/version/draft/actions/copy", key=key).post()
         return Chart(response.body)
 
+    def discard_draft_version(self, key):
+        self.httpClient.url("/charts/{key}/version/draft/actions/discard", key=key).post()
+
     def update(self, key, name):
         body = {}
         if name:
