@@ -21,3 +21,11 @@ class Event:
     def __init__(self, dict):
         bunch = bunchify(dict)
         self.id = bunch.id
+
+
+class Subaccount:
+
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.id = bunch.id
+        self.secretKey = bunch.secretKey

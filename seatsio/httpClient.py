@@ -22,7 +22,7 @@ class ApiResource:
 
     def __create_full_url(self, base_url, relative_url, **url_params):
         for key in url_params:
-            url_params[key] = urllib.quote(url_params[key], safe='')
+            url_params[key] = urllib.quote(str(url_params[key]), safe='')
         return base_url + relative_url.format(**url_params)
 
     def get(self):

@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart, Event
+from seatsio.domain import Chart, Event, Subaccount
 from seatsio.httpClient import HttpClient
 
 
@@ -11,6 +11,7 @@ class Client:
         self.httpClient = HttpClient(base_url, secret_key)
         self.charts = Charts(self.httpClient)
         self.events = Events(self.httpClient)
+        self.subaccounts = Subaccounts(self.httpClient)
 
 
 class Charts:
@@ -45,6 +46,12 @@ class Charts:
         response = self.httpClient.url("/charts/{key}/version/published/actions/copy", key=key).post()
         return Chart(response.body)
 
+    def copy_to_subaccount(self, chart_key, subaccount_id):
+        response = self.httpClient.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
+                                       key=chart_key,
+                                       subaccountId=subaccount_id).post()
+        return Chart(response.body)
+
     def copy_draft_version(self, key):
         response = self.httpClient.url("/charts/{key}/version/draft/actions/copy", key=key).post()
         return Chart(response.body)
@@ -74,3 +81,12 @@ class Events:
         body = {"chartKey": chart_key}
         response = self.httpClient.url("/events").post(body)
         return Event(response.body)
+
+
+class Subaccounts:
+    def __init__(self, http_client):
+        self.http_client = http_client
+
+    def create(self):
+        response = self.http_client.url("/subaccounts").post()
+        return Subaccount(response.body)
