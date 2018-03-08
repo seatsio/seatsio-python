@@ -45,6 +45,11 @@ class Charts:
         response = self.httpClient.get(url)
         return bunchify(response.body)
 
+    def copy(self, key):
+        url = "/charts/" + key + "/version/published/actions/copy"
+        response = self.httpClient.post(url)
+        return Chart(response.body)
+
     def add_tag(self, key, tag):
         url = "/charts/" + key + "/tags/" + tag
         return self.httpClient.post(url)
