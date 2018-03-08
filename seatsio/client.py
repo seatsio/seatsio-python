@@ -21,8 +21,7 @@ class Charts():
         self.httpClient = http_client
 
     def retrieve(self, chart_key):
-        url = "/charts/{key}".format(key=chart_key)
-        response = self.httpClient.get(url)
+        response = self.httpClient.url("/charts/{key}", key=chart_key).get()
         return Chart(response.body)
 
     def retrieve_with_events(self, chart_key):
