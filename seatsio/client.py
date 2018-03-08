@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart
+from seatsio.domain import Chart, Event
 from seatsio.httpClient import POST, GET, HttpClient
 
 
@@ -10,6 +10,7 @@ class Client:
         self.baseUrl = base_url
         self.httpClient = HttpClient(base_url, secret_key)
         self.charts = Charts(self.httpClient)
+        self.events = Events(self.httpClient)
 
 
 class Charts:
@@ -19,6 +20,11 @@ class Charts:
 
     def retrieve(self, chart_key):
         url = "/charts/" + chart_key
+        response = self.httpClient.get(url)
+        return Chart(response.body)
+
+    def retrieve_with_events(self, chart_key):
+        url = "/charts/" + chart_key + "?expand=events"
         response = self.httpClient.get(url)
         return Chart(response.body)
 
@@ -42,3 +48,15 @@ class Charts:
     def add_tag(self, key, tag):
         url = "/charts/" + key + "/tags/" + tag
         return self.httpClient.post(url)
+
+
+class Events:
+
+    def __init__(self, http_client):
+        self.httpClient = http_client
+
+    def create(self, chart_key):
+        url = "/events"
+        body = {"chartKey": chart_key}
+        response = self.httpClient.post(url, body)
+        return Event(response.body)

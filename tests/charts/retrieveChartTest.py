@@ -4,12 +4,12 @@ from tests.util.asserts import assert_that
 
 
 class RetrieveChartTest(SeatsioClientTest):
-    
+
     def test(self):
         chart = self.client.charts.create()
         self.client.charts.add_tag(chart.key, "tag1")
         self.client.charts.add_tag(chart.key, "tag2")
-        
+
         retrieved_chart = self.client.charts.retrieve(chart.key)
 
         assert_that(retrieved_chart).is_instance(Chart)
@@ -22,3 +22,12 @@ class RetrieveChartTest(SeatsioClientTest):
         assert_that(retrieved_chart.events).is_none()
         assert_that(retrieved_chart.tags).contains_exactly_in_any_order("tag1", "tag2")
         assert_that(retrieved_chart.archived).is_false()
+
+    def testWithEvents(self):
+        chart = self.client.charts.create()
+        event1 = self.client.events.create(chart.key)
+        event2 = self.client.events.create(chart.key)
+
+        retrieved_chart = self.client.charts.retrieve_with_events(chart.key)
+
+        assert_that(retrieved_chart.events).extracting("id").contains_exactly(event2.id, event1.id)

@@ -11,6 +11,13 @@ class Chart:
         self.name = bunch.name
         self.publishedVersionThumbnailUrl = bunch.publishedVersionThumbnailUrl
         self.draftVersionThumbnailUrl = getattr(bunch, 'draftVersionThumbnailUrl', None)
-        self.events = None  # TODO
+        self.events = getattr(bunch, 'events', None)
         self.tags = bunch.tags
         self.archived = getattr(bunch, 'archived', False)
+
+
+class Event:
+
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.id = bunch.id

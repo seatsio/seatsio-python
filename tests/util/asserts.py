@@ -1,3 +1,6 @@
+from tests.util.joiner import join
+
+
 def assert_that(actual):
     if isinstance(actual, basestring):
         return StringAssert(actual)
@@ -17,7 +20,9 @@ class AbstractAssert():
         self.actual = actual
 
     def is_instance(self, cls):
-        assert isinstance(self.actual, cls), "expected actual to be of type " + str(cls)
+        assert isinstance(self.actual, cls), "expected actual to be of type " + str(cls) + ", but was " + str(
+            type(self.actual))
+        return self
 
     def is_none(self):
         assert self.actual is None, "expected actual to be None, but it was not: " + str(self.actual)
@@ -80,3 +85,14 @@ class ListAssert(AbstractAssert):
         for arg in args:
             assert arg in self.actual, "expected " + str(self.actual) + " to contain " + str(args)
         return self
+
+    def contains_exactly(self, *args):
+        lst = list(args)
+        assert lst == self.actual, "expected [" + join(lst) + "], but was [" + join(self.actual) + "]"
+        return self
+
+    def extracting(self, field_name):
+        values = []
+        for val in self.actual:
+            values.append(val[field_name])
+        return assert_that(values)
