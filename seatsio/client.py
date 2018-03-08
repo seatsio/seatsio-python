@@ -50,6 +50,18 @@ class Charts:
         response = self.httpClient.post(url)
         return Chart(response.body)
 
+    def copy_draft_version(self, key):
+        url = "/charts/" + key + "/version/draft/actions/copy"
+        response = self.httpClient.post(url)
+        return Chart(response.body)
+
+    def update(self, key, name):
+        url = "/charts/" + key
+        body = {}
+        if (name):
+            body['name'] = name
+        self.httpClient.post(url, body)
+
     def add_tag(self, key, tag):
         url = "/charts/" + key + "/tags/" + tag
         return self.httpClient.post(url)
