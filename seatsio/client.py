@@ -6,7 +6,7 @@ from seatsio.httpClient import POST, GET
 
 class Client:
 
-    def __init__(self, secret_key, base_url = "https://api.seats.io"):
+    def __init__(self, secret_key, base_url="https://api.seats.io"):
         self.secretKey = secret_key
         self.baseUrl = base_url
         self.charts = Charts(self.secretKey, self.baseUrl)
@@ -40,6 +40,3 @@ class Charts:
         url = self.baseUrl + "/charts/" + key + "/tags/" + tag
         response = POST(url).basicAuth(self.secretKey, '').execute()
         return response
-
-
-
