@@ -1,3 +1,4 @@
+from seatsio.domain import Chart
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -7,6 +8,7 @@ class CreateChartTest(SeatsioClientTest):
     def testDefaultParameters(self):
         chart = self.client.charts.create()
 
+        assert_that(chart).is_instance(Chart)
         assert_that(chart.id).is_not_zero()
         assert_that(chart.key).is_not_blank()
         assert_that(chart.status).is_equal_to("NOT_USED")

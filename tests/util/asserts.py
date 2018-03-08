@@ -16,6 +16,9 @@ class AbstractAssert():
     def __init__(self, actual):
         self.actual = actual
 
+    def is_instance(self, cls):
+        assert isinstance(self.actual, cls), "expected actual to be of type " + cls
+
     def is_none(self):
         assert self.actual is None, "expected actual to be None, but it was not: " + str(self.actual)
 
