@@ -26,23 +26,20 @@ class ApiResource:
         return base_url + relative_url.format(**url_params)
 
     def get(self):
-        return GET(self.url).auth(self.secretKey, '').execute()
+        return GET(self.url, self.secretKey).execute()
 
     def post(self, body=None):
         if body is None:
-            return POST(self.url).auth(self.secretKey, '').execute()
+            return POST(self.url, self.secretKey).execute()
         else:
-            return POST(self.url).auth(self.secretKey, '').body(body).execute()
+            return POST(self.url, self.secretKey).body(body).execute()
 
 
 class HttpRequest:
-    def __init__(self, method, full_url):
+    def __init__(self, method, full_url, secret_key):
         self.httpMethod = method
         self.url = full_url
-
-    def auth(self, username, password):
-        self.credentials = (username, password)
-        return self
+        self.secret_key = secret_key
 
     def execute(self):
         response = self.try_execute()
@@ -57,24 +54,20 @@ class HttpRequest:
 
 class GET(HttpRequest):
 
-    def __init__(self, url):
-        HttpRequest.__init__(self, "GET", url)
-
-    def auth(self, username, password):
-        self.credentials = (username, password)
-        return self
+    def __init__(self, url, secret_key):
+        HttpRequest.__init__(self, "GET", url, secret_key)
 
     def try_execute(self):
         try:
-            return unirest.get(self.url, auth=self.credentials)
+            return unirest.get(self.url, auth=(self.secret_key, ''))
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 
 
 class POST(HttpRequest):
 
-    def __init__(self, url):
-        HttpRequest.__init__(self, "POST", url)
+    def __init__(self, url, secret_key):
+        HttpRequest.__init__(self, "POST", url, secret_key)
         self.bodyObject = None
 
     def body(self, body):
@@ -87,14 +80,14 @@ class POST(HttpRequest):
                 json = jsonpickle.encode(self.bodyObject, unpicklable=False)
                 return unirest.post(
                     url=self.url,
-                    auth=self.credentials,
+                    auth=(self.secret_key, ''),
                     headers={"Accept": "application/json"},
                     params=json
                 )
             else:
                 return unirest.post(
                     url=self.url,
-                    auth=self.credentials
+                    auth=(self.secret_key, '')
                 )
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
