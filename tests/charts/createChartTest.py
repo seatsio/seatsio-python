@@ -1,4 +1,4 @@
-from seatsio.domain import Chart
+from seatsio import Chart
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 

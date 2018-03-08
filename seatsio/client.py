@@ -20,7 +20,7 @@ class Charts:
     def retrieve(self, chart_key):
         url = "/charts/" + chart_key
         response = self.httpClient.get(url)
-        return bunchify(response.body)
+        return Chart(response.body)
 
     def create(self, name=None, venue_type=None, categories=None):
         url = "/charts"
