@@ -1,7 +1,7 @@
 from bunch import bunchify
 
 from seatsio.domain import Chart, Event
-from seatsio.httpClient import POST, GET, HttpClient
+from seatsio.httpClient import HttpClient
 
 
 class Client:
@@ -9,24 +9,30 @@ class Client:
     def __init__(self, secret_key, base_url="https://api.seats.io"):
         self.baseUrl = base_url
         self.httpClient = HttpClient(base_url, secret_key)
-        self.charts = Charts(self.httpClient)
-        self.events = Events(self.httpClient)
+        self.charts = Charts(self.httpClient, Chart)
+        self.events = Events(self.httpClient, Event)
 
 
-class Charts:
+class ApiResource:
 
-    def __init__(self, http_client):
+    def __init__(self, http_client, cls):
         self.httpClient = http_client
+        self.cls = cls
+
+    def get(self, relative_url, *params):
+        response = self.httpClient.get(relative_url)
+        return self.cls(response.body)
+
+
+class Charts(ApiResource):
 
     def retrieve(self, chart_key):
         url = "/charts/" + chart_key
-        response = self.httpClient.get(url)
-        return Chart(response.body)
+        return self.get(url)
 
     def retrieve_with_events(self, chart_key):
         url = "/charts/" + chart_key + "?expand=events"
-        response = self.httpClient.get(url)
-        return Chart(response.body)
+        return self.get(url)
 
     def create(self, name=None, venue_type=None, categories=None):
         url = "/charts"
@@ -67,10 +73,7 @@ class Charts:
         return self.httpClient.post(url)
 
 
-class Events:
-
-    def __init__(self, http_client):
-        self.httpClient = http_client
+class Events(ApiResource):
 
     def create(self, chart_key):
         url = "/events"
