@@ -11,30 +11,24 @@ class Client:
     def __init__(self, secret_key, base_url="https://api.seats.io"):
         self.baseUrl = base_url
         self.httpClient = HttpClient(base_url, secret_key)
-        self.charts = Charts(self.httpClient, Chart)
-        self.events = Events(self.httpClient, Event)
+        self.charts = Charts(self.httpClient)
+        self.events = Events(self.httpClient)
 
 
-class ApiResource:
+class Charts():
 
-    def __init__(self, http_client, cls):
+    def __init__(self, http_client):
         self.httpClient = http_client
-        self.cls = cls
-
-    def get(self, relative_url):
-        response = self.httpClient.get(relative_url)
-        return self.cls(response.body)
-
-
-class Charts(ApiResource):
 
     def retrieve(self, chart_key):
         url = "/charts/{key}".format(key=chart_key)
-        return self.get(url)
+        response = self.httpClient.get(url)
+        return Chart(response.body)
 
     def retrieve_with_events(self, chart_key):
         url = "/charts/{key}?expand=events".format(key=chart_key)
-        return self.get(url)
+        response = self.httpClient.get(url)
+        return Chart(response.body)
 
     def create(self, name=None, venue_type=None, categories=None):
         url = "/charts"
@@ -75,7 +69,10 @@ class Charts(ApiResource):
         return self.httpClient.post(url)
 
 
-class Events(ApiResource):
+class Events:
+
+    def __init__(self, http_client):
+        self.httpClient = http_client
 
     def create(self, chart_key):
         url = "/events"
