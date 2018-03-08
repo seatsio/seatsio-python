@@ -19,7 +19,7 @@ class ApiResource:
         self.httpClient = http_client
         self.cls = cls
 
-    def get(self, relative_url, *params):
+    def get(self, relative_url):
         response = self.httpClient.get(relative_url)
         return self.cls(response.body)
 
@@ -27,11 +27,11 @@ class ApiResource:
 class Charts(ApiResource):
 
     def retrieve(self, chart_key):
-        url = "/charts/" + chart_key
+        url = "/charts/{key}".format(key=chart_key)
         return self.get(url)
 
     def retrieve_with_events(self, chart_key):
-        url = "/charts/" + chart_key + "?expand=events"
+        url = "/charts/{key}?expand=events".format(key=chart_key)
         return self.get(url)
 
     def create(self, name=None, venue_type=None, categories=None):
@@ -47,29 +47,29 @@ class Charts(ApiResource):
         return Chart(response.body)
 
     def retrieve_published_version(self, key):
-        url = "/charts/" + key + "/version/published"
+        url = "/charts/{key}/version/published".format(key=key)
         response = self.httpClient.get(url)
         return bunchify(response.body)
 
     def copy(self, key):
-        url = "/charts/" + key + "/version/published/actions/copy"
+        url = "/charts/{key}/version/published/actions/copy".format(key=key)
         response = self.httpClient.post(url)
         return Chart(response.body)
 
     def copy_draft_version(self, key):
-        url = "/charts/" + key + "/version/draft/actions/copy"
+        url = "/charts/{key}/version/draft/actions/copy".format(key=key)
         response = self.httpClient.post(url)
         return Chart(response.body)
 
     def update(self, key, name):
-        url = "/charts/" + key
+        url = "/charts/{key}".format(key=key)
         body = {}
         if (name):
             body['name'] = name
         self.httpClient.post(url, body)
 
     def add_tag(self, key, tag):
-        url = "/charts/" + key + "/tags/" + tag
+        url = "/charts/{key}/tags/{tag}".format(key=key, tag=tag)
         return self.httpClient.post(url)
 
 
