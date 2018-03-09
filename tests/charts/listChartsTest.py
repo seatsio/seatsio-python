@@ -1,3 +1,4 @@
+from seatsio import Chart
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -40,6 +41,18 @@ class ListChartsTest(SeatsioClientTest):
         charts = self.client.charts.list().set_filter("stadium").set_tag("tag1").all()
 
         assert_that(charts).extracting("key").contains_exactly(chart1.key)
+
+    def test_expand(self):
+        chart = self.client.charts.create()
+        event1 = self.client.events.create(chart.key)
+        event2 = self.client.events.create(chart.key)
+
+        retrieved_charts = self.client.charts.list().set_expand_events().all()
+
+        assert_that(retrieved_charts).has_size(1)
+        assert_that(retrieved_charts[0]).is_instance(Chart)
+        # TODO: check that events are of type Event
+        assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)
 
     def __chart_with_tag(self, name=None, tag=None):
         chart = self.client.charts.create(name)

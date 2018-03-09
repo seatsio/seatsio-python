@@ -81,10 +81,10 @@ class Charts:
         self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
     def list(self):
-        return Lister(PageFetcher(self.httpClient, "/charts"))
+        return Lister(PageFetcher(self.httpClient, "/charts", Chart))
 
     def archive(self):
-        return Lister(PageFetcher(self.httpClient, "/charts/archive"))
+        return Lister(PageFetcher(self.httpClient, "/charts/archive", Chart))
 
 
 class Events:

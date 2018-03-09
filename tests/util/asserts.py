@@ -95,6 +95,6 @@ class IterableAssert(AbstractAssert):
 
     def extracting(self, field_name):
         values = []
-        for val in self.actual:
-            values.append(val[field_name])
+        for item in self.actual:
+            values.append(getattr(item, field_name))
         return assert_that(values)
