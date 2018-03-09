@@ -10,6 +10,9 @@ class PagedIterator:
     def __len__(self):
         return len(self.__get_current_page())
 
+    def __getitem__(self, index):
+        return self.__get_current_page().items[index]
+
     def next(self):
         try:
             result = self.__get_current_page().items[self.index_in_current_page]
@@ -19,7 +22,7 @@ class PagedIterator:
         return result
 
     def current(self):
-        return self.__get_current_page().items[self.index_in_current_page]
+        return self.__getitem__(self.index_in_current_page)
 
     def __get_current_page(self):
         if not self.current_page:

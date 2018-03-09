@@ -6,21 +6,23 @@ class PageFetcher:
         self.url = url
         self.httpClient = http_client
         self.page_size = None
+        self.query_params = {}
 
     def fetch_after(self, after_id=None):
         if after_id:
-            return self.__fetch(start_after_id=after_id)
-        else:
-            return self.__fetch()
+            self.set_query_param("start_after_id", after_id)
+        return self.__fetch()
 
     def fetch_before(self, before_id=None):
         if before_id:
-            return self.__fetch(end_before_id=before_id)
-        else:
-            return self.__fetch()
+            self.set_query_param("end_before_id", before_id)
+        return self.__fetch()
 
-    def __fetch(self, **query_params):
+    def __fetch(self):
         if self.page_size:
-            query_params["limit"] = self.page_size
-        response = self.httpClient.url(self.url, **query_params).get()
+            self.set_query_param("limit", self.page_size)
+        response = self.httpClient.url(self.url, self.query_params).get()
         return Page(response.body["items"])
+
+    def set_query_param(self, key, value):
+        self.query_params[key] = value

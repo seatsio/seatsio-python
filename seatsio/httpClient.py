@@ -11,19 +11,24 @@ class HttpClient:
         self.baseUrl = base_url
         self.secretKey = secret_key
 
-    def url(self, relative_url, **url_params):
-        return ApiResource(self.secretKey, self.baseUrl, relative_url, **url_params)
+    def url(self, relative_url, query_params=None, **path_params):
+        if query_params is None:
+            query_params = {}
+        return ApiResource(self.secretKey, self.baseUrl, relative_url, query_params, **path_params)
 
 
 class ApiResource:
-    def __init__(self, secret_key, base_url, relative_url, **url_params):
-        self.url = self.__create_full_url(base_url, relative_url, **url_params)
+    def __init__(self, secret_key, base_url, relative_url, query_params, **path_params):
+        self.url = self.__create_full_url(base_url, relative_url, query_params, **path_params)
         self.secretKey = secret_key
 
-    def __create_full_url(self, base_url, relative_url, **url_params):
-        for key in url_params:
-            url_params[key] = urllib.quote(str(url_params[key]), safe='')
-        return base_url + relative_url.format(**url_params)
+    def __create_full_url(self, base_url, relative_url, query_params, **path_params):
+        for key in path_params:
+            path_params[key] = urllib.quote(str(path_params[key]), safe='')
+        full_url = base_url + relative_url.format(**path_params)
+        if query_params:
+            full_url += "?" + urllib.urlencode(query_params)
+        return full_url
 
     def get(self):
         return GET(self.url, self.secretKey).execute()

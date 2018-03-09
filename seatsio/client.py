@@ -80,6 +80,9 @@ class Charts:
     def remove_tag(self, key, tag):
         self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
+    def list(self):
+        return Lister(PageFetcher(self.httpClient, "/charts"))
+
     def archive(self):
         return Lister(PageFetcher(self.httpClient, "/charts/archive"))
 

@@ -7,3 +7,15 @@ class Lister:
 
     def all(self):
         return PagedIterator(self.pageFetcher)
+
+    def set_filter(self, filter_value):
+        self.pageFetcher.set_query_param("filter", filter_value)
+        return self
+
+    def set_tag(self, tag_value):
+        self.pageFetcher.set_query_param("tag", tag_value)
+        return self
+
+    def set_expand_events(self):
+        self.pageFetcher.set_query_param("expand", "events")
+        return self
