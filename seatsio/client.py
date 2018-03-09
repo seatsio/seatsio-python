@@ -73,10 +73,12 @@ class Charts:
     def discard_draft_version(self, key):
         self.httpClient.url("/charts/{key}/version/draft/actions/discard", key=key).post()
 
-    def update(self, key, new_name):
+    def update(self, key, new_name=None, categories=None):
         body = {}
         if new_name:
             body['name'] = new_name
+        if categories:
+            body['categories'] = categories
         self.httpClient.url("/charts/{key}", key=key).post(body)
 
     def move_to_archive(self, chart_key):
