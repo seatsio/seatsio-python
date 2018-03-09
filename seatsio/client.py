@@ -138,3 +138,18 @@ class Subaccounts:
 
     def deactivate(self, id):
         self.http_client.url("/subaccounts/{id}/actions/deactivate", id=id).post()
+
+    def copy_chart_to_parent(self, id, chart_key):
+        response = self.http_client.url(
+            "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent",
+            id=id,
+            chartKey=chart_key).post()
+        return Chart(response.body)
+
+    def copy_chart_to_subaccount(self, from_id, to_id, chart_key):
+        response = self.http_client.url(
+            "/subaccounts/{fromId}/charts/{chartKey}/actions/copy-to/{toId}",
+            fromId=from_id,
+            toId=to_id,
+            chartKey=chart_key).post()
+        return Chart(response.body)

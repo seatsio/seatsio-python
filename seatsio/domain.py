@@ -31,5 +31,5 @@ class Subaccount:
         self.secretKey = bunch.secretKey
         self.designerKey = bunch.designerKey
         self.publicKey = bunch.publicKey
-        self.name = bunch.name
+        self.name = getattr(bunch, 'name', None)
         self.active = bunch.active

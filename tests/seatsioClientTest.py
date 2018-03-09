@@ -18,6 +18,9 @@ class SeatsioClientTest(unittest2.TestCase):
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()
 
+    def newClient(self, secretKey):
+        return seatsio.Client(secretKey, BASE_URL)
+
     def create_test_user(self):
         response = unirest.post(
             BASE_URL + "/system/public/users",
