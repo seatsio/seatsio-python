@@ -29,3 +29,7 @@ class Subaccount:
         bunch = bunchify(dict)
         self.id = bunch.id
         self.secretKey = bunch.secretKey
+        self.designerKey = bunch.designerKey
+        self.publicKey = bunch.publicKey
+        self.name = bunch.name
+        self.active = bunch.active

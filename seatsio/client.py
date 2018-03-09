@@ -122,6 +122,19 @@ class Subaccounts:
     def __init__(self, http_client):
         self.http_client = http_client
 
-    def create(self):
-        response = self.http_client.url("/subaccounts").post()
+    def create(self, name=None):
+        body = {}
+        if (name):
+            body['name'] = name
+        response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.body)
+
+    def retrieve(self, id):
+        response = self.http_client.url("/subaccounts/{id}", id=id).get()
+        return Subaccount(response.body)
+
+    def activate(self, id):
+        self.http_client.url("/subaccounts/{id}/actions/activate", id=id).post()
+
+    def deactivate(self, id):
+        self.http_client.url("/subaccounts/{id}/actions/deactivate", id=id).post()
