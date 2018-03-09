@@ -44,6 +44,18 @@ class Charts:
         response = self.httpClient.url("/charts/{key}/version/published", key=key).get()
         return bunchify(response.body)
 
+    def retrieve_draft_version(self, key):
+        response = self.httpClient.url("/charts/{key}/version/draft", key=key).get()
+        return bunchify(response.body)
+
+    def retrieve_draft_version_thumbnail(self, key):
+        response = self.httpClient.url("/charts/{key}/version/draft/thumbnail", key=key).get()
+        return response.raw_body
+
+    def retrieve_published_version_thumbnail(self, key):
+        response = self.httpClient.url("/charts/{key}/version/published/thumbnail", key=key).get()
+        return response.raw_body
+
     def copy(self, key):
         response = self.httpClient.url("/charts/{key}/version/published/actions/copy", key=key).post()
         return Chart(response.body)
@@ -61,10 +73,10 @@ class Charts:
     def discard_draft_version(self, key):
         self.httpClient.url("/charts/{key}/version/draft/actions/discard", key=key).post()
 
-    def update(self, key, name):
+    def update(self, key, new_name):
         body = {}
-        if name:
-            body['name'] = name
+        if new_name:
+            body['name'] = new_name
         self.httpClient.url("/charts/{key}", key=key).post(body)
 
     def move_to_archive(self, chart_key):
@@ -72,6 +84,9 @@ class Charts:
 
     def move_out_of_archive(self, chart_key):
         self.httpClient.url("/charts/{key}/actions/move-out-of-archive", key=chart_key).post()
+
+    def publish_draft_version(self, chart_key):
+        self.httpClient.url("/charts/{key}/version/draft/actions/publish", key=chart_key).post()
 
     def list_all_tags(self):
         response = self.httpClient.url("/charts/tags").get()
