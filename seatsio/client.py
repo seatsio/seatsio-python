@@ -2,6 +2,8 @@ from bunch import bunchify
 
 from seatsio.domain import Chart, Event, Subaccount
 from seatsio.httpClient import HttpClient
+from seatsio.pagination.lister import Lister
+from seatsio.pagination.pageFetcher import PageFetcher
 
 
 class Client:
@@ -65,6 +67,9 @@ class Charts:
             body['name'] = name
         self.httpClient.url("/charts/{key}", key=key).post(body)
 
+    def move_to_archive(self, chart_key):
+        self.httpClient.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
+
     def list_all_tags(self):
         response = self.httpClient.url("/charts/tags").get()
         return response.body["tags"]
@@ -74,6 +79,9 @@ class Charts:
 
     def remove_tag(self, key, tag):
         self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
+
+    def archive(self):
+        return Lister(PageFetcher(self.httpClient, "/charts/archive"))
 
 
 class Events:

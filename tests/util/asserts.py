@@ -1,3 +1,5 @@
+import collections
+
 from tests.util.joiner import join
 
 
@@ -8,8 +10,8 @@ def assert_that(actual):
         return BooleanAssert(actual)
     elif isinstance(actual, int):
         return NumberAssert(actual)
-    elif isinstance(actual, list):
-        return ListAssert(actual)
+    elif isinstance(actual, collections.Iterable):
+        return IterableAssert(actual)
     else:
         return AbstractAssert(actual)
 
@@ -70,7 +72,7 @@ class NumberAssert(AbstractAssert):
         assert_that(self.actual == 0).is_true()
 
 
-class ListAssert(AbstractAssert):
+class IterableAssert(AbstractAssert):
 
     def has_size(self, expected):
         assert len(self.actual) == expected, str(self.actual) + " has size [" + str(
