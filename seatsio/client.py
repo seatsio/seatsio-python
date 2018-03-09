@@ -70,6 +70,9 @@ class Charts:
     def move_to_archive(self, chart_key):
         self.httpClient.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
 
+    def move_out_of_archive(self, chart_key):
+        self.httpClient.url("/charts/{key}/actions/move-out-of-archive", key=chart_key).post()
+
     def list_all_tags(self):
         response = self.httpClient.url("/charts/tags").get()
         return response.body["tags"]
