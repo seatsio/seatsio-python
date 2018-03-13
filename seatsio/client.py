@@ -156,3 +156,9 @@ class Subaccounts:
 
     def list(self):
         return Lister(PageFetcher(self.http_client, "/subaccounts", Subaccount))
+
+    def regenerate_designer_key(self, subaccount_id):
+        self.http_client.url("/subaccounts/{id}/designer-key/actions/regenerate", id=subaccount_id).post()
+
+    def regenerate_secret_key(self, subaccount_id):
+        self.http_client.url("/subaccounts/{id}/secret-key/actions/regenerate", id=subaccount_id).post()

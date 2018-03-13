@@ -34,7 +34,11 @@ class AbstractAssert():
         return self
 
     def is_equal_to(self, expected):
-        assert self.actual == expected, "expected " + str(self.actual) + " to be equal (==) to " + str(expected)
+        assert self.actual == expected, "expected " + str(self.actual) + " to be equal to " + str(expected)
+        return self
+
+    def is_not_equal_to(self, expected):
+        assert self.actual != expected, "expected " + str(self.actual) + " to be not equal to " + str(expected)
         return self
 
 
@@ -46,9 +50,11 @@ class StringAssert(AbstractAssert):
 
     def is_blank(self):
         assert self.__is_blank(), "Expected " + str(self.actual) + " to be blank."
+        return self
 
     def is_not_blank(self):
         assert not self.__is_blank(), "Expected " + str(self.actual) + " to not be blank."
+        return self
 
     def __is_blank(self):
         return self.actual is not None and len(self.actual.strip()) == 0
