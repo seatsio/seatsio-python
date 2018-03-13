@@ -22,11 +22,11 @@ class PageFetcher:
     def __fetch(self):
         if self.page_size:
             self.set_query_param("limit", self.page_size)
-        items = self.httpClient.url(self.url, self.query_params).get().body["items"]
-        typed_items = []
-        for item in items:
-            typed_items.append(self.cls(item))
-        return Page(typed_items)
+        response = self.httpClient.url(self.url, self.query_params).get()
+        return Page.from_response(response, self.cls)
+
+    def set_page_size(self, page_size):
+        self.page_size = page_size
 
     def set_query_param(self, key, value):
         self.query_params[key] = value

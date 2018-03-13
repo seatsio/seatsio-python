@@ -90,6 +90,9 @@ class IterableAssert(AbstractAssert):
 
     def contains_exactly(self, *args):
         lst = list(args)
+        for index, expectedvalue in enumerate(lst):
+            assert expectedvalue == self.actual[index], \
+                "on index " + str(index) + ", expected " + expectedvalue + " but was " + self.actual[index]
         assert lst == self.actual, "expected [" + join(lst) + "], but was [" + join(self.actual) + "]"
         return self
 

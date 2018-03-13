@@ -49,9 +49,6 @@ class ListChartsTest(SeatsioClientTest):
 
         retrieved_charts = self.client.charts.list().set_expand_events().all()
 
-        assert_that(retrieved_charts).has_size(1)
-        assert_that(retrieved_charts[0]).is_instance(Chart)
-        # TODO: check that events are of type Event
         assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)
 
     def __chart_with_tag(self, name=None, tag=None):

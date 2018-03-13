@@ -1,8 +1,8 @@
 class Page:
 
-    def __init__(self, items):
-        self.next_page_starts_after = None
-        self.previous_page_ends_before = None
+    def __init__(self, items, next_page_starts_after, previous_page_ends_before):
+        self.next_page_starts_after = next_page_starts_after
+        self.previous_page_ends_before = previous_page_ends_before
         self.items = items
 
     def set_next_page_starts_after(self, next_page_starts_after):
@@ -11,8 +11,12 @@ class Page:
     def set_previous_page_ends_before(self, previous_page_ends_before):
         self.previous_page_ends_before = previous_page_ends_before
 
-    def __iter__(self):
-        return self.items.__iter__()
-
-    def __len__(self):
-        return len(self.items)
+    @classmethod
+    def from_response(cls, response, clazz):
+        items = response.body["items"]
+        next_page_starts_after = response.body.get("next_page_starts_after", None)
+        previous_page_ends_before = response.body.get("previous_page_ends_before", None)
+        typed_items = []
+        for item in items:
+            typed_items.append(clazz(item))
+        return Page(typed_items, next_page_starts_after, previous_page_ends_before)

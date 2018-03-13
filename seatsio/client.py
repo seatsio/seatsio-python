@@ -19,14 +19,14 @@ class Client:
 class Charts:
 
     def __init__(self, http_client):
-        self.httpClient = http_client
+        self.http_client = http_client
 
     def retrieve(self, chart_key):
-        response = self.httpClient.url("/charts/{key}", key=chart_key).get()
+        response = self.http_client.url("/charts/{key}", key=chart_key).get()
         return Chart(response.body)
 
     def retrieve_with_events(self, chart_key):
-        response = self.httpClient.url("/charts/{key}?expand=events", key=chart_key).get()
+        response = self.http_client.url("/charts/{key}?expand=events", key=chart_key).get()
         return Chart(response.body)
 
     def create(self, name=None, venue_type=None, categories=None):
@@ -37,41 +37,41 @@ class Charts:
             body['venueType'] = venue_type
         if categories:
             body['categories'] = categories
-        response = self.httpClient.url("/charts").post(body)
+        response = self.http_client.url("/charts").post(body)
         return Chart(response.body)
 
     def retrieve_published_version(self, key):
-        response = self.httpClient.url("/charts/{key}/version/published", key=key).get()
+        response = self.http_client.url("/charts/{key}/version/published", key=key).get()
         return bunchify(response.body)
 
     def retrieve_draft_version(self, key):
-        response = self.httpClient.url("/charts/{key}/version/draft", key=key).get()
+        response = self.http_client.url("/charts/{key}/version/draft", key=key).get()
         return bunchify(response.body)
 
     def retrieve_draft_version_thumbnail(self, key):
-        response = self.httpClient.url("/charts/{key}/version/draft/thumbnail", key=key).get()
+        response = self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get()
         return response.raw_body
 
     def retrieve_published_version_thumbnail(self, key):
-        response = self.httpClient.url("/charts/{key}/version/published/thumbnail", key=key).get()
+        response = self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get()
         return response.raw_body
 
     def copy(self, key):
-        response = self.httpClient.url("/charts/{key}/version/published/actions/copy", key=key).post()
+        response = self.http_client.url("/charts/{key}/version/published/actions/copy", key=key).post()
         return Chart(response.body)
 
     def copy_to_subaccount(self, chart_key, subaccount_id):
-        response = self.httpClient.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
-                                       key=chart_key,
-                                       subaccountId=subaccount_id).post()
+        response = self.http_client.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
+                                        key=chart_key,
+                                        subaccountId=subaccount_id).post()
         return Chart(response.body)
 
     def copy_draft_version(self, key):
-        response = self.httpClient.url("/charts/{key}/version/draft/actions/copy", key=key).post()
+        response = self.http_client.url("/charts/{key}/version/draft/actions/copy", key=key).post()
         return Chart(response.body)
 
     def discard_draft_version(self, key):
-        self.httpClient.url("/charts/{key}/version/draft/actions/discard", key=key).post()
+        self.http_client.url("/charts/{key}/version/draft/actions/discard", key=key).post()
 
     def update(self, key, new_name=None, categories=None):
         body = {}
@@ -79,32 +79,32 @@ class Charts:
             body['name'] = new_name
         if categories:
             body['categories'] = categories
-        self.httpClient.url("/charts/{key}", key=key).post(body)
+        self.http_client.url("/charts/{key}", key=key).post(body)
 
     def move_to_archive(self, chart_key):
-        self.httpClient.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
+        self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
 
     def move_out_of_archive(self, chart_key):
-        self.httpClient.url("/charts/{key}/actions/move-out-of-archive", key=chart_key).post()
+        self.http_client.url("/charts/{key}/actions/move-out-of-archive", key=chart_key).post()
 
     def publish_draft_version(self, chart_key):
-        self.httpClient.url("/charts/{key}/version/draft/actions/publish", key=chart_key).post()
+        self.http_client.url("/charts/{key}/version/draft/actions/publish", key=chart_key).post()
 
     def list_all_tags(self):
-        response = self.httpClient.url("/charts/tags").get()
+        response = self.http_client.url("/charts/tags").get()
         return response.body["tags"]
 
     def add_tag(self, key, tag):
-        return self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
+        return self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
 
     def remove_tag(self, key, tag):
-        self.httpClient.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
+        self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
     def list(self):
-        return Lister(PageFetcher(self.httpClient, "/charts", Chart))
+        return Lister(PageFetcher(self.http_client, "/charts", Chart))
 
     def archive(self):
-        return Lister(PageFetcher(self.httpClient, "/charts/archive", Chart))
+        return Lister(PageFetcher(self.http_client, "/charts/archive", Chart))
 
 
 class Events:
@@ -129,15 +129,15 @@ class Subaccounts:
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.body)
 
-    def retrieve(self, id):
-        response = self.http_client.url("/subaccounts/{id}", id=id).get()
+    def retrieve(self, subaccount_id):
+        response = self.http_client.url("/subaccounts/{id}", id=subaccount_id).get()
         return Subaccount(response.body)
 
-    def activate(self, id):
-        self.http_client.url("/subaccounts/{id}/actions/activate", id=id).post()
+    def activate(self, subaccount_id):
+        self.http_client.url("/subaccounts/{id}/actions/activate", id=subaccount_id).post()
 
-    def deactivate(self, id):
-        self.http_client.url("/subaccounts/{id}/actions/deactivate", id=id).post()
+    def deactivate(self, subaccount_id):
+        self.http_client.url("/subaccounts/{id}/actions/deactivate", id=subaccount_id).post()
 
     def copy_chart_to_parent(self, id, chart_key):
         response = self.http_client.url(
@@ -153,3 +153,6 @@ class Subaccounts:
             toId=to_id,
             chartKey=chart_key).post()
         return Chart(response.body)
+
+    def list(self):
+        return Lister(PageFetcher(self.http_client, "/subaccounts", Subaccount))

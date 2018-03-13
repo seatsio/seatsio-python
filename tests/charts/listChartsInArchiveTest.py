@@ -14,6 +14,4 @@ class ListChartsInArchiveTest(SeatsioClientTest):
 
         charts = self.client.charts.archive().all()
 
-        assert_that(charts).has_size(2) \
-            .extracting("key") \
-            .contains_exactly(chart3.key, chart1.key)
+        assert_that(charts).extracting("key").contains_exactly(chart3.key, chart1.key)

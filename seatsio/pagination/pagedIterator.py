@@ -7,9 +7,6 @@ class PagedIterator:
     def __iter__(self):
         return self
 
-    def __len__(self):
-        return len(self.__get_current_page())
-
     def __getitem__(self, index):
         return self.__get_current_page().items[index]
 

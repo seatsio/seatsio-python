@@ -19,3 +19,7 @@ class Lister:
     def set_expand_events(self):
         self.pageFetcher.set_query_param("expand", "events")
         return self
+
+    def set_page_size(self, page_size):
+        self.pageFetcher.set_page_size(page_size)
+        return self
