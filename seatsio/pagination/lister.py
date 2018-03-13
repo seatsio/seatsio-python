@@ -8,6 +8,9 @@ class Lister:
     def all(self):
         return PagedIterator(self.pageFetcher)
 
+    def page_after(self, id):
+        return self.pageFetcher.fetch_after(id)
+
     def set_filter(self, filter_value):
         self.pageFetcher.set_query_param("filter", filter_value)
         return self

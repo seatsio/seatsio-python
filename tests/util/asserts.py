@@ -41,7 +41,7 @@ class AbstractAssert():
 class StringAssert(AbstractAssert):
 
     def contains(self, expected):
-        assert expected in self.actual, "[" + self.actual + "] does not contain [" + expected + "]"
+        assert expected in self.actual, "[" + str(self.actual) + "] does not contain [" + str(expected) + "]"
         return self
 
     def is_blank(self):
@@ -92,7 +92,7 @@ class IterableAssert(AbstractAssert):
         lst = list(args)
         for index, expectedvalue in enumerate(lst):
             assert expectedvalue == self.actual[index], \
-                "on index " + str(index) + ", expected " + expectedvalue + " but was " + self.actual[index]
+                "on index " + str(index) + ", expected " + str(expectedvalue) + " but was " + str(self.actual[index])
         assert lst == self.actual, "expected [" + join(lst) + "], but was [" + join(self.actual) + "]"
         return self
 
