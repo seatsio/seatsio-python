@@ -129,6 +129,12 @@ class Subaccounts:
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.body)
 
+    def update(self, id, new_name):
+        body = {}
+        if (new_name):
+            body['name'] = new_name
+        self.http_client.url("/subaccounts/{id}", id=id).post(body)
+
     def retrieve(self, subaccount_id):
         response = self.http_client.url("/subaccounts/{id}", id=subaccount_id).get()
         return Subaccount(response.body)
