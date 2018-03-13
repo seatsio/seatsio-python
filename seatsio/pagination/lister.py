@@ -11,6 +11,9 @@ class Lister:
     def page_after(self, id):
         return self.pageFetcher.fetch_after(id)
 
+    def page_before(self, id):
+        return self.pageFetcher.fetch_before(id)
+
     def set_filter(self, filter_value):
         self.pageFetcher.set_query_param("filter", filter_value)
         return self
