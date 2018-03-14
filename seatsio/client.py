@@ -127,8 +127,8 @@ class Events:
     def book_best_available(self):
         raise NotImplemented
 
-    def release(self):
-        raise NotImplemented
+    def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
+        self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id)
 
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id)

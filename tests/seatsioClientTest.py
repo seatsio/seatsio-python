@@ -41,7 +41,6 @@ class SeatsioClientTest(unittest2.TestCase):
             data = test_chart_json.read().replace('\n', '')
             chart_key = str(uuid.uuid4())
             url = BASE_URL + "/system/public/" + self.user["designerKey"] + "/charts/" + chart_key
-            print(url)
             response = unirest.post(
                 url=url,
                 headers={"Accept": "application/json"},
