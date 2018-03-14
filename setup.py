@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 with open('README.md') as f:
     readme = f.read()
 
@@ -12,10 +11,10 @@ setup(
     author_email='hello@seats.io',
     url='https://github.com/seatsio/seatsio-python',
 
-    packages = [
+    packages=[
         'seatsio'
     ],
-    install_requires = [
+    install_requires=[
         "unirest",
         "bunch",
         "jsonpickle"
