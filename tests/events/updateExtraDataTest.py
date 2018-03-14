@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
