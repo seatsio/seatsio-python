@@ -59,3 +59,10 @@ class ObjectStatus:
         self.ticket_type = getattr(bunch, "ticketType", None)
         self.quantity = getattr(bunch, "quantity", None)
         # TODO extradata
+
+
+class StatusChange:
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.id = bunch.id
+        self.status = bunch.status

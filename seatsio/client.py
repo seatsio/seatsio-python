@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus
+from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus, StatusChange
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -102,10 +102,10 @@ class Charts:
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
     def list(self):
-        return Lister(PageFetcher(self.http_client, "/charts", Chart))
+        return Lister(PageFetcher(Chart, self.http_client, "/charts"))
 
     def archive(self):
-        return Lister(PageFetcher(self.http_client, "/charts/archive", Chart))
+        return Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))
 
 
 class Events:
@@ -119,7 +119,10 @@ class Events:
         return Event(response.body)
 
     def list(self):
-        return Lister(PageFetcher(self.httpClient, "/events", Event))
+        return Lister(PageFetcher(Event, self.httpClient, "/events"))
+
+    def status_changes(self, key):
+        return Lister(PageFetcher(StatusChange, self.httpClient, "/events/{key}/status-changes", key=key))
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id)
@@ -195,7 +198,7 @@ class Subaccounts:
         return Chart(response.body)
 
     def list(self):
-        return Lister(PageFetcher(self.http_client, "/subaccounts", Subaccount))
+        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts"))
 
     def regenerate_designer_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/designer-key/actions/regenerate", id=subaccount_id).post()
