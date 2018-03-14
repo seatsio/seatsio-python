@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart, Event, Subaccount, HoldToken
+from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -117,6 +117,39 @@ class Events:
         body = {"chartKey": chart_key}
         response = self.httpClient.url("/events").post(body)
         return Event(response.body)
+
+    def list(self):
+        return Lister(PageFetcher(self.httpClient, "/events", Event))
+
+    def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
+        self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id)
+
+    def book_best_available(self):
+        raise NotImplemented
+
+    def release(self):
+        raise NotImplemented
+
+    def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None):
+        self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id)
+
+    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None):
+        request = {}
+        request['objects'] = object_or_objects
+        request['status'] = status
+        if hold_token:
+            request['holdToken'] = hold_token
+        if order_id:
+            request['orderId'] = order_id
+        if isinstance(event_key_or_keys, basestring):
+            request['events'] = [event_key_or_keys]
+        else:
+            request["events"] = event_key_or_keys
+        self.httpClient.url("/seasons/actions/change-object-status").post(request)
+
+    def retrieve_object_status(self, key, object):
+        response = self.httpClient.url("/events/{key}/objects/{object}", key=key, object=object).get()
+        return ObjectStatus(response.body)
 
 
 class Subaccounts:
