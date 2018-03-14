@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from seatsio import ObjectStatus
+from seatsio import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -22,7 +22,8 @@ class ListStatusChangesTest(SeatsioClientTest):
         now = datetime.utcnow()
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.change_object_status(event.key, ["A-1"], "status1", order_id="order1")
+        object_properties = ObjectProperties("A-1", {"foo": "bar"})
+        self.client.events.change_object_status(event.key, object_properties, "status1", order_id="order1")
 
         status_changes = self.client.events.status_changes(event.key).all()
         status_change = status_changes[0]
@@ -32,4 +33,4 @@ class ListStatusChangesTest(SeatsioClientTest):
         assert_that(status_change.status).is_equal_to("status1")
         assert_that(status_change.objectLabel).is_equal_to("A-1")
         assert_that(status_change.eventId).is_equal_to(event.id)
-        # TODO assert_that(status_change.extraData)
+        assert_that(status_change.extraData).is_equal_to({"foo": "bar"})

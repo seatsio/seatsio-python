@@ -58,7 +58,7 @@ class ObjectStatus:
         self.order_id = getattr(bunch, "orderId", None)
         self.ticket_type = getattr(bunch, "ticketType", None)
         self.quantity = getattr(bunch, "quantity", None)
-        # TODO extradata
+        # TODO extraData
 
 
 class StatusChange:
@@ -69,3 +69,12 @@ class StatusChange:
         self.date = datetime.strptime(bunch.date, "%Y-%m-%dT%H:%M:%S.%fZ")
         self.objectLabel = bunch.objectLabel
         self.eventId = bunch.eventId
+        self.extraData = getattr(bunch, "extraData", None)
+
+
+class ObjectProperties:
+    def __init__(self, object_id, extra_data=None):
+        if extra_data is None:
+            extra_data = {}
+        self.extraData = extra_data
+        self.objectId = object_id

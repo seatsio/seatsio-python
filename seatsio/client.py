@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus, StatusChange
+from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus, StatusChange, ObjectProperties
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -137,9 +137,7 @@ class Events:
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id)
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None):
-        request = {}
-        request['objects'] = object_or_objects
-        request['status'] = status
+        request = {'objects': self.__normalize_objects(object_or_objects), 'status': status}
         if hold_token:
             request['holdToken'] = hold_token
         if order_id:
@@ -150,9 +148,22 @@ class Events:
             request["events"] = event_key_or_keys
         self.httpClient.url("/seasons/actions/change-object-status").post(request)
 
-    def retrieve_object_status(self, key, object):
-        response = self.httpClient.url("/events/{key}/objects/{object}", key=key, object=object).get()
+    def retrieve_object_status(self, key, object_key):
+        response = self.httpClient.url("/events/{key}/objects/{object}", key=key, object=object_key).get()
         return ObjectStatus(response.body)
+
+    def __normalize_objects(self, object_or_objects):
+        if isinstance(object_or_objects, list):
+            if len(object_or_objects) == 0:
+                return []
+            if isinstance(object_or_objects[0], ObjectProperties):
+                return object_or_objects
+            if (isinstance(object_or_objects[0], basestring)):
+                result = []
+                for o in object_or_objects:
+                    result.append(ObjectProperties(o))
+                return result
+        return self.__normalize_objects([object_or_objects])
 
 
 class Subaccounts:
@@ -161,16 +172,16 @@ class Subaccounts:
 
     def create(self, name=None):
         body = {}
-        if (name):
+        if name:
             body['name'] = name
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.body)
 
-    def update(self, id, new_name):
+    def update(self, subaccount_id, new_name):
         body = {}
-        if (new_name):
+        if new_name:
             body['name'] = new_name
-        self.http_client.url("/subaccounts/{id}", id=id).post(body)
+        self.http_client.url("/subaccounts/{id}", id=subaccount_id).post(body)
 
     def retrieve(self, subaccount_id):
         response = self.http_client.url("/subaccounts/{id}", id=subaccount_id).get()
@@ -182,10 +193,10 @@ class Subaccounts:
     def deactivate(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/actions/deactivate", id=subaccount_id).post()
 
-    def copy_chart_to_parent(self, id, chart_key):
+    def copy_chart_to_parent(self, subaccount_id, chart_key):
         response = self.http_client.url(
             "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent",
-            id=id,
+            id=subaccount_id,
             chartKey=chart_key).post()
         return Chart(response.body)
 
@@ -221,7 +232,7 @@ class HoldTokens:
 
     def expire_in_minutes(self, hold_token, expires_in_minutes):
         body = {}
-        if (expires_in_minutes):
+        if expires_in_minutes:
             body["expiresInMinutes"] = expires_in_minutes
         response = self.http_client.url("/hold-tokens/{holdToken}", holdToken=hold_token).post(body)
         return HoldToken(response.body)
