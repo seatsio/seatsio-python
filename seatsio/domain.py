@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from bunch import bunchify
 
 
@@ -33,3 +35,11 @@ class Subaccount:
         self.publicKey = bunch.publicKey
         self.name = getattr(bunch, 'name', None)
         self.active = bunch.active
+
+
+class HoldToken:
+
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.hold_token = bunch.holdToken
+        self.expires_at = datetime.strptime(bunch.expiresAt, "%Y-%m-%dT%H:%M:%S.%fZ")

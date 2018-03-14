@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Chart, Event, Subaccount
+from seatsio.domain import Chart, Event, Subaccount, HoldToken
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -14,6 +14,7 @@ class Client:
         self.charts = Charts(self.httpClient)
         self.events = Events(self.httpClient)
         self.subaccounts = Subaccounts(self.httpClient)
+        self.hold_tokens = HoldTokens(self.httpClient)
 
 
 class Charts:
@@ -168,3 +169,12 @@ class Subaccounts:
 
     def regenerate_secret_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/secret-key/actions/regenerate", id=subaccount_id).post()
+
+
+class HoldTokens:
+    def __init__(self, http_client):
+        self.http_client = http_client
+
+    def create(self):
+        response = self.http_client.url("/hold-tokens").post()
+        return HoldToken(response.body)

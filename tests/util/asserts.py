@@ -1,4 +1,5 @@
 import collections
+from datetime import datetime
 
 from tests.util.joiner import join
 
@@ -12,6 +13,8 @@ def assert_that(actual):
         return NumberAssert(actual)
     elif isinstance(actual, collections.Iterable):
         return IterableAssert(actual)
+    elif isinstance(actual, datetime):
+        return DatetimeAssert(actual)
     else:
         return AbstractAssert(actual)
 
@@ -58,6 +61,14 @@ class StringAssert(AbstractAssert):
 
     def __is_blank(self):
         return self.actual is not None and len(self.actual.strip()) == 0
+
+
+class DatetimeAssert(AbstractAssert):
+
+    def is_between(self, after, before):
+        assert after <= self.actual <= before, "Expected actual (" + str(
+            self.actual) + ") to be in the range [" + str(
+            after) + ", " + str(before) + "]"
 
 
 class BooleanAssert(AbstractAssert):
