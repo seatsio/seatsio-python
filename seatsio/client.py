@@ -118,6 +118,16 @@ class Events:
         response = self.httpClient.url("/events").post(body)
         return Event(response.body)
 
+    def update(self, key, chart_key=None, event_key=None, book_whole_tables=None):
+        body = {}
+        if (chart_key):
+            body["chartKey"] = chart_key
+        if event_key:
+            body["eventKey"] = event_key
+        if book_whole_tables is not None:
+            body["bookWholeTables"] = book_whole_tables
+        self.httpClient.url("/events/{key}", key=key).post(body)
+
     def retrieve(self, key):
         response = self.httpClient.url("/events/{key}", key=key).get()
         return Event(response.body)
