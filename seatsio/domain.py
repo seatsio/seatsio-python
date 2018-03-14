@@ -66,3 +66,6 @@ class StatusChange:
         bunch = bunchify(dict)
         self.id = bunch.id
         self.status = bunch.status
+        self.date = datetime.strptime(bunch.date, "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.objectLabel = bunch.objectLabel
+        self.eventId = bunch.eventId

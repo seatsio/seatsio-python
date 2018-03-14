@@ -1,5 +1,5 @@
 import collections
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from tests.util.joiner import join
 
@@ -69,6 +69,13 @@ class DatetimeAssert(AbstractAssert):
         assert after <= self.actual <= before, "Expected actual (" + str(
             self.actual) + ") to be in the range [" + str(
             after) + ", " + str(before) + "]"
+        return self
+
+    def is_between_now_minus_and_plus_minutes(self, now, minutes):
+        after = now - timedelta(minutes=minutes)
+        before = now + timedelta(minutes=minutes)
+        return self.is_between(after, before)
+
 
 
 class BooleanAssert(AbstractAssert):
