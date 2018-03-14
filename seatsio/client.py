@@ -175,7 +175,11 @@ class Events:
                 return result
         return self.__normalize_objects([object_or_objects])
 
-    def mark_as_not_for_sale(self, key, objects, categories):
+    def mark_as_for_sale(self, event_key, objects=None, categories=None):
+        body = self.__for_sale_request(objects, categories)
+        self.httpClient.url("/events/{key}/actions/mark-as-for-sale", key=event_key).post(body)
+
+    def mark_as_not_for_sale(self, key, objects=None, categories=None):
         body = self.__for_sale_request(objects, categories)
         self.httpClient.url("/events/{key}/actions/mark-as-not-for-sale", key=key).post(body)
 
