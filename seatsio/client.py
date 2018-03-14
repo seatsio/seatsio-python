@@ -204,6 +204,13 @@ class Events:
             result["categories"] = categories
         return result
 
+    def update_extra_data(self, key, o, extra_data):
+        body = {}
+        if extra_data:
+            body["extraData"] = extra_data
+        self.httpClient.url("/events/{key}/objects/{object}/actions/update-extra-data", key=key, object=o) \
+            .post(body)
+
 
 class Subaccounts:
     def __init__(self, http_client):

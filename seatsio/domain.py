@@ -67,7 +67,7 @@ class ObjectStatus:
         self.order_id = getattr(bunch, "orderId", None)
         self.ticket_type = getattr(bunch, "ticketType", None)
         self.quantity = getattr(bunch, "quantity", None)
-        # TODO extraData
+        self.extra_data = getattr(bunch, "extraData", None)
 
 
 class StatusChange:
