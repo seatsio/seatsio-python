@@ -87,3 +87,10 @@ class ObjectProperties:
             extra_data = {}
         self.extraData = extra_data
         self.objectId = object_id
+
+
+class BestAvailableObjects:
+    def __init__(self, dict):
+        bunch = bunchify(dict)
+        self.next_to_each_other = bunch.nextToEachOther
+        self.objects = bunch.objects

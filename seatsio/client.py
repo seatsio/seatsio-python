@@ -1,6 +1,4 @@
-from bunch import bunchify
-
-from seatsio.domain import Chart, Event, Subaccount, HoldToken, ObjectStatus, StatusChange, ObjectProperties
+from seatsio.domain import *
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -147,8 +145,43 @@ class Events:
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id)
 
-    def book_best_available(self):
-        raise NotImplemented
+    def book_best_available(self, event_key, number, categories=None, hold_token=None, order_id=None):
+        return self.change_best_available_object_status(
+            event_key,
+            number,
+            ObjectStatus.BOOKED,
+            categories,
+            hold_token,
+            order_id
+        )
+
+    def hold_best_available(self, event_key, number, categories=None, hold_token=None, order_id=None):
+        return self.change_best_available_object_status(
+            event_key,
+            number,
+            ObjectStatus.HELD,
+            categories,
+            hold_token,
+            order_id
+        )
+
+    def change_best_available_object_status(self, event_key, number, status, categories=None, hold_token=None,
+                                            extra_data=None, order_id=None):
+        request = {}
+        best_available = {}
+        best_available["number"] = number
+        if categories:
+            best_available["categories"] = categories
+        if extra_data:
+            best_available["extraData"] = extra_data
+        request["bestAvailable"] = best_available
+        request["status"] = status
+        if hold_token:
+            request["holdToken"] = hold_token
+        if order_id:
+            request["orderId"] = order_id
+        response = self.httpClient.url("/events/{key}/actions/change-object-status", key=event_key).post(request)
+        return BestAvailableObjects(response.body)
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id)
@@ -183,6 +216,8 @@ class Events:
                 for o in object_or_objects:
                     result.append(ObjectProperties(o))
                 return result
+            else:
+                raise Exception("Unsupported type " + str(type(object_or_objects[0])))
         return self.__normalize_objects([object_or_objects])
 
     def mark_as_for_sale(self, event_key, objects=None, categories=None):
