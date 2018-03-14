@@ -118,11 +118,15 @@ class Events:
         response = self.httpClient.url("/events").post(body)
         return Event(response.body)
 
+    def retrieve(self, key):
+        response = self.httpClient.url("/events/{key}", key=key).get()
+        return Event(response.body)
+
     def list(self):
         return Lister(PageFetcher(Event, self.httpClient, "/events"))
 
     def status_changes(self, key, object_id=None):
-        if (object_id):
+        if object_id:
             return Lister(
                 PageFetcher(StatusChange, self.httpClient, "/events/{key}/objects/{objectId}/status-changes",
                             key=key,
@@ -164,12 +168,27 @@ class Events:
                 return []
             if isinstance(object_or_objects[0], ObjectProperties):
                 return object_or_objects
-            if (isinstance(object_or_objects[0], basestring)):
+            if isinstance(object_or_objects[0], basestring):
                 result = []
                 for o in object_or_objects:
                     result.append(ObjectProperties(o))
                 return result
         return self.__normalize_objects([object_or_objects])
+
+    def mark_as_not_for_sale(self, key, objects, categories):
+        body = self.__for_sale_request(objects, categories)
+        self.httpClient.url("/events/{key}/actions/mark-as-not-for-sale", key=key).post(body)
+
+    def mark_everything_as_for_sale(self, key):
+        self.httpClient.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
+
+    def __for_sale_request(self, objects, categories):
+        result = {}
+        if objects:
+            result["objects"] = objects
+        if categories:
+            result["categories"] = categories
+        return result
 
 
 class Subaccounts:
