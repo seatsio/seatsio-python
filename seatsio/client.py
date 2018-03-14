@@ -121,8 +121,14 @@ class Events:
     def list(self):
         return Lister(PageFetcher(Event, self.httpClient, "/events"))
 
-    def status_changes(self, key):
-        return Lister(PageFetcher(StatusChange, self.httpClient, "/events/{key}/status-changes", key=key))
+    def status_changes(self, key, object_id=None):
+        if (object_id):
+            return Lister(
+                PageFetcher(StatusChange, self.httpClient, "/events/{key}/objects/{objectId}/status-changes",
+                            key=key,
+                            objectId=object_id))
+        else:
+            return Lister(PageFetcher(StatusChange, self.httpClient, "/events/{key}/status-changes", key=key))
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id)

@@ -24,6 +24,15 @@ class Event:
         bunch = bunchify(dict)
         self.id = bunch.id
         self.key = bunch.key
+        self.chartKey = bunch.chartKey
+        self.bookWholeTables = bunch.bookWholeTables
+        self.forSaleConfig = getattr(bunch, "forSaleConfig", None)
+        self.createdOn = datetime.strptime(bunch.createdOn, "%Y-%m-%dT%H:%M:%S.%fZ")
+        updated_on = getattr(bunch, "updatedOn", None)
+        if updated_on:
+            self.updatedOn = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
+        else:
+            self.updatedOn = None
 
 
 class Subaccount:
