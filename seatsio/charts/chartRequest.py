@@ -1,6 +1,6 @@
-class CreateChartRequest:
+class ChartRequest:
 
-    def __init__(self, name, venue_type, categories):
+    def __init__(self, name=None, venue_type=None, categories=None):
         if name:
             self.name = name
         if venue_type:

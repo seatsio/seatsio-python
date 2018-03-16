@@ -1,4 +1,4 @@
-from seatsio.charts.createChartRequest import CreateChartRequest
+from seatsio.charts.chartRequest import ChartRequest
 from seatsio.domain import *
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
@@ -28,7 +28,7 @@ class Charts:
         return self.http_client.url("/charts/{key}?expand=events", key=chart_key).get_as(Chart)
 
     def create(self, name=None, venue_type=None, categories=None):
-        request = CreateChartRequest(name, venue_type, categories)
+        request = ChartRequest(name, venue_type, categories)
         response = self.http_client.url("/charts").post(request)
         return Chart(response.body)
 
@@ -49,29 +49,28 @@ class Charts:
         return self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get().raw_body
 
     def copy(self, key):
-        return self.http_client.url("/charts/{key}/version/published/actions/copy", key=key).post_empty_and_return(
-            Chart)
+        return self.http_client \
+            .url("/charts/{key}/version/published/actions/copy", key=key) \
+            .post_empty_and_return(Chart)
 
     def copy_to_subaccount(self, chart_key, subaccount_id):
-        return self.http_client.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
-                                    key=chart_key,
-                                    subaccountId=subaccount_id) \
+        return self.http_client \
+            .url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
+                 key=chart_key,
+                 subaccountId=subaccount_id) \
             .post_empty_and_return(Chart)
 
     def copy_draft_version(self, key):
-        response = self.http_client.url("/charts/{key}/version/draft/actions/copy", key=key).post()
-        return Chart(response.body)
+        return self.http_client \
+            .url("/charts/{key}/version/draft/actions/copy", key=key) \
+            .post_empty_and_return(Chart)
 
     def discard_draft_version(self, key):
         self.http_client.url("/charts/{key}/version/draft/actions/discard", key=key).post()
 
     def update(self, key, new_name=None, categories=None):
-        body = {}
-        if new_name:
-            body['name'] = new_name
-        if categories:
-            body['categories'] = categories
-        self.http_client.url("/charts/{key}", key=key).post(body)
+        request = ChartRequest(name=new_name, categories=categories)
+        self.http_client.url("/charts/{key}", key=key).post(request)
 
     def move_to_archive(self, chart_key):
         self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
