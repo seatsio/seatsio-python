@@ -1,4 +1,4 @@
-from seatsio import ObjectProperties, EventReport
+from seatsio import ObjectProperties, EventReport, EventReportItem
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -14,8 +14,8 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_label(event.key)
 
         assert_that(report).is_instance(EventReport)
-
         report_item = report.get("A-1")[0]
+        assert_that(report_item).is_instance(EventReportItem)
         assert_that(report_item.status).is_equal_to("booked")
         assert_that(report_item.label).is_equal_to("A-1")
         assert_that(report_item.category_label).is_equal_to("Cat1")
@@ -35,7 +35,9 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_label(event.key)
 
+        assert_that(report).is_instance(EventReport)
         report_item = report.get("GA1")[0]
+        assert_that(report_item).is_instance(EventReportItem)
         assert_that(report_item.status).is_equal_to("free")
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.category_label).is_equal_to("Cat1")
@@ -56,6 +58,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_status(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("mystatus")).has_size(2)
         assert_that(report.get("booked")).has_size(1)
         assert_that(report.get("free")).has_size(31)
@@ -68,7 +71,10 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_status(event.key, status="mystatus")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(2)
+        assert_that(report[0]).is_instance(EventReportItem)
 
     def testByCategoryLabel(self):
         chart_key = self.create_test_chart()
@@ -76,6 +82,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_category_label(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("Cat1")).has_size(17)
         assert_that(report.get("Cat2")).has_size(17)
 
@@ -85,6 +92,8 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_category_label(event.key, "Cat1")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(17)
 
     def testByCategoryKey(self):
@@ -93,6 +102,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_category_key(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("9")).has_size(17)
         assert_that(report.get("10")).has_size(17)
 
@@ -102,6 +112,8 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_category_key(event.key, "9")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(17)
 
     def testByLabel(self):
@@ -110,6 +122,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_label(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("A-1")).has_size(1)
         assert_that(report.get("A-2")).has_size(1)
 
@@ -119,6 +132,8 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_label(event.key, "A-1")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(1)
 
     def testByOrderId(self):
@@ -129,6 +144,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_order_id(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("order1")).has_size(2)
         assert_that(report.get("order2")).has_size(1)
         assert_that(report.get("NO_ORDER_ID")).has_size(31)
@@ -141,6 +157,8 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_order_id(event.key, "order1")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(2)
 
     def testBySection(self):
@@ -149,6 +167,7 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_section(event.key)
 
+        assert_that(report).is_instance(EventReport)
         assert_that(report.get("NO_SECTION")).has_size(34)
 
     def testBySpecificSection(self):
@@ -157,4 +176,6 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_section(event.key, "NO_SECTION")
 
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(34)
