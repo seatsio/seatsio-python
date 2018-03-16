@@ -35,6 +35,33 @@ class Event:
             self.updatedOn = None
 
 
+class EventReport:
+    def __init__(self, response_body):
+        self.items = {}
+        for key, value in response_body.iteritems():
+            self.items[key] = []
+            for item in value:
+                self.items[key].append(EventReportItem(item))
+
+    def get(self, key):
+        return self.items.get(key)
+
+
+class EventReportItem:
+    def __init__(self, item_data):
+        self.status = item_data.get("status")
+        self.label = item_data["label"]
+        self.category_label = item_data["categoryLabel"]
+        self.category_key = item_data.get("categoryKey")
+        self.ticket_type = item_data.get("ticketType")
+        self.order_id = item_data.get("orderId")
+        self.for_sale = item_data.get("forSale")
+        self.section = item_data.get("section")
+        self.entrance = item_data.get("entrance")
+        self.num_booked = item_data.get("numBooked")
+        self.capacity = item_data.get("capacity")
+
+
 class Subaccount:
 
     def __init__(self, dict):

@@ -1,6 +1,6 @@
 from bunch import bunchify
 
-from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ObjectProperties
+from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ObjectProperties, EventReport
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
@@ -201,4 +201,4 @@ class EventReports:
         else:
             url = "/reports/events/{key}/{reportType}"
             body = self.http_client.url(url, key=event_key, reportType=report_type).get().body
-            return bunchify(body)
+            return EventReport(body)

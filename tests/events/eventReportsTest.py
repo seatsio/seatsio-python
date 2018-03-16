@@ -1,4 +1,4 @@
-from seatsio import ObjectProperties
+from seatsio import ObjectProperties, EventReport
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -13,18 +13,20 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_label(event.key)
 
+        assert_that(report).is_instance(EventReport)
+
         report_item = report.get("A-1")[0]
         assert_that(report_item.status).is_equal_to("booked")
         assert_that(report_item.label).is_equal_to("A-1")
-        assert_that(report_item.categoryLabel).is_equal_to("Cat1")
-        # TODO assert_that(report_item.categoryKey).is_equal_to(9)
-        assert_that(report_item.ticketType).is_equal_to("tt1")
-        assert_that(report_item.orderId).is_equal_to("order1")
-        assert_that(report_item.forSale).is_true()
-        # TODO assert_that(report_item.section).is_none()
-        # TODO assert_that(report.entrance).is_none()
-        # TODO assert_that(report.numBooked).is_none()
-        # TODO assert_that(report.capacity).is_none()
+        assert_that(report_item.category_label).is_equal_to("Cat1")
+        assert_that(report_item.category_key).is_equal_to("9")
+        assert_that(report_item.ticket_type).is_equal_to("tt1")
+        assert_that(report_item.order_id).is_equal_to("order1")
+        assert_that(report_item.for_sale).is_true()
+        assert_that(report_item.section).is_none()
+        assert_that(report_item.entrance).is_none()
+        assert_that(report_item.num_booked).is_none()
+        assert_that(report_item.capacity).is_none()
 
     def test_reportItemPropertiesForGA(self):
         chart_key = self.create_test_chart()
@@ -36,14 +38,14 @@ class EventReportsTest(SeatsioClientTest):
         report_item = report.get("GA1")[0]
         assert_that(report_item.status).is_equal_to("free")
         assert_that(report_item.label).is_equal_to("GA1")
-        assert_that(report_item.categoryLabel).is_equal_to("Cat1")
-        # TODO assert_that(report_item.categoryKey).is_equal_to(9)
-        # TODO assert_that(report_item.ticketType).is_equal_to("tt1")
-        # TODO assert_that(report_item.orderId).is_equal_to("order1")
-        # TODO assert_that(report_item.forSale).is_true()
-        # TODO assert_that(report_item.section).is_none()
-        # TODO assert_that(report.entrance).is_none()
-        assert_that(report_item.numBooked).is_equal_to(5)
+        assert_that(report_item.category_label).is_equal_to("Cat1")
+        assert_that(report_item.category_key).is_equal_to("9")
+        assert_that(report_item.ticket_type).is_none()
+        assert_that(report_item.order_id).is_none()
+        assert_that(report_item.for_sale).is_true()
+        assert_that(report_item.section).is_none()
+        assert_that(report_item.entrance).is_none()
+        assert_that(report_item.num_booked).is_equal_to(5)
         assert_that(report_item.capacity).is_equal_to(100)
 
     def test_byStatus(self):
