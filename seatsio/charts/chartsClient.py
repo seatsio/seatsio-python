@@ -1,4 +1,6 @@
-from seatsio import Chart, bunchify
+from bunch import bunchify
+
+from seatsio.domain import Chart
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
