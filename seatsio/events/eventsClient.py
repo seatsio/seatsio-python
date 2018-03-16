@@ -125,7 +125,6 @@ class EventsClient:
             order_id
         )
 
-    # TODO cleanup
     def change_best_available_object_status(
             self, event_key, number, status, categories=None, hold_token=None, extra_data=None, order_id=None):
         response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(
