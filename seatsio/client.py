@@ -7,12 +7,12 @@ from seatsio.pagination.pageFetcher import PageFetcher
 class Client:
 
     def __init__(self, secret_key, base_url="https://api.seats.io"):
-        self.baseUrl = base_url
-        self.httpClient = HttpClient(base_url, secret_key)
-        self.charts = Charts(self.httpClient)
-        self.events = Events(self.httpClient)
-        self.subaccounts = Subaccounts(self.httpClient)
-        self.hold_tokens = HoldTokens(self.httpClient)
+        self.base_url = base_url
+        self.http_client = HttpClient(base_url, secret_key)
+        self.charts = Charts(self.http_client)
+        self.events = Events(self.http_client)
+        self.subaccounts = Subaccounts(self.http_client)
+        self.hold_tokens = HoldTokens(self.http_client)
 
 
 class Charts:
