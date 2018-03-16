@@ -44,6 +44,21 @@ class ChangeObjectStatusRequest:
         return self.__normalize_objects([object_or_objects])
 
 
+class ChangeBestAvailableObjectStatusRequest:
+    def __init__(self, number, categories, extra_data, status, hold_token, order_id):
+        best_available = {"number": number}
+        if categories:
+            best_available["categories"] = categories
+        if extra_data:
+            best_available["extraData"] = extra_data
+        self.bestAvailable = best_available
+        self.status = status
+        if hold_token:
+            self.holdToken = hold_token
+        if order_id:
+            self.orderId = order_id
+
+
 class ExtraDataRequest:
     def __init__(self, extra_data):
         if extra_data:
@@ -113,20 +128,15 @@ class EventsClient:
     # TODO cleanup
     def change_best_available_object_status(
             self, event_key, number, status, categories=None, hold_token=None, extra_data=None, order_id=None):
-        request = {}
-        best_available = {}
-        best_available["number"] = number
-        if categories:
-            best_available["categories"] = categories
-        if extra_data:
-            best_available["extraData"] = extra_data
-        request["bestAvailable"] = best_available
-        request["status"] = status
-        if hold_token:
-            request["holdToken"] = hold_token
-        if order_id:
-            request["orderId"] = order_id
-        response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(request)
+        response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(
+            ChangeBestAvailableObjectStatusRequest(
+                number=number,
+                status=status,
+                categories=categories,
+                hold_token=hold_token,
+                extra_data=extra_data,
+                order_id=order_id
+            ))
         return BestAvailableObjects(response.body)
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
