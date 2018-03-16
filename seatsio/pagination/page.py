@@ -13,15 +13,21 @@ class Page:
 
     @classmethod
     def from_response(cls, response, clazz):
-        # TODO cleanup
-        items = response.body["items"]
-        next_page_starts_after = response.body.get("next_page_starts_after", None)
-        if (next_page_starts_after):
-            next_page_starts_after = int(next_page_starts_after)
-        previous_page_ends_before = response.body.get("previous_page_ends_before", None)
-        if (previous_page_ends_before):
-            previous_page_ends_before = int(previous_page_ends_before)
+        next_page_starts_after = cls.get_value(response, "next_page_starts_after")
+        previous_page_ends_before = cls.get_value(response, "previous_page_ends_before")
+        items = cls.map_items(clazz, response)
+        return Page(items, next_page_starts_after, previous_page_ends_before)
+
+    @classmethod
+    def get_value(cls, response, param_name):
+        int_value = response.body.get(param_name, None)
+        if int_value:
+            int_value = int(int_value)
+        return int_value
+
+    @classmethod
+    def map_items(cls, clazz, response):
         typed_items = []
-        for item in items:
+        for item in response.body["items"]:
             typed_items.append(clazz(item))
-        return Page(typed_items, next_page_starts_after, previous_page_ends_before)
+        return typed_items
