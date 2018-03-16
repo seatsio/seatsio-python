@@ -15,6 +15,49 @@ class EventRequest:
             self.bookWholeTables = book_whole_tables
 
 
+class ChangeObjectStatusRequest:
+    def __init__(self, object_or_objects, status, hold_token, order_id, event_key_or_keys):
+        self.objects = self.__normalize_objects(object_or_objects)
+        self.status = status
+        if hold_token:
+            self.holdToken = hold_token
+        if order_id:
+            self.orderId = order_id
+        if isinstance(event_key_or_keys, basestring):
+            self.events = [event_key_or_keys]
+        else:
+            self.events = event_key_or_keys
+
+    def __normalize_objects(self, object_or_objects):
+        if isinstance(object_or_objects, list):
+            if len(object_or_objects) == 0:
+                return []
+            if isinstance(object_or_objects[0], ObjectProperties):
+                return object_or_objects
+            if isinstance(object_or_objects[0], basestring):
+                result = []
+                for o in object_or_objects:
+                    result.append(ObjectProperties(o))
+                return result
+            else:
+                raise Exception("Unsupported type " + str(type(object_or_objects[0])))
+        return self.__normalize_objects([object_or_objects])
+
+
+class ExtraDataRequest:
+    def __init__(self, extra_data):
+        if extra_data:
+            self.extraData = extra_data
+
+
+class ForSaleRequest:
+    def __init__(self, objects, categories):
+        if objects:
+            self.objects = objects
+        if categories:
+            self.categories = categories
+
+
 class EventsClient:
 
     def __init__(self, http_client):
@@ -92,36 +135,12 @@ class EventsClient:
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id)
 
-    # TODO cleanup
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None):
-        request = {'objects': self.__normalize_objects(object_or_objects), 'status': status}
-        if hold_token:
-            request['holdToken'] = hold_token
-        if order_id:
-            request['orderId'] = order_id
-        if isinstance(event_key_or_keys, basestring):
-            request['events'] = [event_key_or_keys]
-        else:
-            request["events"] = event_key_or_keys
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys)
         self.http_client.url("/seasons/actions/change-object-status").post(request)
 
     def retrieve_object_status(self, key, object_key):
         return self.http_client.url("/events/{key}/objects/{object}", key=key, object=object_key).get_as(ObjectStatus)
-
-    def __normalize_objects(self, object_or_objects):
-        if isinstance(object_or_objects, list):
-            if len(object_or_objects) == 0:
-                return []
-            if isinstance(object_or_objects[0], ObjectProperties):
-                return object_or_objects
-            if isinstance(object_or_objects[0], basestring):
-                result = []
-                for o in object_or_objects:
-                    result.append(ObjectProperties(o))
-                return result
-            else:
-                raise Exception("Unsupported type " + str(type(object_or_objects[0])))
-        return self.__normalize_objects([object_or_objects])
 
     def mark_as_for_sale(self, event_key, objects=None, categories=None):
         self.http_client \
@@ -140,20 +159,6 @@ class EventsClient:
         self.http_client \
             .url("/events/{key}/objects/{object}/actions/update-extra-data", key=key, object=o) \
             .post(ExtraDataRequest(extra_data))
-
-
-class ExtraDataRequest:
-    def __init__(self, extra_data):
-        if extra_data:
-            self.extraData = extra_data
-
-
-class ForSaleRequest:
-    def __init__(self, objects, categories):
-        if objects:
-            self.objects = objects
-        if categories:
-            self.categories = categories
 
 
 class EventReports:
@@ -178,6 +183,7 @@ class EventReports:
     def by_section(self, event_key, section=None):
         return self.__fetch_report("bySection", event_key, section)
 
+    # TODO return actual report domain objects
     def __fetch_report(self, report_type, event_key, report_filter=None):
         result = self.__fetch_raw_report(report_type, event_key, report_filter)
         if report_filter:
