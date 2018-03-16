@@ -1,3 +1,4 @@
+from seatsio.charts.createChartRequest import CreateChartRequest
 from seatsio.domain import *
 from seatsio.httpClient import HttpClient
 from seatsio.pagination.lister import Lister
@@ -21,49 +22,41 @@ class Charts:
         self.http_client = http_client
 
     def retrieve(self, chart_key):
-        response = self.http_client.url("/charts/{key}", key=chart_key).get()
-        return Chart(response.body)
+        return self.http_client.url("/charts/{key}", key=chart_key).get_as(Chart)
 
     def retrieve_with_events(self, chart_key):
-        response = self.http_client.url("/charts/{key}?expand=events", key=chart_key).get()
-        return Chart(response.body)
+        return self.http_client.url("/charts/{key}?expand=events", key=chart_key).get_as(Chart)
 
     def create(self, name=None, venue_type=None, categories=None):
-        body = {}
-        if name:
-            body['name'] = name
-        if venue_type:
-            body['venueType'] = venue_type
-        if categories:
-            body['categories'] = categories
-        response = self.http_client.url("/charts").post(body)
+        request = CreateChartRequest(name, venue_type, categories)
+        response = self.http_client.url("/charts").post(request)
         return Chart(response.body)
 
+    # TODO return something else than a bunch
     def retrieve_published_version(self, key):
         response = self.http_client.url("/charts/{key}/version/published", key=key).get()
         return bunchify(response.body)
 
+    # TODO return something else than a bunch
     def retrieve_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft", key=key).get()
         return bunchify(response.body)
 
     def retrieve_draft_version_thumbnail(self, key):
-        response = self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get()
-        return response.raw_body
+        return self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get().raw_body
 
     def retrieve_published_version_thumbnail(self, key):
-        response = self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get()
-        return response.raw_body
+        return self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get().raw_body
 
     def copy(self, key):
-        response = self.http_client.url("/charts/{key}/version/published/actions/copy", key=key).post()
-        return Chart(response.body)
+        return self.http_client.url("/charts/{key}/version/published/actions/copy", key=key).post_empty_and_return(
+            Chart)
 
     def copy_to_subaccount(self, chart_key, subaccount_id):
-        response = self.http_client.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
-                                        key=chart_key,
-                                        subaccountId=subaccount_id).post()
-        return Chart(response.body)
+        return self.http_client.url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
+                                    key=chart_key,
+                                    subaccountId=subaccount_id) \
+            .post_empty_and_return(Chart)
 
     def copy_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft/actions/copy", key=key).post()

@@ -33,11 +33,17 @@ class ApiResource:
     def get(self):
         return GET(self.url, self.secretKey).execute()
 
+    def get_as(self, cls):
+        return cls(self.get().body)
+
     def post(self, body=None):
         if body is None:
             return POST(self.url, self.secretKey).execute()
         else:
             return POST(self.url, self.secretKey).body(body).execute()
+
+    def post_empty_and_return(self, cls):
+        return cls(self.post().body)
 
     def delete(self):
         return DELETE(self.url, self.secretKey).execute()
