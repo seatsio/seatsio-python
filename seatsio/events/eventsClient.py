@@ -185,16 +185,11 @@ class EventReports:
 
     # TODO return actual report domain objects
     def __fetch_report(self, report_type, event_key, report_filter=None):
-        result = self.__fetch_raw_report(report_type, event_key, report_filter)
-        if report_filter:
-            return bunchify(result[report_filter])
-        else:
-            return bunchify(result)
-
-    def __fetch_raw_report(self, report_type, event_key, report_filter):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"
-            return self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get().body
+            return bunchify(body[report_filter])
         else:
             url = "/reports/events/{key}/{reportType}"
-            return self.http_client.url(url, key=event_key, reportType=report_type).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type).get().body
+            return bunchify(body)
