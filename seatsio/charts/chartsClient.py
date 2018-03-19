@@ -21,12 +21,10 @@ class ChartsClient:
         response = self.http_client.url("/charts").post(request)
         return Chart(response.body)
 
-    # TODO return something else than a bunch
     def retrieve_published_version(self, key):
         response = self.http_client.url("/charts/{key}/version/published", key=key).get()
         return bunchify(response.body)
 
-    # TODO return something else than a bunch
     def retrieve_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft", key=key).get()
         return bunchify(response.body)
