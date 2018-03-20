@@ -1,4 +1,4 @@
-from seatsio import HoldToken
+from seatsio.domain import HoldToken
 
 
 class HoldTokensClient:

@@ -1,4 +1,4 @@
-from seatsio import Subaccount, Chart
+from seatsio.domain import Subaccount, Chart
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 

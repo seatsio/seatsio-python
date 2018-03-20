@@ -1,5 +1,3 @@
-from bunch import bunchify
-
 from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ObjectProperties, EventReport, \
     EventReportItem
 from seatsio.pagination.lister import Lister
