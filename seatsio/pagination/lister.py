@@ -1,6 +1,7 @@
 from seatsio.pagination.pagedIterator import PagedIterator
 
 
+# TODO factor out
 class Lister:
     def __init__(self, page_fetcher):
         self.pageFetcher = page_fetcher
