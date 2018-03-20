@@ -22,7 +22,6 @@ class ApiResource:
         self.url = self.__create_full_url(base_url, relative_url, query_params, **path_params)
         self.secretKey = secret_key
 
-    # TODO refactor into URL class
     def __create_full_url(self, base_url, relative_url, query_params, **path_params):
         for key in path_params:
             path_params[key] = urllib.quote(str(path_params[key]), safe='')
