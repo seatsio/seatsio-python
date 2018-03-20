@@ -53,23 +53,6 @@ class ApiResource:
         return DELETE(self.url, self.secretKey).execute()
 
 
-class HttpRequest:
-    def __init__(self, method, full_url, secret_key):
-        self.httpMethod = method
-        self.url = full_url
-        self.secret_key = secret_key
-
-    def execute(self):
-        response = self.try_execute()
-        if response.code >= 400:
-            raise SeatsioException(self, response)
-        else:
-            return response
-
-    def try_execute(self):
-        raise NotImplementedError
-
-
 class GET:
 
     def __init__(self, url, secret_key):
@@ -98,15 +81,24 @@ class GET:
             raise SeatsioException2(self, cause=cause)
 
 
-class POST(HttpRequest):
+class POST:
 
     def __init__(self, url, secret_key):
-        HttpRequest.__init__(self, "POST", url, secret_key)
+        self.httpMethod = "POST"
+        self.url = url
+        self.secret_key = secret_key
         self.bodyObject = None
 
     def body(self, body):
         self.bodyObject = body
         return self
+
+    def execute(self):
+        response = self.try_execute()
+        if response.code >= 400:
+            raise SeatsioException(self, response)
+        else:
+            return response
 
     def try_execute(self):
         try:
