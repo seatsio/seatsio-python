@@ -1,3 +1,4 @@
+# TODO remove class
 class SeatsioException(Exception):
     httpCodes = {
         200: "OK",

@@ -19,7 +19,7 @@ class ChartsClient:
     def create(self, name=None, venue_type=None, categories=None):
         request = ChartRequest(name, venue_type, categories)
         response = self.http_client.url("/charts").post(request)
-        return Chart(response.body)
+        return Chart(response.json())
 
     def retrieve_published_version(self, key):
         response = self.http_client.url("/charts/{key}/version/published", key=key).get()

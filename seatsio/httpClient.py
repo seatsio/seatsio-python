@@ -2,7 +2,6 @@ import urllib
 
 import jsonpickle
 import requests
-import unirest
 
 from seatsio.exceptions import SeatsioException, SeatsioException2
 
@@ -47,7 +46,7 @@ class ApiResource:
             return POST(self.url, self.secretKey).body(body).execute()
 
     def post_empty_and_return(self, cls):
-        return cls(self.post().body)
+        return cls(self.post().json())
 
     def delete(self):
         return DELETE(self.url, self.secretKey).execute()
@@ -95,8 +94,8 @@ class POST:
 
     def execute(self):
         response = self.try_execute()
-        if response.code >= 400:
-            raise SeatsioException(self, response)
+        if response.status_code >= 400:
+            raise SeatsioException2(self, response)
         else:
             return response
 
@@ -104,14 +103,13 @@ class POST:
         try:
             if self.bodyObject:
                 json = jsonpickle.encode(self.bodyObject, unpicklable=False)
-                return unirest.post(
+                return requests.post(
                     url=self.url,
                     auth=(self.secret_key, ''),
-                    headers={"Accept": "application/json"},
-                    params=json
+                    data=json
                 )
             else:
-                return unirest.post(
+                return requests.post(
                     url=self.url,
                     auth=(self.secret_key, '')
                 )
