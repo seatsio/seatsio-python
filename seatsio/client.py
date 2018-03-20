@@ -26,7 +26,7 @@ class Subaccounts:
         if name:
             body['name'] = name
         response = self.http_client.url("/subaccounts").post(body)
-        return Subaccount(response.body)
+        return Subaccount(response.json())
 
     def update(self, subaccount_id, new_name):
         body = {}
@@ -36,7 +36,7 @@ class Subaccounts:
 
     def retrieve(self, subaccount_id):
         response = self.http_client.url("/subaccounts/{id}", id=subaccount_id).get()
-        return Subaccount(response.body)
+        return Subaccount(response)
 
     def activate(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/actions/activate", id=subaccount_id).post()
@@ -49,7 +49,7 @@ class Subaccounts:
             "/subaccounts/{id}/charts/{chartKey}/actions/copy-to/parent",
             id=subaccount_id,
             chartKey=chart_key).post()
-        return Chart(response.body)
+        return Chart(response.json())
 
     def copy_chart_to_subaccount(self, from_id, to_id, chart_key):
         response = self.http_client.url(
@@ -57,7 +57,8 @@ class Subaccounts:
             fromId=from_id,
             toId=to_id,
             chartKey=chart_key).post()
-        return Chart(response.body)
+        # TODO refactor all Chart(response.json()) calls
+        return Chart(response.json())
 
     def list(self):
         return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts"))
@@ -76,15 +77,15 @@ class HoldTokens:
 
     def create(self):
         response = self.http_client.url("/hold-tokens").post()
-        return HoldToken(response.body)
+        return HoldToken(response.json())
 
     def retrieve(self, hold_token):
         response = self.http_client.url("/hold-tokens/{holdToken}", holdToken=hold_token).get()
-        return HoldToken(response.body)
+        return HoldToken(response)
 
     def expire_in_minutes(self, hold_token, expires_in_minutes):
         body = {}
         if expires_in_minutes:
             body["expiresInMinutes"] = expires_in_minutes
         response = self.http_client.url("/hold-tokens/{holdToken}", holdToken=hold_token).post(body)
-        return HoldToken(response.body)
+        return HoldToken(response.json())

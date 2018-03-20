@@ -82,7 +82,7 @@ class EventsClient:
 
     def create(self, chart_key):
         response = self.http_client.url("/events").post(EventRequest(chart_key=chart_key))
-        return Event(response.body)
+        return Event(response.json())
 
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None):
         self.http_client.url("/events/{key}", key=key).post(EventRequest(chart_key, event_key, book_whole_tables))
@@ -137,7 +137,7 @@ class EventsClient:
                 extra_data=extra_data,
                 order_id=order_id
             ))
-        return BestAvailableObjects(response.body)
+        return BestAvailableObjects(response.json())
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id)
@@ -196,12 +196,12 @@ class EventReports:
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get()
             result = []
             for i in body[report_filter]:
                 result.append(EventReportItem(i))
             return result
         else:
             url = "/reports/events/{key}/{reportType}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type).get()
             return EventReport(body)

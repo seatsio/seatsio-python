@@ -1,6 +1,7 @@
 import os
+
+import requests
 import unittest2
-import unirest
 import json
 import uuid
 
@@ -19,20 +20,19 @@ class SeatsioClientTest(unittest2.TestCase):
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()
 
-    def newClient(self, secretKey):
-        return seatsio.Client(secretKey, BASE_URL)
+    def newClient(self, secret_key):
+        return seatsio.Client(secret_key, BASE_URL)
 
     def create_test_user(self):
-        response = unirest.post(
+        response = requests.post(
             BASE_URL + "/system/public/users",
-            headers={"Accept": "application/json"},
-            params=json.dumps({
+            data=json.dumps({
                 "email": "test" + str(uuid.uuid4()) + "@seats.io",
                 "password": "12345678"
             })
         )
-        if response.code == 200:
-            return response.body
+        if response.ok:
+            return response.json()
         else:
             raise Exception("Failed to create a test user")
 
@@ -41,12 +41,12 @@ class SeatsioClientTest(unittest2.TestCase):
             data = test_chart_json.read().replace('\n', '')
             chart_key = str(uuid.uuid4())
             url = BASE_URL + "/system/public/" + self.user["designerKey"] + "/charts/" + chart_key
-            response = unirest.post(
+            response = requests.post(
                 url=url,
                 headers={"Accept": "application/json"},
-                params=data
+                data=data
             )
-            if response.code == 201:
+            if response.status_code == 201:
                 return chart_key
             else:
                 raise Exception("Failed to create a test user")

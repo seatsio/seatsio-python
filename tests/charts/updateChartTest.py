@@ -1,4 +1,4 @@
-from seatsio.exceptions import SeatsioException
+from seatsio.exceptions import SeatsioException, SeatsioException2
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -36,7 +36,7 @@ class UpdateChartTest(SeatsioClientTest):
         try:
             self.client.charts.update(chart.key, categories=[category])
             self.fail("expected an exception")
-        except SeatsioException as e:
+        except SeatsioException2 as e:
             assert_that(e.message).contains("400 Bad Request")
             assert_that(e.requestId).is_not_none()
             assert_that(e.cause).is_none()

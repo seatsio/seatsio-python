@@ -15,7 +15,6 @@ setup(
         'seatsio'
     ],
     install_requires=[
-        "unirest",
         "requests",
         "bunch",
         "jsonpickle"

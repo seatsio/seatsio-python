@@ -19,21 +19,21 @@ class ChartsClient:
     def create(self, name=None, venue_type=None, categories=None):
         request = ChartRequest(name, venue_type, categories)
         response = self.http_client.url("/charts").post(request)
-        return Chart(response.body)
+        return Chart(response.json())
 
     def retrieve_published_version(self, key):
         response = self.http_client.url("/charts/{key}/version/published", key=key).get()
-        return bunchify(response.body)
+        return bunchify(response)
 
     def retrieve_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft", key=key).get()
-        return bunchify(response.body)
+        return bunchify(response)
 
     def retrieve_draft_version_thumbnail(self, key):
-        return self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get().raw_body
+        return self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get_raw()
 
     def retrieve_published_version_thumbnail(self, key):
-        return self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get().raw_body
+        return self.http_client.url("/charts/{key}/version/published/thumbnail", key=key).get_raw()
 
     def copy(self, key):
         return self.http_client \
@@ -70,7 +70,7 @@ class ChartsClient:
 
     def list_all_tags(self):
         response = self.http_client.url("/charts/tags").get()
-        return response.body["tags"]
+        return response["tags"]
 
     def add_tag(self, key, tag):
         return self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).post()
