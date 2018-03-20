@@ -20,7 +20,7 @@ class Page:
 
     @classmethod
     def get_value(cls, response, param_name):
-        int_value = response.body.get(param_name, None)
+        int_value = response.get(param_name, None)
         if int_value:
             int_value = int(int_value)
         return int_value
@@ -28,6 +28,6 @@ class Page:
     @classmethod
     def map_items(cls, clazz, response):
         typed_items = []
-        for item in response.body["items"]:
+        for item in response["items"]:
             typed_items.append(clazz(item))
         return typed_items

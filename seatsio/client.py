@@ -36,7 +36,7 @@ class Subaccounts:
 
     def retrieve(self, subaccount_id):
         response = self.http_client.url("/subaccounts/{id}", id=subaccount_id).get()
-        return Subaccount(response.body)
+        return Subaccount(response)
 
     def activate(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/actions/activate", id=subaccount_id).post()
@@ -80,7 +80,7 @@ class HoldTokens:
 
     def retrieve(self, hold_token):
         response = self.http_client.url("/hold-tokens/{holdToken}", holdToken=hold_token).get()
-        return HoldToken(response.body)
+        return HoldToken(response)
 
     def expire_in_minutes(self, hold_token, expires_in_minutes):
         body = {}

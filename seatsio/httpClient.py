@@ -4,7 +4,7 @@ import jsonpickle
 import requests
 import unirest
 
-from seatsio.exceptions import SeatsioException
+from seatsio.exceptions import SeatsioException, SeatsioException2
 
 
 class HttpClient:
@@ -34,8 +34,11 @@ class ApiResource:
     def get(self):
         return GET(self.url, self.secretKey).execute()
 
+    def get_raw(self):
+        return GET(self.url, self.secretKey).execute_raw()
+
     def get_as(self, cls):
-        return cls(self.get().body)
+        return cls(self.get())
 
     def post(self, body=None):
         if body is None:
@@ -76,24 +79,31 @@ class HttpRequest2:
     def execute(self):
         response = self.try_execute()
         if response.status_code >= 400:
+            raise SeatsioException2(self, response)
+        else:
+            return response.json()
+
+    def execute_raw(self):
+        response = self.try_execute()
+        if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
-            return response
+            return response.content
 
     def try_execute(self):
         raise NotImplementedError
 
 
-class GET(HttpRequest):
+class GET(HttpRequest2):
 
     def __init__(self, url, secret_key):
-        HttpRequest.__init__(self, "GET", url, secret_key)
+        HttpRequest2.__init__(self, "GET", url, secret_key)
 
     def try_execute(self):
         try:
-            return unirest.get(self.url, auth=(self.secret_key, ''))
+            return requests.get(self.url, auth=(self.secret_key, ''))
         except Exception as cause:
-            raise SeatsioException(self, cause=cause)
+            raise SeatsioException2(self, cause=cause)
 
 
 class POST(HttpRequest):
@@ -125,10 +135,17 @@ class POST(HttpRequest):
             raise SeatsioException(self, cause=cause)
 
 
-class DELETE(HttpRequest2):
+class DELETE:
 
     def __init__(self, url, secret_key):
-        HttpRequest2.__init__(self, "DELETE", url, secret_key)
+        self.httpMethod = "DELETE"
+        self.url = url
+        self.secret_key = secret_key
+
+    def execute(self):
+        response = self.try_execute()
+        if response.status_code >= 400:
+            raise SeatsioException2(self, response)
 
     def try_execute(self):
         try:

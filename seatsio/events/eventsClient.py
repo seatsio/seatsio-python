@@ -196,12 +196,12 @@ class EventReports:
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get()
             result = []
             for i in body[report_filter]:
                 result.append(EventReportItem(i))
             return result
         else:
             url = "/reports/events/{key}/{reportType}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type).get().body
+            body = self.http_client.url(url, key=event_key, reportType=report_type).get()
             return EventReport(body)
