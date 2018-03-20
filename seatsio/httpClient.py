@@ -70,10 +70,11 @@ class HttpRequest:
         raise NotImplementedError
 
 
-class HttpRequest2:
-    def __init__(self, method, full_url, secret_key):
-        self.httpMethod = method
-        self.url = full_url
+class GET:
+
+    def __init__(self, url, secret_key):
+        self.httpMethod = "GET"
+        self.url = url
         self.secret_key = secret_key
 
     def execute(self):
@@ -89,15 +90,6 @@ class HttpRequest2:
             raise SeatsioException(self, response)
         else:
             return response.content
-
-    def try_execute(self):
-        raise NotImplementedError
-
-
-class GET(HttpRequest2):
-
-    def __init__(self, url, secret_key):
-        HttpRequest2.__init__(self, "GET", url, secret_key)
 
     def try_execute(self):
         try:
