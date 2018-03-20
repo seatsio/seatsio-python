@@ -1,6 +1,7 @@
 import urllib
 
 import jsonpickle
+import requests
 import unirest
 
 from seatsio.exceptions import SeatsioException
@@ -66,6 +67,23 @@ class HttpRequest:
         raise NotImplementedError
 
 
+class HttpRequest2:
+    def __init__(self, method, full_url, secret_key):
+        self.httpMethod = method
+        self.url = full_url
+        self.secret_key = secret_key
+
+    def execute(self):
+        response = self.try_execute()
+        if response.status_code >= 400:
+            raise SeatsioException(self, response)
+        else:
+            return response
+
+    def try_execute(self):
+        raise NotImplementedError
+
+
 class GET(HttpRequest):
 
     def __init__(self, url, secret_key):
@@ -107,13 +125,13 @@ class POST(HttpRequest):
             raise SeatsioException(self, cause=cause)
 
 
-class DELETE(HttpRequest):
+class DELETE(HttpRequest2):
 
     def __init__(self, url, secret_key):
-        HttpRequest.__init__(self, "DELETE", url, secret_key)
+        HttpRequest2.__init__(self, "DELETE", url, secret_key)
 
     def try_execute(self):
         try:
-            return unirest.delete(self.url, auth=(self.secret_key, ''))
+            return requests.delete(self.url, auth=(self.secret_key, ''))
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
