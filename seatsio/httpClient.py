@@ -3,7 +3,7 @@ import urllib
 import jsonpickle
 import requests
 
-from seatsio.exceptions import SeatsioException, SeatsioException2
+from seatsio.exceptions import SeatsioException
 
 
 class HttpClient:
@@ -62,7 +62,7 @@ class GET:
     def execute(self):
         response = self.try_execute()
         if response.status_code >= 400:
-            raise SeatsioException2(self, response)
+            raise SeatsioException(self, response)
         else:
             return response.json()
 
@@ -77,7 +77,7 @@ class GET:
         try:
             return requests.get(self.url, auth=(self.secret_key, ''))
         except Exception as cause:
-            raise SeatsioException2(self, cause=cause)
+            raise SeatsioException(self, cause=cause)
 
 
 class POST:
@@ -95,7 +95,7 @@ class POST:
     def execute(self):
         response = self.try_execute()
         if response.status_code >= 400:
-            raise SeatsioException2(self, response)
+            raise SeatsioException(self, response)
         else:
             return response
 
@@ -127,7 +127,7 @@ class DELETE:
     def execute(self):
         response = self.try_execute()
         if response.status_code >= 400:
-            raise SeatsioException2(self, response)
+            raise SeatsioException(self, response)
 
     def try_execute(self):
         try:
