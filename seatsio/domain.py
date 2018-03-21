@@ -12,13 +12,12 @@ class Chart:
         self.name = data.get("name")
         self.publishedVersionThumbnailUrl = data.get("publishedVersionThumbnailUrl")
         self.draftVersionThumbnailUrl = data.get("draftVersionThumbnailUrl")
-        self.events = data.get("events")
+        self.events = Event.create_list(data.get("events"))
         self.tags = data.get("tags")
         self.archived = data.get("archived")
 
 
 class Event:
-
     def __init__(self, data):
         self.id = data.get("id")
         self.key = data.get("key")
@@ -31,6 +30,16 @@ class Event:
             self.updatedOn = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
         else:
             self.updatedOn = None
+
+    @classmethod
+    def create_list(cls, lst):
+        if lst:
+            result = []
+            for e in lst:
+                result.append(Event(e))
+            return result
+        else:
+            return None
 
 
 class ForSaleConfig:
