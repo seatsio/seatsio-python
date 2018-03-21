@@ -1,4 +1,4 @@
-from seatsio import Chart
+from seatsio.domain import Event
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -49,6 +49,7 @@ class ListChartsTest(SeatsioClientTest):
 
         retrieved_charts = self.client.charts.list().set_expand_events().all()
 
+        # assert_that(retrieved_charts[0].events[0]).is_instance(Event) # TODO fix
         assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)
 
     def __chart_with_tag(self, name=None, tag=None):

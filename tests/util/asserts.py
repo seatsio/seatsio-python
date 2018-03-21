@@ -77,7 +77,6 @@ class DatetimeAssert(AbstractAssert):
         return self.is_between(after, before)
 
 
-
 class BooleanAssert(AbstractAssert):
 
     def is_false(self):
@@ -123,5 +122,8 @@ class IterableAssert(AbstractAssert):
     def extracting(self, field_name):
         values = []
         for item in self.actual:
-            values.append(getattr(item, field_name))
+            if (isinstance(item, dict)):
+                values.append(item.get(field_name))
+            else:
+                values.append(getattr(item, field_name, None))
         return assert_that(values)

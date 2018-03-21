@@ -1,38 +1,48 @@
 from datetime import datetime
 
-from bunch import bunchify
 
+# TODO make nice function for time formatting
 
 class Chart:
 
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.id = bunch.id
-        self.key = bunch.key
-        self.status = bunch.status
-        self.name = bunch.name
-        self.publishedVersionThumbnailUrl = bunch.publishedVersionThumbnailUrl
-        self.draftVersionThumbnailUrl = getattr(bunch, 'draftVersionThumbnailUrl', None)
-        self.events = getattr(bunch, 'events', None)
-        self.tags = bunch.tags
-        self.archived = getattr(bunch, 'archived', False)
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.key = data.get("key")
+        self.status = data.get("status")
+        self.name = data.get("name")
+        self.publishedVersionThumbnailUrl = data.get("publishedVersionThumbnailUrl")
+        self.draftVersionThumbnailUrl = data.get("draftVersionThumbnailUrl")
+        self.events = data.get("events")
+        self.tags = data.get("tags")
+        self.archived = data.get("archived")
 
 
 class Event:
 
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.id = bunch.id
-        self.key = bunch.key
-        self.chartKey = bunch.chartKey
-        self.bookWholeTables = bunch.bookWholeTables
-        self.forSaleConfig = getattr(bunch, "forSaleConfig", None)
-        self.createdOn = datetime.strptime(bunch.createdOn, "%Y-%m-%dT%H:%M:%S.%fZ")
-        updated_on = getattr(bunch, "updatedOn", None)
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.key = data.get("key")
+        self.chartKey = data.get("chartKey")
+        self.bookWholeTables = data.get("bookWholeTables")
+        self.forSaleConfig = ForSaleConfig.create(data.get("forSaleConfig"))
+        self.createdOn = datetime.strptime(data.get("createdOn"), "%Y-%m-%dT%H:%M:%S.%fZ")
+        updated_on = data.get("updatedOn")
         if updated_on:
             self.updatedOn = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
         else:
             self.updatedOn = None
+
+
+class ForSaleConfig:
+    def __init__(self, data):
+        self.for_sale = data.get("forSale")
+        self.objects = data.get("objects")
+        self.categories = data.get("categories")
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return ForSaleConfig(param)
 
 
 class EventReport:
@@ -50,8 +60,8 @@ class EventReport:
 class EventReportItem:
     def __init__(self, item_data):
         self.status = item_data.get("status")
-        self.label = item_data["label"]
-        self.category_label = item_data["categoryLabel"]
+        self.label = item_data.get("label")
+        self.category_label = item_data.get("categoryLabel")
         self.category_key = item_data.get("categoryKey")
         self.ticket_type = item_data.get("ticketType")
         self.order_id = item_data.get("orderId")
@@ -64,22 +74,20 @@ class EventReportItem:
 
 class Subaccount:
 
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.id = bunch.id
-        self.secretKey = bunch.secretKey
-        self.designerKey = bunch.designerKey
-        self.publicKey = bunch.publicKey
-        self.name = getattr(bunch, 'name', None)
-        self.active = bunch.active
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.secretKey = data.get("secretKey")
+        self.designerKey = data.get("designerKey")
+        self.publicKey = data.get("publicKey")
+        self.name = data.get("name")
+        self.active = data.get("active")
 
 
 class HoldToken:
 
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.hold_token = bunch.holdToken
-        self.expires_at = datetime.strptime(bunch.expiresAt, "%Y-%m-%dT%H:%M:%S.%fZ")
+    def __init__(self, data):
+        self.hold_token = data.get("holdToken")
+        self.expires_at = datetime.strptime(data.get("expiresAt"), "%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 class ObjectStatus:
@@ -87,25 +95,23 @@ class ObjectStatus:
     BOOKED = "booked"
     HELD = "reservedByToken"
 
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.status = bunch.status
-        self.hold_token = getattr(bunch, "holdToken", None)
-        self.order_id = getattr(bunch, "orderId", None)
-        self.ticket_type = getattr(bunch, "ticketType", None)
-        self.quantity = getattr(bunch, "quantity", None)
-        self.extra_data = getattr(bunch, "extraData", None)
+    def __init__(self, data):
+        self.status = data.get("status")
+        self.hold_token = data.get("holdToken")
+        self.order_id = data.get("orderId")
+        self.ticket_type = data.get("ticketType")
+        self.quantity = data.get("quantity")
+        self.extra_data = data.get("extraData")
 
 
 class StatusChange:
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.id = bunch.id
-        self.status = bunch.status
-        self.date = datetime.strptime(bunch.date, "%Y-%m-%dT%H:%M:%S.%fZ")
-        self.objectLabel = bunch.objectLabel
-        self.eventId = bunch.eventId
-        self.extraData = getattr(bunch, "extraData", None)
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.status = data.get("status")
+        self.date = datetime.strptime(data.get("date"), "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.objectLabel = data.get("objectLabel")
+        self.eventId = data.get("eventId")
+        self.extraData = data.get("extraData")
 
 
 class ObjectProperties:
@@ -120,7 +126,6 @@ class ObjectProperties:
 
 
 class BestAvailableObjects:
-    def __init__(self, dict):
-        bunch = bunchify(dict)
-        self.next_to_each_other = bunch.nextToEachOther
-        self.objects = bunch.objects
+    def __init__(self, data):
+        self.next_to_each_other = data.get("nextToEachOther")
+        self.objects = data.get("objects")
