@@ -2,6 +2,7 @@ import collections
 from datetime import datetime, timedelta
 
 from tests.util.joiner import join
+from past.builtins import basestring
 
 
 def assert_that(actual):

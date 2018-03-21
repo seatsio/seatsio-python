@@ -16,8 +16,12 @@ setup(
     ],
     install_requires=[
         "requests",
-        "bunch",
-        "jsonpickle"
+        "munch",
+        "jsonpickle",
+        "future",
+        "builtins",
+        "past",
+        "six"
     ],
 
     test_suite='tests',

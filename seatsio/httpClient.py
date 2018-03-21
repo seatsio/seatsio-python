@@ -1,4 +1,4 @@
-import urllib
+from six.moves.urllib.parse import quote, urlencode
 
 import jsonpickle
 import requests
@@ -24,10 +24,10 @@ class ApiResource:
 
     def __create_full_url(self, base_url, relative_url, query_params, **path_params):
         for key in path_params:
-            path_params[key] = urllib.quote(str(path_params[key]), safe='')
+            path_params[key] = quote(str(path_params[key]), safe='')
         full_url = base_url + relative_url.format(**path_params)
         if query_params:
-            full_url += "?" + urllib.urlencode(query_params)
+            full_url += "?" + urlencode(query_params)
         return full_url
 
     def get(self):
