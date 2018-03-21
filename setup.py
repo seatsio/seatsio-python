@@ -19,8 +19,6 @@ setup(
         "munch",
         "jsonpickle",
         "future",
-        "builtins",
-        "past",
         "six"
     ],
 
