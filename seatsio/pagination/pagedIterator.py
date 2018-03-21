@@ -18,6 +18,9 @@ class PagedIterator:
         self.index_in_current_page += 1
         return result
 
+    def __next__(self):
+        return self.next()
+
     def current(self):
         return self.__getitem__(self.index_in_current_page)
 
