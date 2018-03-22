@@ -1,7 +1,6 @@
 from past.builtins import basestring
 
-from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ObjectProperties, EventReport, \
-    EventReportItem
+from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, EventReport, EventReportItem
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
@@ -14,6 +13,17 @@ class EventRequest:
             self.eventKey = event_key
         if book_whole_tables is not None:
             self.bookWholeTables = book_whole_tables
+
+
+class ObjectProperties:
+    def __init__(self, object_id, extra_data=None, ticket_type=None, quantity=None):
+        if extra_data:
+            self.extraData = extra_data
+        self.objectId = object_id
+        if ticket_type:
+            self.ticketType = ticket_type
+        if quantity:
+            self.quantity = quantity
 
 
 class ChangeObjectStatusRequest:

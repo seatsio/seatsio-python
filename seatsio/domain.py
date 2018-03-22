@@ -125,17 +125,6 @@ class StatusChange:
         self.extra_data = data.get("extraData")
 
 
-class ObjectProperties:
-    def __init__(self, object_id, extra_data=None, ticket_type=None, quantity=None):
-        if extra_data:
-            self.extraData = extra_data
-        self.objectId = object_id
-        if ticket_type:
-            self.ticketType = ticket_type
-        if quantity:
-            self.quantity = quantity
-
-
 class BestAvailableObjects:
     def __init__(self, data):
         self.next_to_each_other = data.get("nextToEachOther")
