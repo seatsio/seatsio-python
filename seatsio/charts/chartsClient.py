@@ -2,14 +2,15 @@ from munch import munchify
 
 from seatsio.charts.chartsRequest import ChartRequest
 from seatsio.domain import Chart
+from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
 
-class ChartsClient:
+class ChartsClient(ListableObjectsClient):
 
     def __init__(self, http_client):
-        self.http_client = http_client
+        ListableObjectsClient.__init__(self, http_client, Chart, "/charts")
         self.archive = Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))
 
     def retrieve(self, chart_key):
@@ -87,12 +88,3 @@ class ChartsClient:
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()
-
-    def list_first_page(self, page_size=None):
-        return Lister(PageFetcher(Chart, self.http_client, "/charts")).first_page(page_size)
-
-    def list_page_after(self, after_id, page_size=None):
-        return Lister(PageFetcher(Chart, self.http_client, "/charts")).page_after(after_id, page_size)
-
-    def list_page_before(self, before_id, page_size=None):
-        return Lister(PageFetcher(Chart, self.http_client, "/charts")).page_before(before_id, page_size)

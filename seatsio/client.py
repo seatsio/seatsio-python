@@ -2,7 +2,7 @@ from seatsio.charts.chartsClient import ChartsClient
 from seatsio.events.eventsClient import EventsClient
 from seatsio.holdtokens.HoldTokenClient import HoldTokensClient
 from seatsio.httpClient import HttpClient
-from seatsio.subaccounts.SubaccountsClient import SubaccountsClient
+from seatsio.subaccounts.subaccountsClient import SubaccountsClient
 
 
 class Client:

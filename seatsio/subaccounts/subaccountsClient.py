@@ -1,12 +1,13 @@
 from seatsio.domain import Subaccount, Chart
+from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
 
-class SubaccountsClient:
+class SubaccountsClient(ListableObjectsClient):
 
     def __init__(self, http_client):
-        self.http_client = http_client
+        ListableObjectsClient.__init__(self, http_client, Subaccount, "/subaccounts")
         self.active = Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts/active"))
         self.inactive = Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts/inactive"))
 
@@ -53,16 +54,3 @@ class SubaccountsClient:
 
     def regenerate_secret_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/secret-key/actions/regenerate", id=subaccount_id).post()
-
-    # TODO refactor all clients so they reuse common code
-    def list(self):
-        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).list()
-
-    def list_first_page(self, page_size=None):
-        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).first_page(page_size)
-
-    def list_page_after(self, after_id, page_size=None):
-        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).page_after(after_id, page_size)
-
-    def list_page_before(self, before_id, page_size=None):
-        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).page_before(before_id, page_size)

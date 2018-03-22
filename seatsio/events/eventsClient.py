@@ -5,14 +5,15 @@ from seatsio.events.eventReports import EventReports
 from seatsio.events.eventRequest import EventRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
+from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 
 
-class EventsClient:
+class EventsClient(ListableObjectsClient):
 
     def __init__(self, http_client):
-        self.http_client = http_client
+        ListableObjectsClient.__init__(self, http_client, Event, "/events")
         self.reports = EventReports(self.http_client)
 
     def create(self, chart_key):
@@ -25,23 +26,8 @@ class EventsClient:
     def retrieve(self, key):
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
-    def __lister(self):
-        return Lister(PageFetcher(Event, self.http_client, "/events"))
-
-    def list(self):
-        return self.__lister().list()
-
-    def list_first_page(self, page_size=None):
-        return self.__lister().first_page(page_size)
-
-    def list_page_after(self, after_id, page_size=None):
-        return self.__lister().page_after(after_id, page_size)
-
-    def list_page_before(self, before_id, page_size=None):
-        return self.__lister().page_before(before_id, page_size)
-
     def list_status_changes(self, key, object_id=None):
-        if object_id:
+        if object_id is not None:
             return Lister(self.status_changes_for_object(key, object_id)).list()
         else:
             return Lister(PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key)).list()
