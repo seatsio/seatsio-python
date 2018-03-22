@@ -1,8 +1,9 @@
+from past.builtins import basestring
 import collections
 from datetime import datetime, timedelta
 
 from tests.util.joiner import join
-from past.builtins import basestring
+
 
 
 def assert_that(actual):
@@ -49,7 +50,7 @@ class AbstractAssert():
 class StringAssert(AbstractAssert):
 
     def contains(self, expected):
-        assert expected in self.actual, "[" + str(self.actual) + "] does not contain [" + str(expected) + "]"
+        assert expected in str(self.actual), "[" + str(self.actual) + "] does not contain [" + str(expected) + "]"
         return self
 
     def is_blank(self):
