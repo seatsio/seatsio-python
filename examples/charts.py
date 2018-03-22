@@ -8,8 +8,8 @@ chart = client.charts.create()
 
 # find my charts
 all_my_charts = client.charts.list()
-tagged_charts = client.charts.list(tag="WestEnd")
 charts_with_name = client.charts.list(chart_filter="Theatre")
+tagged_charts = client.charts.list(tag="WestEnd")
 charts_with_events = client.charts.list(expand_events=True)
 
 # retrieve a single chart
