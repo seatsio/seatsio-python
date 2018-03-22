@@ -1,5 +1,6 @@
 from munch import munchify
 
+from seatsio.charts.chartsRequest import ChartRequest
 from seatsio.domain import Chart
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -95,14 +96,3 @@ class ChartsClient:
 
     def list_page_before(self, before_id, page_size=None):
         return Lister(PageFetcher(Chart, self.http_client, "/charts")).page_before(before_id, page_size)
-
-
-class ChartRequest:
-
-    def __init__(self, name=None, venue_type=None, categories=None):
-        if name:
-            self.name = name
-        if venue_type:
-            self.venueType = venue_type
-        if categories:
-            self.categories = categories

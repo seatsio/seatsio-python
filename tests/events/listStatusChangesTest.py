@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio.events.eventsClient import ObjectProperties
+from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 

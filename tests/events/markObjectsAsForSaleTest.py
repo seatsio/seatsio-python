@@ -1,4 +1,4 @@
-from seatsio import ForSaleConfig
+from seatsio.domain import ForSaleConfig
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 

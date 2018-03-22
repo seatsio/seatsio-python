@@ -1,5 +1,5 @@
-from seatsio import EventReport, EventReportItem
-from seatsio.events.eventsClient import ObjectProperties
+from seatsio.domain import EventReport, EventReportItem
+from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 

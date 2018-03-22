@@ -1,88 +1,12 @@
-from past.builtins import basestring
-
-from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, EventReport, EventReportItem
+from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects
+from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
+from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
+from seatsio.events.eventReports import EventReports
+from seatsio.events.eventRequest import EventRequest
+from seatsio.events.extraDataRequest import ExtraDataRequest
+from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
-
-
-class EventRequest:
-    def __init__(self, chart_key, event_key=None, book_whole_tables=None):
-        if chart_key:
-            self.chartKey = chart_key
-        if event_key:
-            self.eventKey = event_key
-        if book_whole_tables is not None:
-            self.bookWholeTables = book_whole_tables
-
-
-# TODO refactor so that clients don't have to create an ObjectProperties object
-class ObjectProperties:
-    def __init__(self, object_id, extra_data=None, ticket_type=None, quantity=None):
-        if extra_data:
-            self.extraData = extra_data
-        self.objectId = object_id
-        if ticket_type:
-            self.ticketType = ticket_type
-        if quantity:
-            self.quantity = quantity
-
-
-class ChangeObjectStatusRequest:
-    def __init__(self, object_or_objects, status, hold_token, order_id, event_key_or_keys):
-        self.objects = self.__normalize_objects(object_or_objects)
-        self.status = status
-        if hold_token:
-            self.holdToken = hold_token
-        if order_id:
-            self.orderId = order_id
-        if isinstance(event_key_or_keys, basestring):
-            self.events = [event_key_or_keys]
-        else:
-            self.events = event_key_or_keys
-
-    def __normalize_objects(self, object_or_objects):
-        if isinstance(object_or_objects, list):
-            if len(object_or_objects) == 0:
-                return []
-            if isinstance(object_or_objects[0], ObjectProperties):
-                return object_or_objects
-            if isinstance(object_or_objects[0], basestring):
-                result = []
-                for o in object_or_objects:
-                    result.append(ObjectProperties(o))
-                return result
-            else:
-                raise Exception("Unsupported type " + str(type(object_or_objects[0])))
-        return self.__normalize_objects([object_or_objects])
-
-
-class ChangeBestAvailableObjectStatusRequest:
-    def __init__(self, number, categories, extra_data, status, hold_token, order_id):
-        best_available = {"number": number}
-        if categories:
-            best_available["categories"] = categories
-        if extra_data:
-            best_available["extraData"] = extra_data
-        self.bestAvailable = best_available
-        self.status = status
-        if hold_token:
-            self.holdToken = hold_token
-        if order_id:
-            self.orderId = order_id
-
-
-class ExtraDataRequest:
-    def __init__(self, extra_data):
-        if extra_data:
-            self.extraData = extra_data
-
-
-class ForSaleRequest:
-    def __init__(self, objects, categories):
-        if objects:
-            self.objects = objects
-        if categories:
-            self.categories = categories
 
 
 class EventsClient:
@@ -180,39 +104,3 @@ class EventsClient:
         self.http_client \
             .url("/events/{key}/objects/{object}/actions/update-extra-data", key=key, object=o) \
             .post(ExtraDataRequest(extra_data))
-
-
-class EventReports:
-    def __init__(self, http_client):
-        self.http_client = http_client
-
-    def by_status(self, event_key, status=None):
-        return self.__fetch_report("byStatus", event_key, status)
-
-    def by_category_label(self, event_key, category_label=None):
-        return self.__fetch_report("byCategoryLabel", event_key, category_label)
-
-    def by_category_key(self, event_key, category_key=None):
-        return self.__fetch_report("byCategoryKey", event_key, category_key)
-
-    def by_label(self, event_key, label=None):
-        return self.__fetch_report("byLabel", event_key, label)
-
-    def by_order_id(self, event_key, order_id=None):
-        return self.__fetch_report("byOrderId", event_key, order_id)
-
-    def by_section(self, event_key, section=None):
-        return self.__fetch_report("bySection", event_key, section)
-
-    def __fetch_report(self, report_type, event_key, report_filter=None):
-        if report_filter:
-            url = "/reports/events/{key}/{reportType}/{filter}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get()
-            result = []
-            for i in body[report_filter]:
-                result.append(EventReportItem(i))
-            return result
-        else:
-            url = "/reports/events/{key}/{reportType}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type).get()
-            return EventReport(body)

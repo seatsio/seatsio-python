@@ -2,7 +2,7 @@ from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
 
-class ListSubaccountsBeforerTest(SeatsioClientTest):
+class ListSubaccountsBeforeTest(SeatsioClientTest):
 
     def test_withPreviousPage(self):
         subaccount1 = self.client.subaccounts.create()
