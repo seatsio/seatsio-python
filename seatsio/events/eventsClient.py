@@ -1,3 +1,5 @@
+from past.builtins import basestring
+
 from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ObjectProperties, EventReport, \
     EventReportItem
 from seatsio.pagination.lister import Lister

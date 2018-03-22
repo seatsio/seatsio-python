@@ -1,4 +1,5 @@
 from datetime import datetime
+from six import iteritems
 
 
 # TODO make nice function for time formatting
@@ -57,7 +58,7 @@ class ForSaleConfig:
 class EventReport:
     def __init__(self, response_body):
         self.items = {}
-        for key, value in response_body.iteritems():
+        for key, value in iteritems(response_body):
             self.items[key] = []
             for item in value:
                 self.items[key].append(EventReportItem(item))
