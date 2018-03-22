@@ -102,13 +102,13 @@ class EventsClient:
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
     def list(self):
-        return Lister(PageFetcher(Event, self.http_client, "/events"))
+        return Lister(PageFetcher(Event, self.http_client, "/events")).list()
 
-    def status_changes(self, key, object_id=None):
+    def list_status_changes(self, key, object_id=None):
         if object_id:
-            return Lister(self.status_changes_for_object(key, object_id))
+            return Lister(self.status_changes_for_object(key, object_id)).list()
         else:
-            return Lister(PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key))
+            return Lister(PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key)).list()
 
     def status_changes_for_object(self, key, object_id):
         url = "/events/{key}/objects/{objectId}/status-changes"

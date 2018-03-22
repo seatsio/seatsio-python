@@ -2,13 +2,14 @@ from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
 
-class ListAllSubaccountsTest(SeatsioClientTest):
+class ListActiveSubaccountsTest(SeatsioClientTest):
 
     def test(self):
         subaccount1 = self.client.subaccounts.create()
         subaccount2 = self.client.subaccounts.create()
         subaccount3 = self.client.subaccounts.create()
+        self.client.subaccounts.deactivate(subaccount2.id)
 
-        subaccounts = self.client.subaccounts.list()
+        active_subaccounts = self.client.subaccounts.active.list()
 
-        assert_that(subaccounts).extracting("id").contains_exactly(subaccount3.id, subaccount2.id, subaccount1.id)
+        assert_that(active_subaccounts).extracting("id").contains_exactly(subaccount3.id, subaccount1.id)

@@ -7,6 +7,8 @@ class SubaccountsClient:
 
     def __init__(self, http_client):
         self.http_client = http_client
+        self.active = Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts/active"))
+        self.inactive = Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts/inactive"))
 
     def create(self, name=None):
         body = {}
@@ -46,11 +48,21 @@ class SubaccountsClient:
             chartKey=chart_key).post()
         return Chart(response.json())
 
-    def list(self):
-        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts"))
-
     def regenerate_designer_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/designer-key/actions/regenerate", id=subaccount_id).post()
 
     def regenerate_secret_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/secret-key/actions/regenerate", id=subaccount_id).post()
+
+    # TODO refactor all clients so they reuse common code
+    def list(self):
+        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).list()
+
+    def list_first_page(self, page_size=None):
+        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).first_page(page_size)
+
+    def list_page_after(self, after_id, page_size=None):
+        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).page_after(after_id, page_size)
+
+    def list_page_before(self, before_id, page_size=None):
+        return Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts")).page_before(before_id, page_size)

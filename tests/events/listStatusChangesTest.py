@@ -14,7 +14,7 @@ class ListStatusChangesTest(SeatsioClientTest):
         self.client.events.change_object_status(event.key, ["A-1"], status="status2")
         self.client.events.change_object_status(event.key, ["A-1"], status="status3")
 
-        status_changes = self.client.events.status_changes(event.key).all()
+        status_changes = self.client.events.list_status_changes(event.key)
 
         assert_that(status_changes).extracting("status").contains_exactly("status3", "status2", "status1")
 
@@ -25,7 +25,7 @@ class ListStatusChangesTest(SeatsioClientTest):
         object_properties = ObjectProperties("A-1", {"foo": "bar"})
         self.client.events.change_object_status(event.key, object_properties, "status1", order_id="order1")
 
-        status_changes = self.client.events.status_changes(event.key).all()
+        status_changes = self.client.events.list_status_changes(event.key)
         status_change = status_changes[0]
 
         assert_that(status_change.id).is_not_zero()

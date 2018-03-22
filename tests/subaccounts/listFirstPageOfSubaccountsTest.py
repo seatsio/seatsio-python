@@ -9,7 +9,7 @@ class ListFirstPageOfSubaccountsTest(SeatsioClientTest):
         subaccount2 = self.client.subaccounts.create()
         subaccount3 = self.client.subaccounts.create()
 
-        subaccounts = self.client.subaccounts.list().first_page()
+        subaccounts = self.client.subaccounts.list_first_page()
 
         assert_that(subaccounts.items).extracting("id").contains_exactly(subaccount3.id, subaccount2.id, subaccount1.id)
         assert_that(subaccounts.next_page_starts_after).is_none()
@@ -20,7 +20,7 @@ class ListFirstPageOfSubaccountsTest(SeatsioClientTest):
         subaccount2 = self.client.subaccounts.create()
         subaccount3 = self.client.subaccounts.create()
 
-        subaccounts = self.client.subaccounts.list().set_page_size(2).first_page()
+        subaccounts = self.client.subaccounts.list_first_page(page_size=2)
 
         assert_that(subaccounts.items).extracting("id").contains_exactly(subaccount3.id, subaccount2.id)
         assert_that(subaccounts.next_page_starts_after).is_equal_to(subaccount2.id)

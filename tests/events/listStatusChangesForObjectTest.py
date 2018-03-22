@@ -13,6 +13,6 @@ class ListStatusChangesForObjectTest(SeatsioClientTest):
         self.client.events.change_object_status(event.key, ["A-1"], "status3")
         self.client.events.change_object_status(event.key, ["A-1"], "status4")
 
-        status_changes = self.client.events.status_changes(event.key, "A-1").all()
+        status_changes = self.client.events.list_status_changes(event.key, "A-1")
 
         assert_that(status_changes).extracting("status").contains_exactly("status4", "status3", "status2", "status1")

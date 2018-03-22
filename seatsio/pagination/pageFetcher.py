@@ -27,7 +27,9 @@ class PageFetcher:
         return Page.from_response(response, self.cls)
 
     def set_page_size(self, page_size):
-        self.page_size = page_size
+        if page_size is not None:
+            self.page_size = page_size
+        return self
 
     def set_query_param(self, key, value):
         if value is not None:
