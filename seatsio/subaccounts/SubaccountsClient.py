@@ -44,7 +44,6 @@ class SubaccountsClient:
             fromId=from_id,
             toId=to_id,
             chartKey=chart_key).post()
-        # TODO refactor all Chart(response.json()) calls
         return Chart(response.json())
 
     def list(self):

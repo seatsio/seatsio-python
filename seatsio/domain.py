@@ -1,8 +1,6 @@
-from datetime import datetime
 from six import iteritems
 
-
-# TODO make nice function for time formatting
+from seatsio.util import parse_date
 
 
 class Chart:
@@ -26,12 +24,8 @@ class Event:
         self.chart_key = data.get("chartKey")
         self.book_whole_tables = data.get("bookWholeTables")
         self.for_sale_config = ForSaleConfig.create(data.get("forSaleConfig"))
-        self.created_on = datetime.strptime(data.get("createdOn"), "%Y-%m-%dT%H:%M:%S.%fZ")
-        updated_on = data.get("updatedOn")
-        if updated_on:
-            self.updated_on = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
-        else:
-            self.updated_on = None
+        self.created_on = parse_date(data.get("createdOn"))
+        self.updated_on = parse_date(data.get("updatedOn"))
 
     @classmethod
     def create_list(cls, lst):
@@ -98,7 +92,7 @@ class HoldToken:
 
     def __init__(self, data):
         self.hold_token = data.get("holdToken")
-        self.expires_at = datetime.strptime(data.get("expiresAt"), "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.expires_at = parse_date(data.get("expiresAt"))
 
 
 class ObjectStatus:
@@ -119,7 +113,7 @@ class StatusChange:
     def __init__(self, data):
         self.id = data.get("id")
         self.status = data.get("status")
-        self.date = datetime.strptime(data.get("date"), "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.date = parse_date(data.get("date"))
         self.object_label = data.get("objectLabel")
         self.event_id = data.get("eventId")
         self.extra_data = data.get("extraData")
