@@ -10,7 +10,7 @@ class ListChartsTest(SeatsioClientTest):
         chart2 = self.client.charts.create()
         chart3 = self.client.charts.create()
 
-        charts = self.client.charts.list().all()
+        charts = self.client.charts.list()
 
         assert_that(charts).extracting("key").contains_exactly(chart3.key, chart2.key, chart1.key)
 
@@ -19,7 +19,7 @@ class ListChartsTest(SeatsioClientTest):
         chart2 = self.client.charts.create(name="a theatre")
         chart3 = self.client.charts.create(name="some other stadium")
 
-        charts = self.client.charts.list().set_filter("stadium").all()
+        charts = self.client.charts.list(chart_filter="stadium")
 
         assert_that(charts).extracting("key").contains_exactly(chart3.key, chart1.key)
 
@@ -28,7 +28,7 @@ class ListChartsTest(SeatsioClientTest):
         chart2 = self.client.charts.create()
         chart3 = self.__chart_with_tag(tag="tag1")
 
-        charts = self.client.charts.list().set_tag("tag1").all()
+        charts = self.client.charts.list(tag="tag1")
 
         assert_that(charts).extracting("key").contains_exactly(chart3.key, chart1.key)
 
@@ -38,7 +38,7 @@ class ListChartsTest(SeatsioClientTest):
         chart3 = self.__chart_with_tag(name="some other stadium")
         chart4 = self.client.charts.create()
 
-        charts = self.client.charts.list().set_filter("stadium").set_tag("tag1").all()
+        charts = self.client.charts.list(chart_filter="stadium", tag="tag1")
 
         assert_that(charts).extracting("key").contains_exactly(chart1.key)
 
@@ -47,7 +47,7 @@ class ListChartsTest(SeatsioClientTest):
         event1 = self.client.events.create(chart.key)
         event2 = self.client.events.create(chart.key)
 
-        retrieved_charts = self.client.charts.list().set_expand_events().all()
+        retrieved_charts = self.client.charts.list(expand_events=True)
 
         assert_that(retrieved_charts[0].events[0]).is_instance(Event)
         assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)

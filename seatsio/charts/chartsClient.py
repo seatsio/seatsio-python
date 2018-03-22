@@ -78,8 +78,13 @@ class ChartsClient:
     def remove_tag(self, key, tag):
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
-    def list(self):
-        return Lister(PageFetcher(Chart, self.http_client, "/charts"))
+    def list(self, chart_filter=None, tag=None, expand_events=None):
+        page_fetcher = PageFetcher(Chart, self.http_client, "/charts")\
+            .set_query_param("filter", chart_filter) \
+            .set_query_param("tag", tag)
+        if expand_events is not None:
+            page_fetcher.set_query_param("expand", "events")
+        return Lister(page_fetcher).list()
 
     def archive(self):
         return Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))

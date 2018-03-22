@@ -30,4 +30,6 @@ class PageFetcher:
         self.page_size = page_size
 
     def set_query_param(self, key, value):
-        self.query_params[key] = value
+        if value is not None:
+            self.query_params[key] = value
+        return self

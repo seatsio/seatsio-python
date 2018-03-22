@@ -12,6 +12,6 @@ class ListChartsInArchiveTest(SeatsioClientTest):
         self.client.charts.move_to_archive(chart1.key)
         self.client.charts.move_to_archive(chart3.key)
 
-        charts = self.client.charts.archive().all()
+        charts = self.client.charts.archive().list()
 
         assert_that(charts).extracting("key").contains_exactly(chart3.key, chart1.key)
