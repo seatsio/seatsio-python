@@ -2,7 +2,7 @@ from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
 
-class ListEventsTest(SeatsioClientTest):
+class ListAllEventsTest(SeatsioClientTest):
 
     def test(self):
         chart = self.client.charts.create()

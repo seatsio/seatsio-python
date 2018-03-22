@@ -25,8 +25,20 @@ class EventsClient:
     def retrieve(self, key):
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
+    def __lister(self):
+        return Lister(PageFetcher(Event, self.http_client, "/events"))
+
     def list(self):
-        return Lister(PageFetcher(Event, self.http_client, "/events")).list()
+        return self.__lister().list()
+
+    def list_first_page(self, page_size=None):
+        return self.__lister().first_page(page_size)
+
+    def list_page_after(self, after_id, page_size=None):
+        return self.__lister().page_after(after_id, page_size)
+
+    def list_page_before(self, before_id, page_size=None):
+        return self.__lister().page_before(before_id, page_size)
 
     def list_status_changes(self, key, object_id=None):
         if object_id:
