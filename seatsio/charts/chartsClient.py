@@ -9,6 +9,7 @@ class ChartsClient:
 
     def __init__(self, http_client):
         self.http_client = http_client
+        self.archive = Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))
 
     def retrieve(self, chart_key):
         return self.http_client.url("/charts/{key}", key=chart_key).get_as(Chart)
@@ -85,9 +86,6 @@ class ChartsClient:
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()
-
-    def archive(self):
-        return Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))
 
 
 class ChartRequest:
