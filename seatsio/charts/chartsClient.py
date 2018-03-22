@@ -80,12 +80,21 @@ class ChartsClient:
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
     def list(self, chart_filter=None, tag=None, expand_events=None):
-        page_fetcher = PageFetcher(Chart, self.http_client, "/charts")\
+        page_fetcher = PageFetcher(Chart, self.http_client, "/charts") \
             .set_query_param("filter", chart_filter) \
             .set_query_param("tag", tag)
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()
+
+    def list_first_page(self, page_size=None):
+        return Lister(PageFetcher(Chart, self.http_client, "/charts")).first_page(page_size)
+
+    def list_page_after(self, after_id, page_size=None):
+        return Lister(PageFetcher(Chart, self.http_client, "/charts")).page_after(after_id, page_size)
+
+    def list_page_before(self, before_id, page_size=None):
+        return Lister(PageFetcher(Chart, self.http_client, "/charts")).page_before(before_id, page_size)
 
 
 class ChartRequest:
