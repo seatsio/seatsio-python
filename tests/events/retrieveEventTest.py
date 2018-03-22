@@ -14,8 +14,8 @@ class RetrieveEventTest(SeatsioClientTest):
 
         assert_that(retrieved_event.id).is_not_zero()
         assert_that(retrieved_event.key).is_not_none()
-        assert_that(retrieved_event.chartKey).is_equal_to(chart.key)
-        assert_that(retrieved_event.bookWholeTables).is_false()
-        assert_that(retrieved_event.forSaleConfig).is_none()
-        assert_that(retrieved_event.createdOn).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
-        assert_that(retrieved_event.updatedOn).is_none()
+        assert_that(retrieved_event.chart_key).is_equal_to(chart.key)
+        assert_that(retrieved_event.book_whole_tables).is_false()
+        assert_that(retrieved_event.for_sale_config).is_none()
+        assert_that(retrieved_event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
+        assert_that(retrieved_event.updated_on).is_none()

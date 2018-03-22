@@ -10,4 +10,4 @@ class RegenerateDesignerKeyTest(SeatsioClientTest):
         self.client.subaccounts.regenerate_designer_key(subaccount.id)
 
         retrieved_subaccount = self.client.subaccounts.retrieve(subaccount.id)
-        assert_that(retrieved_subaccount.designerKey).is_not_blank().is_not_equal_to(subaccount.designerKey)
+        assert_that(retrieved_subaccount.designer_key).is_not_blank().is_not_equal_to(subaccount.designer_key)

@@ -10,8 +10,8 @@ class RetrieveSubaccountTest(SeatsioClientTest):
         retrieved_subaccount = self.client.subaccounts.retrieve(subaccount.id)
 
         assert_that(retrieved_subaccount.id).is_equal_to(subaccount.id)
-        assert_that(retrieved_subaccount.secretKey).is_not_blank()
-        assert_that(retrieved_subaccount.designerKey).is_not_blank()
-        assert_that(retrieved_subaccount.publicKey).is_not_blank()
+        assert_that(retrieved_subaccount.secret_key).is_not_blank()
+        assert_that(retrieved_subaccount.designer_key).is_not_blank()
+        assert_that(retrieved_subaccount.public_key).is_not_blank()
         assert_that(retrieved_subaccount.name).is_equal_to("joske")
         assert_that(retrieved_subaccount.active).is_true()

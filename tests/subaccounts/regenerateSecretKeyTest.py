@@ -10,4 +10,4 @@ class RegenerateSecretKeyTest(SeatsioClientTest):
         self.client.subaccounts.regenerate_secret_key(subaccount.id)
 
         retrieved_subaccount = self.client.subaccounts.retrieve(subaccount.id)
-        assert_that(retrieved_subaccount.secretKey).is_not_blank().is_not_equal_to(subaccount.secretKey)
+        assert_that(retrieved_subaccount.secret_key).is_not_blank().is_not_equal_to(subaccount.secret_key)

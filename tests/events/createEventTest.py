@@ -12,8 +12,8 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.id).is_not_zero()
         assert_that(event.key).is_not_none()
-        assert_that(event.chartKey).is_equal_to(chart.key)
-        assert_that(event.bookWholeTables).is_false()
-        assert_that(event.forSaleConfig).is_none()
-        assert_that(event.createdOn).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
-        assert_that(event.updatedOn).is_none()
+        assert_that(event.chart_key).is_equal_to(chart.key)
+        assert_that(event.book_whole_tables).is_false()
+        assert_that(event.for_sale_config).is_none()
+        assert_that(event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
+        assert_that(event.updated_on).is_none()

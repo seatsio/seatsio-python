@@ -6,7 +6,7 @@ class CopyChartToParentTest(SeatsioClientTest):
 
     def test(self):
         subaccount = self.client.subaccounts.create()
-        chart = self.newClient(subaccount.secretKey).charts.create("aChart")
+        chart = self.newClient(subaccount.secret_key).charts.create("aChart")
 
         copied_chart = self.client.subaccounts.copy_chart_to_parent(subaccount.id, chart.key)
 

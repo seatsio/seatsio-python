@@ -4,6 +4,7 @@ from six import iteritems
 
 # TODO make nice function for time formatting
 
+
 class Chart:
 
     def __init__(self, data):
@@ -11,8 +12,8 @@ class Chart:
         self.key = data.get("key")
         self.status = data.get("status")
         self.name = data.get("name")
-        self.publishedVersionThumbnailUrl = data.get("publishedVersionThumbnailUrl")
-        self.draftVersionThumbnailUrl = data.get("draftVersionThumbnailUrl")
+        self.published_version_thumbnail_url = data.get("publishedVersionThumbnailUrl")
+        self.draft_version_thumbnail_url = data.get("draftVersionThumbnailUrl")
         self.events = Event.create_list(data.get("events"))
         self.tags = data.get("tags")
         self.archived = data.get("archived")
@@ -22,15 +23,15 @@ class Event:
     def __init__(self, data):
         self.id = data.get("id")
         self.key = data.get("key")
-        self.chartKey = data.get("chartKey")
-        self.bookWholeTables = data.get("bookWholeTables")
-        self.forSaleConfig = ForSaleConfig.create(data.get("forSaleConfig"))
-        self.createdOn = datetime.strptime(data.get("createdOn"), "%Y-%m-%dT%H:%M:%S.%fZ")
+        self.chart_key = data.get("chartKey")
+        self.book_whole_tables = data.get("bookWholeTables")
+        self.for_sale_config = ForSaleConfig.create(data.get("forSaleConfig"))
+        self.created_on = datetime.strptime(data.get("createdOn"), "%Y-%m-%dT%H:%M:%S.%fZ")
         updated_on = data.get("updatedOn")
         if updated_on:
-            self.updatedOn = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
+            self.updated_on = datetime.strptime(updated_on, "%Y-%m-%dT%H:%M:%S.%fZ")
         else:
-            self.updatedOn = None
+            self.updated_on = None
 
     @classmethod
     def create_list(cls, lst):
@@ -86,9 +87,9 @@ class Subaccount:
 
     def __init__(self, data):
         self.id = data.get("id")
-        self.secretKey = data.get("secretKey")
-        self.designerKey = data.get("designerKey")
-        self.publicKey = data.get("publicKey")
+        self.secret_key = data.get("secretKey")
+        self.designer_key = data.get("designerKey")
+        self.public_key = data.get("publicKey")
         self.name = data.get("name")
         self.active = data.get("active")
 
@@ -119,9 +120,9 @@ class StatusChange:
         self.id = data.get("id")
         self.status = data.get("status")
         self.date = datetime.strptime(data.get("date"), "%Y-%m-%dT%H:%M:%S.%fZ")
-        self.objectLabel = data.get("objectLabel")
-        self.eventId = data.get("eventId")
-        self.extraData = data.get("extraData")
+        self.object_label = data.get("objectLabel")
+        self.event_id = data.get("eventId")
+        self.extra_data = data.get("extraData")
 
 
 class ObjectProperties:

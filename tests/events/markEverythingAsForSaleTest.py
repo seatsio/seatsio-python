@@ -12,4 +12,4 @@ class MarkEverythingAsForSaleTest(SeatsioClientTest):
         self.client.events.mark_everything_as_for_sale(event.key)
 
         retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.forSaleConfig).is_none()
+        assert_that(retrieved_event.for_sale_config).is_none()
