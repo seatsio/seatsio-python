@@ -11,7 +11,6 @@ setup(
     author='The seats.io dev team',
     author_email='hello@seats.io',
     url='https://github.com/seatsio/seatsio-python',
-    download_url="https://github.com/seatsio/seatsio-python/archive/0.1.tar.gz",
     license="MIT",
 
     packages=[
