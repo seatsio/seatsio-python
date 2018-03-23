@@ -10,6 +10,7 @@ setup(
     long_description=readme,
     author_email='hello@seats.io',
     url='https://github.com/seatsio/seatsio-python',
+    license="MIT",
 
     packages=[
         'seatsio'
