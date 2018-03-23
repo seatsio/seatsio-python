@@ -6,7 +6,9 @@ This is the official Python client library for the [Seats.io V2 REST API](https:
 
 ## Installing
 
-TODO 
+```
+pip install seatsio
+```
 
 ## Versioning
 
