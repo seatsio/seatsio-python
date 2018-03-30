@@ -6,5 +6,7 @@
 *.pyc
 *.egg
 *.class
+*.iml
 .python-version
-
+.eggs
+/versions
