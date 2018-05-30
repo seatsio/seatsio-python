@@ -30,6 +30,18 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.num_booked).is_none()
         assert_that(report_item.capacity).is_none()
 
+    def test_holdToken(self):
+        chart_key = self.create_test_chart()
+        hold_token = self.client.hold_tokens.create()
+        event = self.client.events.create(chart_key)
+
+        self.client.events.hold(event.key, "A-1", hold_token.hold_token)
+
+        report = self.client.events.reports.by_label(event.key)
+
+        report_item = report.get("A-1")[0]
+        assert_that(report_item.hold_token).is_equal_to(hold_token.hold_token)
+
     def test_reportItemPropertiesForGA(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

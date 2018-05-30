@@ -71,6 +71,7 @@ class EventReportItem:
         self.ticket_type = item_data.get("ticketType")
         self.order_id = item_data.get("orderId")
         self.for_sale = item_data.get("forSale")
+        self.hold_token = item_data.get("holdToken")
         self.section = item_data.get("section")
         self.entrance = item_data.get("entrance")
         self.num_booked = item_data.get("numBooked")
