@@ -9,11 +9,12 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
 
-        self.client.events.change_object_status(event.key, ["A-1", "A-2"], "status_foo")
+        res = self.client.events.change_object_status(event.key, ["A-1", "A-2"], "status_foo")
 
         assert_that(self.client.events.retrieve_object_status(event.key, "A-1").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-2").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-3").status).is_equal_to("free")
+        assert_that(res.labels).is_equal_to({"A-1": {"own": "1", "row": "A"}, "A-2": {"own": "2", "row": "A"}})
 
     def test_hold_token(self):
         chart_key = self.create_test_chart()

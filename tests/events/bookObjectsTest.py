@@ -9,7 +9,7 @@ class BookObjectsTest(SeatsioClientTest):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
 
-        self.client.events.book(event.key, ["A-1", "A-2"])
+        res = self.client.events.book(event.key, ["A-1", "A-2"])
 
         a1_status = self.client.events.retrieve_object_status(event.key, "A-1").status
         a2_status = self.client.events.retrieve_object_status(event.key, "A-2").status
@@ -18,6 +18,8 @@ class BookObjectsTest(SeatsioClientTest):
         assert_that(a1_status).is_equal_to(ObjectStatus.BOOKED)
         assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
         assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
+
+        assert_that(res.labels).is_equal_to({"A-1": {"own": "1", "row": "A"}, "A-2": {"own": "2", "row": "A"}})
 
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()

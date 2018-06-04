@@ -12,6 +12,12 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(result.next_to_each_other).is_true()
         assert_that(result.objects).contains_exactly("B-4", "B-5", "B-6")
 
+    def test_labels(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        result = self.client.events.change_best_available_object_status(event.key, 2, "myStatus")
+        assert_that(result.labels).is_equal_to({"B-4": {"own": "4", "row": "B"}, "B-5": {"own": "5", "row": "B"}})
+
     def test_categories(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

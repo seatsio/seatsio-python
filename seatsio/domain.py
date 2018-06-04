@@ -125,3 +125,9 @@ class BestAvailableObjects:
     def __init__(self, data):
         self.next_to_each_other = data.get("nextToEachOther")
         self.objects = data.get("objects")
+        self.labels = data.get("labels")
+
+
+class ChangeObjectStatusResult:
+    def __init__(self, data):
+        self.labels = data.get("labels")
