@@ -23,6 +23,9 @@ class EventsClient(ListableObjectsClient):
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None):
         self.http_client.url("/events/{key}", key=key).post(EventRequest(chart_key, event_key, book_whole_tables))
 
+    def delete(self, key):
+        self.http_client.url("/events/{key}", key=key).delete()
+
     def retrieve(self, key):
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
