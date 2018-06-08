@@ -16,8 +16,8 @@ class EventsClient(ListableObjectsClient):
         ListableObjectsClient.__init__(self, http_client, Event, "/events")
         self.reports = EventReports(self.http_client)
 
-    def create(self, chart_key):
-        response = self.http_client.url("/events").post(EventRequest(chart_key=chart_key))
+    def create(self, chart_key, event_key=None, book_whole_tables=None):
+        response = self.http_client.url("/events").post(EventRequest(chart_key, event_key, book_whole_tables))
         return Event(response.json())
 
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None):
