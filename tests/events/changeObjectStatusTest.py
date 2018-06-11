@@ -14,7 +14,10 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         assert_that(self.client.events.retrieve_object_status(event.key, "A-1").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-2").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-3").status).is_equal_to("free")
-        assert_that(res.labels).is_equal_to({"A-1": {"own": "1", "row": "A"}, "A-2": {"own": "2", "row": "A"}})
+        assert_that(res.labels).is_equal_to({
+            "A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}},
+            "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
+        })
 
     def test_hold_token(self):
         chart_key = self.create_test_chart()

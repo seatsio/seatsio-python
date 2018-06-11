@@ -16,7 +16,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         result = self.client.events.change_best_available_object_status(event.key, 2, "myStatus")
-        assert_that(result.labels).is_equal_to({"B-4": {"own": "4", "row": "B"}, "B-5": {"own": "5", "row": "B"}})
+        assert_that(result.labels).is_equal_to({
+            "B-4": {"own": {"label": "4", "type": "seat"}, "parent": {"label": "B", "type": "row"}},
+            "B-5": {"own": {"label": "5", "type": "seat"}, "parent": {"label": "B", "type": "row"}}
+        })
 
     def test_categories(self):
         chart_key = self.create_test_chart()
