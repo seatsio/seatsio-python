@@ -7,7 +7,7 @@ import uuid
 
 import seatsio
 
-BASE_URL = "https://api-staging.seats.io"
+BASE_URL = "https://api-staging.seatsio.net"
 
 
 class SeatsioClientTest(unittest2.TestCase):
