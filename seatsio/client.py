@@ -6,7 +6,7 @@ from seatsio.subaccounts.subaccountsClient import SubaccountsClient
 
 
 class Client:
-    def __init__(self, secret_key, base_url="https://api.seats.io"):
+    def __init__(self, secret_key, base_url="https://api.seatsio.net"):
         self.base_url = base_url
         self.http_client = HttpClient(base_url, secret_key)
         self.charts = ChartsClient(self.http_client)
