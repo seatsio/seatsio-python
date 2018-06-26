@@ -1,9 +1,9 @@
+import json
 import os
+import uuid
 
 import requests
 import unittest2
-import json
-import uuid
 
 import seatsio
 
@@ -37,7 +37,13 @@ class SeatsioClientTest(unittest2.TestCase):
             raise Exception("Failed to create a test user")
 
     def create_test_chart(self):
-        with open(os.path.join(os.path.dirname(__file__), 'sampleChart.json'), 'r') as test_chart_json:
+        return self.create_test_chart_from_file('sampleChart.json')
+
+    def create_test_chart_with_sections(self):
+        return self.create_test_chart_from_file('sampleChartWithSections.json')
+
+    def create_test_chart_from_file(self, file):
+        with open(os.path.join(os.path.dirname(__file__), file), 'r') as test_chart_json:
             data = test_chart_json.read().replace('\n', '')
             chart_key = str(uuid.uuid4())
             url = BASE_URL + "/system/public/" + self.user["designerKey"] + "/charts/" + chart_key

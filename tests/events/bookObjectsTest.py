@@ -24,6 +24,25 @@ class BookObjectsTest(SeatsioClientTest):
             "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
         })
 
+    def test_sections(self):
+        chart_key = self.create_test_chart_with_sections()
+        event = self.client.events.create(chart_key)
+
+        res = self.client.events.book(event.key, ["Section A-A-1", "Section A-A-2"])
+
+        a1_status = self.client.events.retrieve_object_status(event.key, "Section A-A-1").status
+        a2_status = self.client.events.retrieve_object_status(event.key, "Section A-A-2").status
+        a3_status = self.client.events.retrieve_object_status(event.key, "Section A-A-3").status
+
+        assert_that(a1_status).is_equal_to(ObjectStatus.BOOKED)
+        assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
+        assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
+
+        assert_that(res.labels).is_equal_to({
+            "Section A-A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }},
+            "Section A-A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }}
+        })
+
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
