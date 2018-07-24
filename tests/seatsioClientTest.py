@@ -27,7 +27,7 @@ class SeatsioClientTest(unittest2.TestCase):
         response = requests.post(
             BASE_URL + "/system/public/users",
             data=json.dumps({
-                "email": "test" + str(uuid.uuid4()) + "@seats.io",
+                "email": self.random_email(),
                 "password": "12345678"
             })
         )
@@ -35,6 +35,10 @@ class SeatsioClientTest(unittest2.TestCase):
             return response.json()
         else:
             raise Exception("Failed to create a test user")
+
+    @staticmethod
+    def random_email():
+        return "test" + str(uuid.uuid4()) + "@seats.io"
 
     def create_test_chart(self):
         return self.create_test_chart_from_file('sampleChart.json')

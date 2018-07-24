@@ -87,6 +87,7 @@ class Subaccount:
         self.designer_key = data.get("designerKey")
         self.public_key = data.get("publicKey")
         self.name = data.get("name")
+        self.email = data.get("email")
         self.active = data.get("active")
 
 

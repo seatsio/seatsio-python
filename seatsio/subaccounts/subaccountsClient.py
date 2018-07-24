@@ -18,6 +18,11 @@ class SubaccountsClient(ListableObjectsClient):
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.json())
 
+    def createWithEmail(self, email):
+        body = { 'email': email }
+        response = self.http_client.url("/subaccounts").post(body)
+        return Subaccount(response.json())
+
     def update(self, subaccount_id, new_name):
         body = {}
         if new_name:
