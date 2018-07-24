@@ -12,14 +12,17 @@ class SubaccountsClient(ListableObjectsClient):
         self.inactive = Lister(PageFetcher(Subaccount, self.http_client, "/subaccounts/inactive"))
 
     def create(self, name=None):
-        body = {}
+        return self.do_create(None, name)
+
+    def create_with_email(self, email, name=None):
+        return self.do_create(email, name)
+
+    def do_create(self, email=None, name=None):
+        body = { }
         if name:
             body['name'] = name
-        response = self.http_client.url("/subaccounts").post(body)
-        return Subaccount(response.json())
-
-    def createWithEmail(self, email):
-        body = { 'email': email }
+        if email:
+            body['email'] = email
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.json())
 
