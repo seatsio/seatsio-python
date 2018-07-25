@@ -18,7 +18,7 @@ class SubaccountsClient(ListableObjectsClient):
         return self.do_create(email, name)
 
     def do_create(self, email=None, name=None):
-        body = { }
+        body = {}
         if name:
             body['name'] = name
         if email:
@@ -26,10 +26,12 @@ class SubaccountsClient(ListableObjectsClient):
         response = self.http_client.url("/subaccounts").post(body)
         return Subaccount(response.json())
 
-    def update(self, subaccount_id, new_name):
+    def update(self, subaccount_id, name=None, email=None):
         body = {}
-        if new_name:
-            body['name'] = new_name
+        if name:
+            body['name'] = name
+        if email:
+            body['email'] = email
         self.http_client.url("/subaccounts/{id}", id=subaccount_id).post(body)
 
     def retrieve(self, subaccount_id):
