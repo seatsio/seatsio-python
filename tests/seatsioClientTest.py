@@ -24,13 +24,7 @@ class SeatsioClientTest(unittest2.TestCase):
         return seatsio.Client(secret_key, BASE_URL)
 
     def create_test_user(self):
-        response = requests.post(
-            BASE_URL + "/system/public/users",
-            data=json.dumps({
-                "email": self.random_email(),
-                "password": "12345678"
-            })
-        )
+        response = requests.post(BASE_URL + "/system/public/users/actions/create-test-user")
         if response.ok:
             return response.json()
         else:
@@ -38,7 +32,7 @@ class SeatsioClientTest(unittest2.TestCase):
 
     @staticmethod
     def random_email():
-        return "test" + str(uuid.uuid4()) + "@seats.io"
+        return str(uuid.uuid4()) + "@mailinator.com"
 
     def create_test_chart(self):
         return self.create_test_chart_from_file('sampleChart.json')
