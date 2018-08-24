@@ -77,6 +77,7 @@ class EventReportItem:
         self.num_booked = item_data.get("numBooked")
         self.capacity = item_data.get("capacity")
         self.object_type = item_data.get("objectType")
+        self.extra_data = item_data.get("extraData")
 
 
 class Subaccount:

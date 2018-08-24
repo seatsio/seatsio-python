@@ -9,8 +9,9 @@ class EventReportsTest(SeatsioClientTest):
     def test_reportItemProperties(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
 
-        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1")], order_id="order1")
+        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1")
 
         report = self.client.events.reports.by_label(event.key)
 
@@ -29,6 +30,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.entrance).is_none()
         assert_that(report_item.num_booked).is_none()
         assert_that(report_item.capacity).is_none()
+        assert_that(report_item.extra_data).is_equal_to(extra_data)
 
     def test_holdToken(self):
         chart_key = self.create_test_chart()
