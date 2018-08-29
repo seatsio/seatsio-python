@@ -106,3 +106,8 @@ class EventsClient(ListableObjectsClient):
         self.http_client \
             .url("/events/{key}/objects/{object}/actions/update-extra-data", key=key, object=o) \
             .post(ExtraDataRequest(extra_data))
+
+    def update_extra_datas(self, key, extra_datas):
+        self.http_client \
+            .url("/events/{key}/actions/update-extra-data", key=key) \
+            .post(ExtraDataRequest(extra_datas))
