@@ -13,8 +13,17 @@ class CreateHoldTokenTest(SeatsioClientTest):
 
         assert_that(hold_token.hold_token).is_not_none()
 
-        now_plus_14 = creation_time + timedelta(minutes=14)
-        now_plus_16 = creation_time + timedelta(minutes=16)
-        assert_that(hold_token.expires_at)\
-            .is_instance(datetime)\
-            .is_between(now_plus_14, now_plus_16)
+        assert_that(hold_token.expires_at) \
+            .is_instance(datetime) \
+            .is_between(creation_time + timedelta(minutes=15), creation_time + timedelta(minutes=16))
+
+    def test_expires_in_minutes(self):
+        creation_time = datetime.utcnow()
+
+        hold_token = self.client.hold_tokens.create(5)
+
+        assert_that(hold_token.hold_token).is_not_none()
+
+        assert_that(hold_token.expires_at) \
+            .is_instance(datetime) \
+            .is_between(creation_time + timedelta(minutes=5), creation_time + timedelta(minutes=6))
