@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md') as f:
     readme = f.read()
@@ -13,9 +13,7 @@ setup(
     url='https://github.com/seatsio/seatsio-python',
     license="MIT",
 
-    packages=[
-        'seatsio'
-    ],
+    packages=find_packages(),
     install_requires=[
         "requests",
         "munch",
