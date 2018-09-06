@@ -23,6 +23,7 @@ class Event:
         self.key = data.get("key")
         self.chart_key = data.get("chartKey")
         self.book_whole_tables = data.get("bookWholeTables")
+        self.supports_best_available = data.get("supportsBestAvailable")
         self.for_sale_config = ForSaleConfig.create(data.get("forSaleConfig"))
         self.created_on = parse_date(data.get("createdOn"))
         self.updated_on = parse_date(data.get("updatedOn"))
