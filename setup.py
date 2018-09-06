@@ -1,12 +1,11 @@
 from setuptools import setup
-import version
 
 with open('README.md') as f:
     readme = f.read()
 
 setup(
     name='seatsio',
-    version=version.get_version(),
+    version='v21',
     description='The official Seats.io Python client library',
     long_description=readme,
     author='The seats.io dev team',
