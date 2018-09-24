@@ -81,6 +81,38 @@ class EventReportItem:
         self.extra_data = item_data.get("extraData")
 
 
+class Account:
+    def __init__(self, data):
+        self.secret_key = data.get("secretKey")
+        self.designer_key = data.get("designerKey")
+        self.public_key = data.get("publicKey")
+        self.email = data.get("email")
+        self.settings = AccountSettings.create(data.get("settings"))
+
+
+class AccountSettings:
+    def __init__(self, data):
+        self.draftChartDrawingsEnabled = data.get("draftChartDrawingsEnabled")
+        self.chartValidation = ChartValidationSettings.create(data.get("chartValidation"))
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return AccountSettings(param)
+
+
+class ChartValidationSettings:
+    def __init__(self, data):
+        self.validateDuplicateLabels = data.get("VALIDATE_DUPLICATE_LABELS")
+        self.validateObjectsWithoutCategories = data.get("VALIDATE_OBJECTS_WITHOUT_CATEGORIES")
+        self.validateUnlabeledObjects = data.get("VALIDATE_UNLABELED_OBJECTS")
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return ChartValidationSettings(param)
+
+
 class Subaccount:
 
     def __init__(self, data):

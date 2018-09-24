@@ -1,3 +1,4 @@
+from seatsio.accounts.accountsClient import AccountsClient
 from seatsio.charts.chartsClient import ChartsClient
 from seatsio.events.eventsClient import EventsClient
 from seatsio.holdtokens.HoldTokenClient import HoldTokensClient
@@ -11,5 +12,6 @@ class Client:
         self.http_client = HttpClient(base_url, secret_key)
         self.charts = ChartsClient(self.http_client)
         self.events = EventsClient(self.http_client)
+        self.accounts = AccountsClient(self.http_client)
         self.subaccounts = SubaccountsClient(self.http_client)
         self.hold_tokens = HoldTokensClient(self.http_client)
