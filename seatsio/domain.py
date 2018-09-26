@@ -130,6 +130,7 @@ class HoldToken:
     def __init__(self, data):
         self.hold_token = data.get("holdToken")
         self.expires_at = parse_date(data.get("expiresAt"))
+        self.expires_in_seconds = data.get("expiresInSeconds")
 
 
 class ObjectStatus:

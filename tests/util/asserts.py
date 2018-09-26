@@ -87,7 +87,6 @@ class BooleanAssert(AbstractAssert):
     def is_true(self):
         assert self.actual, "Expected " + str(self.actual) + " to be True, but it was False"
 
-
 class NumberAssert(AbstractAssert):
 
     def is_not_zero(self):
@@ -96,6 +95,11 @@ class NumberAssert(AbstractAssert):
     def is_zero(self):
         assert_that(self.actual == 0).is_true()
 
+    def is_between(self, min, max):
+        assert min <= self.actual <= max, "Expected actual (" + str(
+            self.actual) + ") to be in the range [" + str(
+            min) + ", " + str(max) + "]"
+        return self
 
 class IterableAssert(AbstractAssert):
 

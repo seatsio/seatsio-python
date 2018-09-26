@@ -19,3 +19,5 @@ class UpdateHoldTokenExpirationDateTest(SeatsioClientTest):
         assert_that(updated_hold_token.expires_at) \
             .is_instance(datetime) \
             .is_between(now_plus_14, now_plus_16)
+
+        assert_that(updated_hold_token.expires_in_seconds).is_between(29 * 60, 30 * 60)
