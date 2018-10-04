@@ -1,5 +1,6 @@
 from munch import munchify
 
+from seatsio.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
 from seatsio.domain import Chart
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
@@ -12,6 +13,7 @@ class ChartsClient(ListableObjectsClient):
     def __init__(self, http_client):
         ListableObjectsClient.__init__(self, http_client, Chart, "/charts")
         self.archive = Lister(PageFetcher(Chart, self.http_client, "/charts/archive"))
+        self.reports = ChartReports(self.http_client)
 
     def retrieve(self, chart_key):
         return self.http_client.url("/charts/{key}", key=chart_key).get_as(Chart)

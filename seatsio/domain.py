@@ -51,6 +51,29 @@ class ForSaleConfig:
             return ForSaleConfig(param)
 
 
+class ChartReport:
+    def __init__(self, response_body):
+        self.items = {}
+        for key, value in iteritems(response_body):
+            self.items[key] = []
+            for item in value:
+                self.items[key].append(ChartReportItem(item))
+
+    def get(self, key):
+        return self.items.get(key)
+
+
+class ChartReportItem:
+    def __init__(self, item_data):
+        self.label = item_data.get("label")
+        self.category_label = item_data.get("categoryLabel")
+        self.category_key = item_data.get("categoryKey")
+        self.section = item_data.get("section")
+        self.entrance = item_data.get("entrance")
+        self.capacity = item_data.get("capacity")
+        self.object_type = item_data.get("objectType")
+
+
 class EventReport:
     def __init__(self, response_body):
         self.items = {}
