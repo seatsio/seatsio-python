@@ -66,6 +66,7 @@ class ChartReport:
 class ChartReportItem:
     def __init__(self, item_data):
         self.label = item_data.get("label")
+        self.labels = item_data.get("labels")
         self.category_label = item_data.get("categoryLabel")
         self.category_key = item_data.get("categoryKey")
         self.section = item_data.get("section")
@@ -90,6 +91,7 @@ class EventReportItem:
     def __init__(self, item_data):
         self.status = item_data.get("status")
         self.label = item_data.get("label")
+        self.labels = item_data.get("labels")
         self.category_label = item_data.get("categoryLabel")
         self.category_key = item_data.get("categoryKey")
         self.ticket_type = item_data.get("ticketType")

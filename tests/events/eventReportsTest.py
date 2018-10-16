@@ -20,6 +20,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item).is_instance(EventReportItem)
         assert_that(report_item.status).is_equal_to("booked")
         assert_that(report_item.label).is_equal_to("A-1")
+        assert_that(report_item.labels).is_equal_to({"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}})
         assert_that(report_item.category_label).is_equal_to("Cat1")
         assert_that(report_item.category_key).is_equal_to("9")
         assert_that(report_item.ticket_type).is_equal_to("tt1")
