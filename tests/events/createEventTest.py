@@ -34,3 +34,13 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.key).is_not_blank()
         assert_that(event.book_whole_tables).is_true()
+
+    def test_table_booking_modes_is_optional(self):
+        chart_key = self.create_test_chart_with_tables()
+        table_booking_modes = {"T1": "BY_TABLE", "T2": "BY_SEAT"}
+
+        event = self.client.events.create(chart_key, table_booking_modes=table_booking_modes)
+
+        assert_that(event.key).is_not_blank()
+        assert_that(event.book_whole_tables).is_false()
+        assert_that(event.table_booking_modes).is_equal_to(table_booking_modes)

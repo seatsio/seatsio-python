@@ -44,3 +44,13 @@ class UpdateEventTest(SeatsioClientTest):
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.book_whole_tables).is_false()
         assert_that(retrieved_event.updated_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
+
+    def test_updateTableBookingModes(self):
+        chart_key = self.create_test_chart_with_tables()
+        event = self.client.events.create(chart_key, table_booking_modes={"T1": "BY_TABLE"})
+
+        self.client.events.update(event.key, table_booking_modes={"T1": "BY_SEAT"})
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.table_booking_modes).is_equal_to({"T1": "BY_SEAT"})
+        assert_that(retrieved_event.updated_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)

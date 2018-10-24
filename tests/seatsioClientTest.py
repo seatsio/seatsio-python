@@ -40,6 +40,9 @@ class SeatsioClientTest(unittest2.TestCase):
     def create_test_chart_with_sections(self):
         return self.create_test_chart_from_file('sampleChartWithSections.json')
 
+    def create_test_chart_with_tables(self):
+        return self.create_test_chart_from_file('sampleChartWithTables.json')
+
     def create_test_chart_from_file(self, file):
         with open(os.path.join(os.path.dirname(__file__), file), 'r') as test_chart_json:
             data = test_chart_json.read().replace('\n', '')
