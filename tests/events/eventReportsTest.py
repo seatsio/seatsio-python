@@ -92,7 +92,14 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(list)
         assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(2)
-        assert_that(report[0]).is_instance(EventReportItem)
+
+    def testBySpecificNonExistingStatus(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_status(event.key, status="mystatus")
+
+        assert_that(report).is_none()
 
     def testByCategoryLabel(self):
         chart_key = self.create_test_chart()
