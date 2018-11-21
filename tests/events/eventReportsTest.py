@@ -68,7 +68,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.num_booked).is_equal_to(5)
         assert_that(report_item.capacity).is_equal_to(100)
 
-    def test_byStatus(self):
+    def testByStatus(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         self.client.events.change_object_status(event.key, ["A-1", "A-2"], "mystatus")
@@ -80,6 +80,14 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report.get("mystatus")).has_size(2)
         assert_that(report.get("booked")).has_size(1)
         assert_that(report.get("free")).has_size(31)
+
+    def testByStatusEmptyChart(self):
+        chart_key = self.client.charts.create().key
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_status(event.key)
+
+        assert_that(report.items).has_size(0)
 
     def testBySpecificStatus(self):
         chart_key = self.create_test_chart()
@@ -99,7 +107,8 @@ class EventReportsTest(SeatsioClientTest):
 
         report = self.client.events.reports.by_status(event.key, status="mystatus")
 
-        assert_that(report).is_none()
+        assert_that(report).is_instance(list)
+        assert_that(report).has_size(0)
 
     def testByCategoryLabel(self):
         chart_key = self.create_test_chart()

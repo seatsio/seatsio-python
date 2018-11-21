@@ -41,7 +41,7 @@ class EventReports:
             body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get()
             result = []
             if report_filter not in body:
-                return None
+                return []
             for i in body[report_filter]:
                 result.append(EventReportItem(i))
             return result
