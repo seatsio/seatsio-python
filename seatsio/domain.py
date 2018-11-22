@@ -119,6 +119,7 @@ class Account:
 class AccountSettings:
     def __init__(self, data):
         self.draftChartDrawingsEnabled = data.get("draftChartDrawingsEnabled")
+        self.holdOnSelectForGAs = data.get("holdOnSelectForGAs")
         self.chartValidation = ChartValidationSettings.create(data.get("chartValidation"))
 
     @classmethod
