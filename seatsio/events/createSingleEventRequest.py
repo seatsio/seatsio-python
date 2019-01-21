@@ -1,4 +1,4 @@
-class EventRequest:
+class CreateSingleEventRequest:
     def __init__(self, chart_key, event_key=None, book_whole_tables=None, table_booking_modes=None):
         if chart_key:
             self.chartKey = chart_key

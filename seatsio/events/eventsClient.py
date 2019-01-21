@@ -2,7 +2,8 @@ from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjec
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.eventReports import EventReports
-from seatsio.events.eventRequest import EventRequest
+from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
+from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
@@ -17,11 +18,15 @@ class EventsClient(ListableObjectsClient):
         self.reports = EventReports(self.http_client)
 
     def create(self, chart_key, event_key=None, book_whole_tables=None, table_booking_modes=None):
-        response = self.http_client.url("/events").post(EventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
+        response = self.http_client.url("/events").post(CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
         return Event(response.json())
 
+    def create_multiple(self, chart_key, events_properties):
+        response = self.http_client.url("/events/actions/create-multiple").post(CreateMultipleEventsRequest(chart_key, events_properties))
+        return map(Event, response.json().get("events"))
+
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None, table_booking_modes=None):
-        self.http_client.url("/events/{key}", key=key).post(EventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
+        self.http_client.url("/events/{key}", key=key).post(CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()
