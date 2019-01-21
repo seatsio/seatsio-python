@@ -20,10 +20,7 @@ class HoldObjectsTest(SeatsioClientTest):
         assert_that(status2.status).is_equal_to(ObjectStatus.HELD)
         assert_that(status2.hold_token).is_equal_to(hold_token.hold_token)
 
-        assert_that(res.labels).is_equal_to({
-            "A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}},
-            "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
-        })
+        assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
 
     def test_withOrderId(self):
         chart_key = self.create_test_chart()
