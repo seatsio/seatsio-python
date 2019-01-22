@@ -14,10 +14,22 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         assert_that(self.client.events.retrieve_object_status(event.key, "A-1").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-2").status).is_equal_to("status_foo")
         assert_that(self.client.events.retrieve_object_status(event.key, "A-3").status).is_equal_to("free")
-        assert_that(res.labels).is_equal_to({
-            "A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}},
-            "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
-        })
+
+        assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
+        object = res.objects["A-1"]
+        assert_that(object.status).is_equal_to("status_foo")
+        assert_that(object.label).is_equal_to("A-1")
+        assert_that(object.labels).is_equal_to({"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}})
+        assert_that(object.category_label).is_equal_to("Cat1")
+        assert_that(object.category_key).is_equal_to("9")
+        assert_that(object.ticket_type).is_none()
+        assert_that(object.order_id).is_none()
+        assert_that(object.object_type).is_equal_to("seat")
+        assert_that(object.for_sale).is_true()
+        assert_that(object.section).is_none()
+        assert_that(object.entrance).is_none()
+        assert_that(object.num_booked).is_none()
+        assert_that(object.capacity).is_none()
 
     def test_hold_token(self):
         chart_key = self.create_test_chart()

@@ -20,10 +20,7 @@ class ReleaseObjectsTest(SeatsioClientTest):
         assert_that(a2_status).is_equal_to(ObjectStatus.FREE)
         assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
 
-        assert_that(res.labels).is_equal_to({
-            "A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}},
-            "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
-        })
+        assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
 
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()

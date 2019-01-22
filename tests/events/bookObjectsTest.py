@@ -19,10 +19,7 @@ class BookObjectsTest(SeatsioClientTest):
         assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
         assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
 
-        assert_that(res.labels).is_equal_to({
-            "A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}},
-            "A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}}
-        })
+        assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
 
     def test_sections(self):
         chart_key = self.create_test_chart_with_sections()
@@ -38,10 +35,12 @@ class BookObjectsTest(SeatsioClientTest):
         assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
         assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
 
-        assert_that(res.labels).is_equal_to({
-            "Section A-A-1": {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }},
-            "Section A-A-2": {"own": {"label": "2", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }}
-        })
+        assert_that(list(res.objects)).contains_exactly_in_any_order("Section A-A-1", "Section A-A-2")
+        assert_that(res.objects["Section A-A-1"].entrance).is_equal_to("Entrance 1")
+        assert_that(res.objects["Section A-A-1"].section).is_equal_to("Section A")
+        assert_that(res.objects["Section A-A-1"].labels).is_equal_to(
+            {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }}
+        )
 
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()

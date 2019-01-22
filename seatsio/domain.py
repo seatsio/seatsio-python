@@ -188,9 +188,13 @@ class BestAvailableObjects:
     def __init__(self, data):
         self.next_to_each_other = data.get("nextToEachOther")
         self.objects = data.get("objects")
-        self.labels = data.get("labels")
+        self.objectDetails = {}
+        for key, value in iteritems(data.get("objectDetails")):
+            self.objectDetails[key] = EventReportItem(value)
 
 
 class ChangeObjectStatusResult:
     def __init__(self, data):
-        self.labels = data.get("labels")
+        self.objects = {}
+        for key, value in iteritems(data.get("objects")):
+            self.objects[key] = EventReportItem(value)

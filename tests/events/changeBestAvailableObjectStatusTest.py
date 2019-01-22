@@ -12,14 +12,25 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(result.next_to_each_other).is_true()
         assert_that(result.objects).contains_exactly("B-4", "B-5", "B-6")
 
-    def test_labels(self):
+    def test_objectDetails(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        result = self.client.events.change_best_available_object_status(event.key, 2, "myStatus")
-        assert_that(result.labels).is_equal_to({
-            "B-4": {"own": {"label": "4", "type": "seat"}, "parent": {"label": "B", "type": "row"}},
-            "B-5": {"own": {"label": "5", "type": "seat"}, "parent": {"label": "B", "type": "row"}}
-        })
+        result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus")
+        assert_that(list(result.objectDetails)).contains_exactly_in_any_order("B-5")
+        object = result.objectDetails["B-5"]
+        assert_that(object.status).is_equal_to("myStatus")
+        assert_that(object.label).is_equal_to("B-5")
+        assert_that(object.labels).is_equal_to({"own": {"label": "5", "type": "seat"}, "parent": {"label": "B", "type": "row"}})
+        assert_that(object.category_label).is_equal_to("Cat1")
+        assert_that(object.category_key).is_equal_to("9")
+        assert_that(object.ticket_type).is_none()
+        assert_that(object.order_id).is_none()
+        assert_that(object.object_type).is_equal_to("seat")
+        assert_that(object.for_sale).is_true()
+        assert_that(object.section).is_none()
+        assert_that(object.entrance).is_none()
+        assert_that(object.num_booked).is_none()
+        assert_that(object.capacity).is_none()
 
     def test_categories(self):
         chart_key = self.create_test_chart()

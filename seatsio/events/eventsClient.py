@@ -83,7 +83,7 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys)
-        response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "labels"}).post(request)
+        response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 
     def retrieve_object_status(self, key, object_key):
