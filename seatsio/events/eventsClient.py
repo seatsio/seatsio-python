@@ -23,7 +23,7 @@ class EventsClient(ListableObjectsClient):
 
     def create_multiple(self, chart_key, events_properties):
         response = self.http_client.url("/events/actions/create-multiple").post(CreateMultipleEventsRequest(chart_key, events_properties))
-        return map(Event, response.json().get("events"))
+        return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None, table_booking_modes=None):
         self.http_client.url("/events/{key}", key=key).post(CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
