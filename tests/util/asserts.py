@@ -111,6 +111,10 @@ class IterableAssert(AbstractAssert):
     def is_empty(self):
         return self.has_size(0)
 
+    def is_not_empty(self):
+        assert len(self.actual) > 0, "expected " + str(self.actual) + " to be empty."
+        return self
+
     def contains_exactly_in_any_order(self, *args):
         self.has_size(len(args))
         for arg in args:
@@ -124,6 +128,10 @@ class IterableAssert(AbstractAssert):
                 "on index " + str(index) + ", expected " + str(expectedvalue) + " but was " + str(self.actual[index])
         assert lst == self.actual, "expected [" + join(lst) + "], but was [" + join(self.actual) + "]"
         return self
+
+    def contains_no_nones(self):
+        for item in self.actual:
+            assert_that(item).is_not_none()
 
     def extracting(self, field_name):
         values = []
