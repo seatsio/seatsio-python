@@ -34,3 +34,39 @@ class ListStatusChangesTest(SeatsioClientTest):
         assert_that(status_change.object_label).is_equal_to("A-1")
         assert_that(status_change.event_id).is_equal_to(event.id)
         assert_that(status_change.extra_data).is_equal_to({"foo": "bar"})
+
+    def test_filter(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1"])
+        self.client.events.book(event.key, ["A-2"])
+        self.client.events.book(event.key, ["B-1"])
+        self.client.events.book(event.key, ["A-3"])
+
+        status_changes = self.client.events.list_status_changes(event.key, filter = "A-")
+
+        assert_that(status_changes).extracting("object_label").contains_exactly("A-3", "A-2", "A-1")
+
+    def test_sort_asc(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1"])
+        self.client.events.book(event.key, ["A-2"])
+        self.client.events.book(event.key, ["B-1"])
+        self.client.events.book(event.key, ["A-3"])
+
+        status_changes = self.client.events.list_status_changes(event.key, sort_field = "objectLabel")
+
+        assert_that(status_changes).extracting("object_label").contains_exactly("A-1", "A-2", "A-3", "B-1")
+
+    def test_sort_desc(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1"])
+        self.client.events.book(event.key, ["A-2"])
+        self.client.events.book(event.key, ["B-1"])
+        self.client.events.book(event.key, ["A-3"])
+
+        status_changes = self.client.events.list_status_changes(event.key, sort_field = "objectLabel", sort_direction="desc")
+
+        assert_that(status_changes).extracting("object_label").contains_exactly("B-1", "A-3", "A-2", "A-1")

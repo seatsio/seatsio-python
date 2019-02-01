@@ -1,9 +1,9 @@
 from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ChangeObjectStatusResult
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
-from seatsio.events.eventReports import EventReports
-from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
+from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
+from seatsio.events.eventReports import EventReports
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
@@ -18,15 +18,18 @@ class EventsClient(ListableObjectsClient):
         self.reports = EventReports(self.http_client)
 
     def create(self, chart_key, event_key=None, book_whole_tables=None, table_booking_modes=None):
-        response = self.http_client.url("/events").post(CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
+        response = self.http_client.url("/events").post(
+            CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
         return Event(response.json())
 
     def create_multiple(self, chart_key, events_properties):
-        response = self.http_client.url("/events/actions/create-multiple").post(CreateMultipleEventsRequest(chart_key, events_properties))
+        response = self.http_client.url("/events/actions/create-multiple").post(
+            CreateMultipleEventsRequest(chart_key, events_properties))
         return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, book_whole_tables=None, table_booking_modes=None):
-        self.http_client.url("/events/{key}", key=key).post(CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
+        self.http_client.url("/events/{key}", key=key).post(
+            CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()
@@ -34,18 +37,28 @@ class EventsClient(ListableObjectsClient):
     def retrieve(self, key):
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
-    def list_status_changes(self, key, object_id=None):
-        if object_id is not None:
-            return Lister(self.status_changes_for_object(key, object_id)).list()
+    def list_status_changes(self, key, filter=None, sort_field=None, sort_direction=None):
+        page_fetcher = PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key)
+        page_fetcher.set_query_param("filter", filter)
+        page_fetcher.set_query_param("sort", self.to_sort(sort_field, sort_direction))
+        return Lister(page_fetcher).list()
+
+    @staticmethod
+    def to_sort(sort_field, sort_direction):
+        if sort_field is None:
+            return None
+        elif sort_direction is None:
+            return sort_field
         else:
-            return Lister(PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key)).list()
+            return sort_field + ":" + sort_direction
 
     def status_changes_for_object(self, key, object_id):
         url = "/events/{key}/objects/{objectId}/status-changes"
         return PageFetcher(StatusChange, self.http_client, url, key=key, objectId=object_id)
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id)
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token,
+                                         order_id)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, order_id=None):
         return self.change_best_available_object_status(
@@ -88,7 +101,8 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys)
-        response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "objects"}).post(request)
+        response = self.http_client.url("/seasons/actions/change-object-status",
+                                        query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 
     def retrieve_object_status(self, key, object_key):
