@@ -37,11 +37,11 @@ class EventsClient(ListableObjectsClient):
     def retrieve(self, key):
         return self.http_client.url("/events/{key}", key=key).get_as(Event)
 
-    def list_status_changes(self, key, filter=None, sort_field=None, sort_direction=None):
+    def status_changes(self, key, filter=None, sort_field=None, sort_direction=None):
         page_fetcher = PageFetcher(StatusChange, self.http_client, "/events/{key}/status-changes", key=key)
         page_fetcher.set_query_param("filter", filter)
         page_fetcher.set_query_param("sort", self.to_sort(sort_field, sort_direction))
-        return Lister(page_fetcher).list()
+        return Lister(page_fetcher)
 
     @staticmethod
     def to_sort(sort_field, sort_direction):
@@ -54,7 +54,8 @@ class EventsClient(ListableObjectsClient):
 
     def status_changes_for_object(self, key, object_id):
         url = "/events/{key}/objects/{objectId}/status-changes"
-        return PageFetcher(StatusChange, self.http_client, url, key=key, objectId=object_id)
+        page_fetcher = PageFetcher(StatusChange, self.http_client, url, key=key, objectId=object_id)
+        return Lister(page_fetcher)
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token,
