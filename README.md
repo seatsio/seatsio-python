@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/seatsio/seatsio-python.svg?branch=master)](https://travis-ci.org/seatsio/seatsio-python)
 
-This is the official Python client library for the [Seats.io V2 REST API](https://docs.seats.io/docs/api-overview), supporting python 2.7, and python 3.3 - 3.6. 
+This is the official Python client library for the [Seats.io V2 REST API](https://docs.seats.io/docs/api-overview), supporting python 2.7, and python 3.3 - 3.7. 
 
 ## Installing
 
