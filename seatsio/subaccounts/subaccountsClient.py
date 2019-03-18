@@ -64,3 +64,11 @@ class SubaccountsClient(ListableObjectsClient):
 
     def regenerate_secret_key(self, subaccount_id):
         self.http_client.url("/subaccounts/{id}/secret-key/actions/regenerate", id=subaccount_id).post()
+
+    def list(self, filter=None):
+        page_fetcher = PageFetcher(Subaccount, self.http_client, "/subaccounts")
+        
+        if filter is not None:
+            page_fetcher.set_query_param("filter", filter)
+
+        return Lister(page_fetcher).list()
