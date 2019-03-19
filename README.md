@@ -64,10 +64,12 @@ client.events.change_object_status("<EVENT KEY>", ["A-1", "A-2"], "my-custom-sta
 ```python
 import seatsio
 client = seatsio.Client(secret_key="my-secret-key")
-charts = client.charts.list() # returns a PagedIterator object
+charts = client.charts.list()
+for chart in charts:
+  ...
 ```
 
-Note: `listAll()` returns a `PagedIterator`, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
+Note: `list()` returns a `PagedIterator`, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
 
 ### Listing charts page by page
 
@@ -79,18 +81,24 @@ Each page contains an `items` array of charts, and `next_page_starts_after` and 
 // ... user initially opens the screen ...
 
 firstPage = client.charts.list_first_page()
+for chart in firstPage.items:
+  ...
 ```
 
 ```python
 // ... user clicks on 'next page' button ...
 
 nextPage = client.charts.list_page_after(firstPage.next_page_starts_after)
+for chart in nextPage.items:
+  ...
 ```
 
 ```python
 // ... user clicks on 'previous page' button ...
 
 previousPage = client.charts.list_page_before(nextPage.previous_page_ends_before)
+for chart in previousPage.items:
+  ...
 ```
 
 ## Error handling
