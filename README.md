@@ -66,7 +66,7 @@ import seatsio
 client = seatsio.Client(secret_key="my-secret-key")
 charts = client.charts.list()
 for chart in charts:
-  ...
+  print("Chart: " + chart.key)
 ```
 
 Note: `list()` returns a `PagedIterator`, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
@@ -82,7 +82,7 @@ Each page contains an `items` array of charts, and `next_page_starts_after` and 
 
 firstPage = client.charts.list_first_page()
 for chart in firstPage.items:
-  ...
+  print("Chart: " + chart.key)
 ```
 
 ```python
@@ -90,7 +90,7 @@ for chart in firstPage.items:
 
 nextPage = client.charts.list_page_after(firstPage.next_page_starts_after)
 for chart in nextPage.items:
-  ...
+  print("Chart: " + chart.key)
 ```
 
 ```python
@@ -98,7 +98,7 @@ for chart in nextPage.items:
 
 previousPage = client.charts.list_page_before(nextPage.previous_page_ends_before)
 for chart in previousPage.items:
-  ...
+  print("Chart: " + chart.key)
 ```
 
 ## Error handling
