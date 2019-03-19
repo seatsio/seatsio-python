@@ -78,7 +78,7 @@ E.g. to show charts in a paginated list on a dashboard.
 Each page contains an `items` array of charts, and `next_page_starts_after` and `previous_page_ends_before` properties. Those properties are the chart IDs after which the next page starts or the previous page ends.
 
 ```python
-// ... user initially opens the screen ...
+# ... user initially opens the screen ...
 
 firstPage = client.charts.list_first_page()
 for chart in firstPage.items:
@@ -86,7 +86,7 @@ for chart in firstPage.items:
 ```
 
 ```python
-// ... user clicks on 'next page' button ...
+# ... user clicks on 'next page' button ...
 
 nextPage = client.charts.list_page_after(firstPage.next_page_starts_after)
 for chart in nextPage.items:
@@ -94,7 +94,7 @@ for chart in nextPage.items:
 ```
 
 ```python
-// ... user clicks on 'previous page' button ...
+# ... user clicks on 'previous page' button ...
 
 previousPage = client.charts.list_page_before(nextPage.previous_page_ends_before)
 for chart in previousPage.items:
