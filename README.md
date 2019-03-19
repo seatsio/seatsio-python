@@ -67,12 +67,30 @@ client = seatsio.Client(secret_key="my-secret-key")
 charts = client.charts.list() # returns a PagedIterator object
 ```
 
-### Listing the first page of charts (default page size is 20)
+Note: `listAll()` returns a `PagedIterator`, which under the hood calls the seats.io API to fetch charts page by page. So multiple API calls may be done underneath to fetch all charts.
+
+### Listing charts page by page
+
+E.g. to show charts in a paginated list on a dashboard.
+
+Each page contains an `items` array of charts, and `next_page_starts_after` and `previous_page_ends_before` properties. Those properties are the chart IDs after which the next page starts or the previous page ends.
 
 ```python
-import seatsio
-client = seatsio.Client(secret_key="my-secret-key")
-charts = client.charts.list_first_page() # returns a Page object
+// ... user initially opens the screen ...
+
+firstPage = client.charts.list_first_page()
+```
+
+```python
+// ... user clicks on 'next page' button ...
+
+nextPage = client.charts.list_page_after(firstPage.next_page_starts_after)
+```
+
+```python
+// ... user clicks on 'previous page' button ...
+
+previousPage = client.charts.list_page_before(nextPage.previous_page_ends_before)
 ```
 
 ## Error handling
