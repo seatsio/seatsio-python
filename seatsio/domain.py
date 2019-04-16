@@ -17,6 +17,13 @@ class Chart:
         self.archived = data.get("archived")
 
 
+class ChartValidation:
+
+    def __init__(self, data):
+        self.errors = data.get("errors")
+        self.warnings = data.get("warnings")
+
+
 class Event:
     def __init__(self, data):
         self.id = data.get("id")
