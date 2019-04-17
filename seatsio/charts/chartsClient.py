@@ -2,10 +2,11 @@ from munch import munchify
 
 from seatsio.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
-from seatsio.domain import Chart
+from seatsio.domain import Chart, ChartValidation
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
+import json
 
 
 class ChartsClient(ListableObjectsClient):
@@ -90,3 +91,10 @@ class ChartsClient(ListableObjectsClient):
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()
+
+    def validate_published_version(self, key):
+        response = self.http_client.url("/charts/{key}/version/published/actions/validate", key=key).post()
+        return ChartValidation(json.loads(response.text))
+
+    def validate_draft_version(self, key):
+        return self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
