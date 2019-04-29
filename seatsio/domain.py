@@ -109,6 +109,8 @@ class EventReportItem:
         self.section = item_data.get("section")
         self.entrance = item_data.get("entrance")
         self.num_booked = item_data.get("numBooked")
+        self.num_free = item_data.get("numFree")
+        self.num_held = item_data.get("numHeld")
         self.capacity = item_data.get("capacity")
         self.object_type = item_data.get("objectType")
         self.extra_data = item_data.get("extraData")

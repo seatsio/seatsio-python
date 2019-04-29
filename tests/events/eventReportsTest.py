@@ -49,6 +49,8 @@ class EventReportsTest(SeatsioClientTest):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         self.client.events.book(event.key, [ObjectProperties("GA1", quantity=5)])
+        hold_token = self.client.hold_tokens.create()
+        self.client.events.hold(event.key, [ObjectProperties("GA1", quantity=3)], hold_token.hold_token)
 
         report = self.client.events.reports.by_label(event.key)
 
@@ -66,6 +68,8 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.section).is_none()
         assert_that(report_item.entrance).is_none()
         assert_that(report_item.num_booked).is_equal_to(5)
+        assert_that(report_item.num_held).is_equal_to(3)
+        assert_that(report_item.num_free).is_equal_to(92)
         assert_that(report_item.capacity).is_equal_to(100)
 
     def testByStatus(self):
