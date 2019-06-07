@@ -116,6 +116,93 @@ class EventReportItem:
         self.extra_data = item_data.get("extraData")
 
 
+class UsageSummaryForAllMonths:
+    def __init__(self, json):
+        self.items = list(map(lambda x: UsageSummaryForMonth(x), json))
+
+
+class UsageSummaryForMonth(object):
+    def __init__(self, json):
+        self.month = Month.from_json(json.get("month"))
+        self.numUsedObjects = json.get("numUsedObjects")
+        self.numFirstBookings = json.get("numFirstBookings")
+        self.numFirstBookingsByStatus = json.get("numFirstBookingsByStatus")
+        self.numFirstBookingsOrSelections = json.get("numFirstBookingsOrSelections")
+
+
+class Month(object):
+    def __init__(self, year, month):
+        self.year = year
+        self.month = month
+
+    def serialize(self):
+        return str(self.year) + '-' + str(self.month).rjust(2, '0')
+
+    @classmethod
+    def from_json(cls, json):
+        return Month(json.get("year"), json.get("month"))
+
+
+class UsageDetailsForMonth:
+    def __init__(self, json):
+        self.items = list(map(lambda x: UsageDetails(x), json))
+
+
+class UsageDetails:
+    def __init__(self, json):
+        if json.get("subaccount") is not None:
+            self.subaccount = UsageSubaccount(json)
+        self.usage_by_chart = list(map(lambda x: UsageByChart(x), json.get("usageByChart")))
+
+
+class UsageSubaccount:
+    def __init__(self, json):
+        self.id = json.get("id")
+
+
+class UsageByChart:
+    def __init__(self, json):
+        if json.get("chart") is not None:
+            self.chart = UsageChart(json.get("chart"))
+        self.usageByEvent = list(map(lambda x: UsageByEvent(x), json.get("usageByEvent")))
+
+
+class UsageChart:
+    def __init__(self, json):
+        self.name = json.get("name")
+        self.key = json.get("key")
+
+
+class UsageByEvent:
+    def __init__(self, json):
+        self.event = UsageEvent(json.get("event"))
+        self.num_used_objects = json.get("numUsedObjects")
+        self.num_first_bookings = json.get("numFirstBookings")
+        self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
+        self.num_ga_selections_without_booking = json.get("numGASelectionsWithoutBooking")
+        self.num_non_ga_selections_without_booking = json.get("numNonGASelectionsWithoutBooking")
+        self.num_object_selections = json.get("numObjectSelections")
+
+
+class UsageEvent:
+    def __init__(self, json):
+        self.id = json.get("id")
+        self.key = json.get("key")
+
+
+class UsageDetailsForEventInMonth:
+    def __init__(self, json):
+        self.items = list(map(lambda x: UsageForObject(x), json))
+
+
+class UsageForObject:
+    def __init__(self, json):
+        self.object = json.get("object")
+        self.num_first_bookings = json.get("numFirstBookings")
+        self.first_booking_date = parse_date(json.get("firstBookingDate"))
+        self.num_first_selections = json.get("numFirstSelections")
+        self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
+
 class Account:
     def __init__(self, data):
         self.secret_key = data.get("secretKey")
