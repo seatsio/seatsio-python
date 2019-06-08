@@ -12,7 +12,7 @@ setup(
     url='https://github.com/seatsio/seatsio-python',
     license="MIT",
     long_description=open('README.md').read(),
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown",
 
     packages=find_packages(),
     install_requires=[
