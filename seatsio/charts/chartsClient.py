@@ -84,10 +84,12 @@ class ChartsClient(ListableObjectsClient):
     def remove_tag(self, key, tag):
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
-    def list(self, chart_filter=None, tag=None, expand_events=None):
+    def list(self, chart_filter=None, tag=None, expand_events=None, with_validation=False):
         page_fetcher = PageFetcher(Chart, self.http_client, "/charts") \
             .set_query_param("filter", chart_filter) \
-            .set_query_param("tag", tag)
+            .set_query_param("tag", tag) \
+            .set_query_param("validation", with_validation)
+        
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()

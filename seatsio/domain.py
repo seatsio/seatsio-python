@@ -15,6 +15,7 @@ class Chart:
         self.events = Event.create_list(data.get("events"))
         self.tags = data.get("tags")
         self.archived = data.get("archived")
+        self.validation = data.get("validation")
 
 
 class ChartValidation:
