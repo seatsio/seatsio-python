@@ -3,8 +3,8 @@ from seatsio.charts.chartsClient import ChartsClient
 from seatsio.events.eventsClient import EventsClient
 from seatsio.holdtokens.HoldTokenClient import HoldTokensClient
 from seatsio.httpClient import HttpClient
+from seatsio.reports.usage.usageReports import UsageReports
 from seatsio.subaccounts.subaccountsClient import SubaccountsClient
-
 
 class Client:
     def __init__(self, secret_key, base_url="https://api.seatsio.net"):
@@ -15,3 +15,4 @@ class Client:
         self.accounts = AccountsClient(self.http_client)
         self.subaccounts = SubaccountsClient(self.http_client)
         self.hold_tokens = HoldTokensClient(self.http_client)
+        self.usage_reports = UsageReports(self.http_client)
