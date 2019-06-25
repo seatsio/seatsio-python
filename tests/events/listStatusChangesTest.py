@@ -18,7 +18,7 @@ class ListStatusChangesTest(SeatsioClientTest):
 
         assert_that(status_changes).extracting("status").contains_exactly("status3", "status2", "status1")
 
-    def test_propertiesOfSTatusChange(self):
+    def test_propertiesOfStatusChange(self):
         now = datetime.utcnow()
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
@@ -34,6 +34,8 @@ class ListStatusChangesTest(SeatsioClientTest):
         assert_that(status_change.object_label).is_equal_to("A-1")
         assert_that(status_change.event_id).is_equal_to(event.id)
         assert_that(status_change.extra_data).is_equal_to({"foo": "bar"})
+        assert_that(status_change.origin.type).is_equal_to("API_CALL")
+        assert_that(status_change.origin.ip).is_not_none()
 
     def test_filter(self):
         chart_key = self.create_test_chart()
