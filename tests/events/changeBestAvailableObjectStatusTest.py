@@ -100,3 +100,36 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         object_status = self.client.events.retrieve_object_status(event.key, best_available_objects.objects[0])
         assert_that(object_status.status).is_equal_to(ObjectStatus.HELD)
         assert_that(object_status.hold_token).is_equal_to(hold_token.hold_token)
+
+    def test_keepExtraDataTrue(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.update_extra_data(event.key, "B-5", extra_data)
+
+        self.client.events.change_best_available_object_status(event.key, 1, "someStatus", keep_extra_data=True)
+
+        status = self.client.events.retrieve_object_status(event.key, "B-5")
+        assert_that(status.extra_data).is_equal_to(extra_data)
+
+    def test_keepExtraDataFalse(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.update_extra_data(event.key, "B-5", extra_data)
+
+        self.client.events.change_best_available_object_status(event.key, 1, "someStatus", keep_extra_data=False)
+
+        status = self.client.events.retrieve_object_status(event.key, "B-5")
+        assert_that(status.extra_data).is_none()
+
+    def test_noKeepExtraData(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.update_extra_data(event.key, "B-5", extra_data)
+
+        self.client.events.change_best_available_object_status(event.key, 1, "someStatus")
+
+        status = self.client.events.retrieve_object_status(event.key, "B-5")
+        assert_that(status.extra_data).is_none()

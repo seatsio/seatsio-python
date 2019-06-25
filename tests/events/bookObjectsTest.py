@@ -39,7 +39,8 @@ class BookObjectsTest(SeatsioClientTest):
         assert_that(res.objects["Section A-A-1"].entrance).is_equal_to("Entrance 1")
         assert_that(res.objects["Section A-A-1"].section).is_equal_to("Section A")
         assert_that(res.objects["Section A-A-1"].labels).is_equal_to(
-            {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A", "entrance": { "label": "Entrance 1" }}
+            {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A",
+             "entrance": {"label": "Entrance 1"}}
         )
 
     def test_withHoldToken(self):
@@ -69,3 +70,14 @@ class BookObjectsTest(SeatsioClientTest):
 
         status2 = self.client.events.retrieve_object_status(event.key, "A-2")
         assert_that(status2.order_id).is_equal_to("order1")
+
+    def test_keepExtraData(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.update_extra_data(event.key, "A-1", extra_data)
+
+        self.client.events.book(event.key, ["A-1"], keep_extra_data=True)
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.extra_data).is_equal_to(extra_data)

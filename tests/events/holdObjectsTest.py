@@ -34,3 +34,15 @@ class HoldObjectsTest(SeatsioClientTest):
 
         status2 = self.client.events.retrieve_object_status(event.key, "A-2")
         assert_that(status2.order_id).is_equal_to("order1")
+
+    def test_keepExtraData(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.update_extra_data(event.key, "A-1", extra_data)
+        hold_token = self.client.hold_tokens.create()
+
+        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, keep_extra_data=True)
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.extra_data).is_equal_to(extra_data)

@@ -1,5 +1,5 @@
 class ChangeBestAvailableObjectStatusRequest:
-    def __init__(self, number, categories, extra_data, status, hold_token, order_id):
+    def __init__(self, number, categories, extra_data, status, hold_token, order_id, keep_extra_data):
         best_available = {"number": number}
         if categories:
             best_available["categories"] = categories
@@ -11,3 +11,5 @@ class ChangeBestAvailableObjectStatusRequest:
             self.holdToken = hold_token
         if order_id:
             self.orderId = order_id
+        if keep_extra_data is not None:
+            self.keepExtraData = keep_extra_data

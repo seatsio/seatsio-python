@@ -1,4 +1,5 @@
 from seatsio.domain import ObjectStatus
+from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -43,3 +44,14 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.order_id).is_equal_to("order1")
+
+    def test_keepExtraData(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        extra_data = {"foo": "bar"}
+        self.client.events.book(event.key, [ObjectProperties("A-1", extra_data=extra_data)])
+
+        self.client.events.release(event.key, ["A-1"], keep_extra_data=True)
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.extra_data).is_equal_to(extra_data)
