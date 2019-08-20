@@ -11,4 +11,4 @@ class RetrieveDraftVersionThumbnailTest(SeatsioClientTest):
 
         thumbnail = self.client.charts.retrieve_draft_version_thumbnail(chart.key)
 
-        assert_that(thumbnail).contains("<!DOCTYPE svg")
+        assert_that(thumbnail).contains("PNG")
