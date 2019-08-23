@@ -43,13 +43,13 @@ class CreateChartTest(SeatsioClientTest):
         chart = self.client.charts.create(
             categories=[
                 {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
-                {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
+                {"key": 2, "label": "Category 2", "color": "#bbbbbb", "accessible": True}
             ])
 
         assert_that(chart.name).is_equal_to("Untitled chart")
         drawing = self.client.charts.retrieve_published_version(chart.key)
         assert_that(drawing.venueType).is_equal_to("MIXED")
         assert_that(drawing.categories.list).contains_exactly_in_any_order(
-            {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
-            {"key": 2, "label": "Category 2", "color": "#bbbbbb"}
+            {"key": 1, "label": "Category 1", "color": "#aaaaaa", "accessible": False},
+            {"key": 2, "label": "Category 2", "color": "#bbbbbb", "accessible": True}
         )
