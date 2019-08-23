@@ -270,6 +270,7 @@ class ObjectStatus:
         self.ticket_type = data.get("ticketType")
         self.quantity = data.get("quantity")
         self.extra_data = data.get("extraData")
+        self.for_sale = data.get("forSale")
 
 
 class StatusChange:

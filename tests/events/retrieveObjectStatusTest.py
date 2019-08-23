@@ -12,3 +12,4 @@ class RetrieveObjectStatusTest(SeatsioClientTest):
         object_status = self.client.events.retrieve_object_status(event.key, "A-1")
 
         assert_that(object_status.status).is_equal_to(ObjectStatus.FREE)
+        assert_that(object_status.for_sale).is_true()
