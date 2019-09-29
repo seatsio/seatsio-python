@@ -15,13 +15,13 @@ class SeatsioClientTest(unittest2.TestCase):
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
         self.user = self.create_test_user()
-        self.client = seatsio.Client(self.user["secretKey"], BASE_URL)
+        self.client = seatsio.Client(self.user["secretKey"], None, BASE_URL)
 
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()
 
     def newClient(self, secret_key):
-        return seatsio.Client(secret_key, BASE_URL)
+        return seatsio.Client(secret_key, None, BASE_URL)
 
     def create_test_user(self):
         response = requests.post(BASE_URL + "/system/public/users/actions/create-test-user")

@@ -15,3 +15,4 @@ class RetrieveSubaccountTest(SeatsioClientTest):
         assert_that(retrieved_subaccount.public_key).is_not_blank()
         assert_that(retrieved_subaccount.name).is_equal_to("joske")
         assert_that(retrieved_subaccount.active).is_true()
+        assert_that(retrieved_subaccount.account_id).is_not_none()
