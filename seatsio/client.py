@@ -7,9 +7,9 @@ from seatsio.reports.usage.usageReports import UsageReports
 from seatsio.subaccounts.subaccountsClient import SubaccountsClient
 
 class Client:
-    def __init__(self, secret_key, account_id=None, base_url="https://api.seatsio.net"):
+    def __init__(self, secret_key, workspaceKey=None, base_url="https://api.seatsio.net"):
         self.base_url = base_url
-        self.http_client = HttpClient(base_url, secret_key, account_id)
+        self.http_client = HttpClient(base_url, secret_key, workspaceKey)
         self.charts = ChartsClient(self.http_client)
         self.events = EventsClient(self.http_client)
         self.accounts = AccountsClient(self.http_client)
