@@ -248,6 +248,7 @@ class Subaccount:
         self.name = data.get("name")
         self.email = data.get("email")
         self.active = data.get("active")
+        self.workspaceKey = data.get("workspaceKey")
 
 
 class HoldToken:
@@ -256,6 +257,7 @@ class HoldToken:
         self.hold_token = data.get("holdToken")
         self.expires_at = parse_date(data.get("expiresAt"))
         self.expires_in_seconds = data.get("expiresInSeconds")
+        self.workspaceKey = data.get("workspaceKey")
 
 
 class ObjectStatus:
