@@ -248,7 +248,19 @@ class Subaccount:
         self.name = data.get("name")
         self.email = data.get("email")
         self.active = data.get("active")
-        self.workspaceKey = data.get("workspaceKey")
+        self.workspace = Workspace.create(data.get("workspace"))
+
+
+class Workspace:
+
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.key = data.get("key")
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return Workspace(param)
 
 
 class HoldToken:
