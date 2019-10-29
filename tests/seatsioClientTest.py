@@ -50,11 +50,12 @@ class SeatsioClientTest(unittest2.TestCase):
         with open(os.path.join(os.path.dirname(__file__), file), 'r') as test_chart_json:
             data = test_chart_json.read().replace('\n', '')
             chart_key = str(uuid.uuid4())
-            url = BASE_URL + "/system/public/" + self.user["designerKey"] + "/charts/" + chart_key
+            url = BASE_URL + "/system/public/charts/" + chart_key
             response = requests.post(
                 url=url,
                 headers={"Accept": "application/json"},
-                data=data
+                data=data,
+                auth=(self.user["secretKey"], ''),
             )
             if response.status_code == 201:
                 return chart_key
