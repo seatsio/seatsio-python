@@ -11,7 +11,6 @@ class RetrieveMyAccountTest(SeatsioClientTest):
         assert_that(account.designer_key).is_not_blank()
         assert_that(account.public_key).is_not_blank()
         assert_that(account.email).is_not_blank()
-        assert_that(account.is_subaccount).is_false()
         assert_that(account.settings.draftChartDrawingsEnabled).is_true()
         assert_that(account.settings.holdOnSelectForGAs).is_true()
         assert_that(account.settings.chartValidation.validateDuplicateLabels).is_equal_to("ERROR")

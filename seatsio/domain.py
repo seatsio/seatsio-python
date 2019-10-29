@@ -210,7 +210,6 @@ class Account:
         self.designer_key = data.get("designerKey")
         self.public_key = data.get("publicKey")
         self.email = data.get("email")
-        self.is_subaccount = data.get("isSubaccount")
         self.settings = AccountSettings.create(data.get("settings"))
 
 
