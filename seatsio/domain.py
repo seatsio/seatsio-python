@@ -208,7 +208,6 @@ class Account:
     def __init__(self, data):
         self.secret_key = data.get("secretKey")
         self.designer_key = data.get("designerKey")
-        self.public_key = data.get("publicKey")
         self.email = data.get("email")
         self.settings = AccountSettings.create(data.get("settings"))
 
@@ -245,7 +244,6 @@ class Subaccount:
         self.designer_key = data.get("designerKey")
         self.public_key = data.get("publicKey")
         self.name = data.get("name")
-        self.email = data.get("email")
         self.active = data.get("active")
         self.workspace = Workspace.create(data.get("workspace"))
 

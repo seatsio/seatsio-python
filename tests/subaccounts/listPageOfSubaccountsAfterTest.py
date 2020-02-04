@@ -11,7 +11,7 @@ class ListSubaccountsAfterTest(SeatsioClientTest):
 
         subaccounts = self.client.subaccounts.list_page_after(subaccount3.id)
 
-        assert_that(subaccounts.items).extracting("id").contains_exactly(subaccount2.id, subaccount1.id)
+        assert_that(subaccounts.items).extracting("id").contains_exactly(subaccount2.id, subaccount1.id, self.user["mainWorkspace"]["primaryUser"]["id"])
         assert_that(subaccounts.next_page_starts_after).is_none()
         assert_that(subaccounts.previous_page_ends_before).is_equal_to(subaccount2.id)
 

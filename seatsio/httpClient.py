@@ -105,20 +105,13 @@ class POST:
 
     def try_execute(self):
         try:
-            if self.bodyObject:
-                json = jsonpickle.encode(self.bodyObject, unpicklable=False)
-                return requests.post(
-                    url=self.url,
-                    auth=(self.secret_key, ''),
-                    headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None},
-                    data=json
-                )
-            else:
-                return requests.post(
-                    url=self.url,
-                    auth=(self.secret_key, ''),
-                    headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None}
-                )
+            json = jsonpickle.encode(self.bodyObject, unpicklable=False)
+            return requests.post(
+                url=self.url,
+                auth=(self.secret_key, ''),
+                headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None},
+                data=json
+            )
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 

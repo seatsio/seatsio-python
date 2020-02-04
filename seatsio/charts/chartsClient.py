@@ -89,7 +89,7 @@ class ChartsClient(ListableObjectsClient):
             .set_query_param("filter", chart_filter) \
             .set_query_param("tag", tag) \
             .set_query_param("validation", with_validation)
-        
+
         if expand_events is not None:
             page_fetcher.set_query_param("expand", "events")
         return Lister(page_fetcher).list()
@@ -99,4 +99,5 @@ class ChartsClient(ListableObjectsClient):
         return ChartValidation(json.loads(response.text))
 
     def validate_draft_version(self, key):
-        return self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
+        response =  self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
+        return ChartValidation(json.loads(response.text))

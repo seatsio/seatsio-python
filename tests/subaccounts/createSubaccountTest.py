@@ -15,26 +15,4 @@ class CreateSubaccountTest(SeatsioClientTest):
 
     def test_name_is_optional(self):
         subaccount = self.client.subaccounts.create()
-        assert_that(subaccount.name).is_none()
-
-    def test_with_email(self):
-        email = self.random_email()
-        subaccount = self.client.subaccounts.create_with_email(email)
-
-        assert_that(subaccount.secret_key).is_not_blank()
-        assert_that(subaccount.designer_key).is_not_blank()
-        assert_that(subaccount.public_key).is_not_blank()
-        assert_that(subaccount.name).is_none()
-        assert_that(subaccount.active).is_true()
-        assert_that(subaccount.email).is_equal_to(email)
-
-    def test_with_email_and_name(self):
-        email = self.random_email()
-        subaccount = self.client.subaccounts.create_with_email(email, 'jeff')
-
-        assert_that(subaccount.secret_key).is_not_blank()
-        assert_that(subaccount.designer_key).is_not_blank()
-        assert_that(subaccount.public_key).is_not_blank()
-        assert_that(subaccount.name).is_equal_to('jeff')
-        assert_that(subaccount.active).is_true()
-        assert_that(subaccount.email).is_equal_to(email)
+        assert_that(subaccount.name).is_not_blank()

@@ -41,7 +41,7 @@ class FilterSubaccountsTest(SeatsioClientTest):
         subaccount2 = self.client.subaccounts.create("test-/@/12")
         subaccount3 = self.client.subaccounts.create("test-/@/13")
         self.client.subaccounts.create("test-/@/4")
-        self.client.subaccounts.create("test-/@/4")
+        self.client.subaccounts.create("test-/@/5")
         self.client.subaccounts.create("test-/@/6")
         self.client.subaccounts.create("test-/@/7")
         self.client.subaccounts.create("test-/@/8")

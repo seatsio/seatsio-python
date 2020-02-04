@@ -11,4 +11,4 @@ class ListAllSubaccountsTest(SeatsioClientTest):
 
         subaccounts = self.client.subaccounts.list()
 
-        assert_that(subaccounts).extracting("id").contains_exactly(subaccount3.id, subaccount2.id, subaccount1.id)
+        assert_that(subaccounts).extracting("id").contains_exactly(subaccount3.id, subaccount2.id, subaccount1.id, self.user["mainWorkspace"]["primaryUser"]["id"])
