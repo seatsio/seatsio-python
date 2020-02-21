@@ -245,14 +245,16 @@ class Subaccount:
         self.public_key = data.get("publicKey")
         self.name = data.get("name")
         self.active = data.get("active")
-        self.workspace = Workspace.create(data.get("workspace"))
 
 
 class Workspace:
 
     def __init__(self, data):
         self.id = data.get("id")
+        self.name = data.get("name")
         self.key = data.get("key")
+        self.secret_key = data.get("secretKey")
+        self.is_test = data.get("isTest")
 
     @classmethod
     def create(cls, param):
