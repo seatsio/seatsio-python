@@ -15,7 +15,7 @@ class SeatsioClientTest(unittest2.TestCase):
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
         self.user = self.create_test_user()
-        self.client = seatsio.Client(self.user["secretKey"], None, BASE_URL)
+        self.client = self.create_client(self.user["secretKey"], None)
 
     def tearDown(self):
         super(SeatsioClientTest, self).tearDown()
@@ -29,6 +29,10 @@ class SeatsioClientTest(unittest2.TestCase):
             return response.json()
         else:
             raise Exception("Failed to create a test user")
+
+    @staticmethod
+    def create_client(secretKey, workspaceKey):
+        return seatsio.Client(secretKey, workspaceKey, BASE_URL)
 
     @staticmethod
     def random_email():

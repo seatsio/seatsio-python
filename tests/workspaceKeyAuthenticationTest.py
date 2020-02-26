@@ -8,7 +8,7 @@ class WorkspaceKeyAuthenticationTest(SeatsioClientTest):
     def test(self):
         subaccount = self.client.subaccounts.create()
 
-        subaccount_client = seatsio.Client(self.user["secretKey"], subaccount.workspace.key, "https://api-staging.seatsio.net")
+        subaccount_client = self.create_client(self.user["secretKey"], subaccount.public_key)
         hold_token = subaccount_client.hold_tokens.create()
 
-        assert_that(hold_token.workspaceKey).is_equal_to(subaccount.workspace.key)
+        assert_that(hold_token.workspaceKey).is_equal_to(subaccount.public_key)
