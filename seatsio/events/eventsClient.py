@@ -105,11 +105,22 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None,
                              keep_extra_data=None):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys,
-                                            keep_extra_data)
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data)
         response = self.http_client.url("/seasons/actions/change-object-status",
                                         query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
+
+    def change_object_status_in_batch(self, status_change_requests):
+        requests = list(map(lambda r: self.__change_object_status_in_batch_request(r.event_key, r.object_or_objects, r.status, r.hold_token, r.order_id, r.keep_extra_data), status_change_requests))
+        response = self.http_client.url("/events/actions/change-object-status",
+                                        query_params={"expand": "objects"}).post({"statusChanges": requests})
+        return list(map(lambda r: ChangeObjectStatusResult(r), response.json().get("results")))
+
+    def __change_object_status_in_batch_request(self, event_key, object_or_objects, status, hold_token, order_id, keep_extra_data):
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data)
+        request.event = event_key
+        delattr(request, "events")
+        return request
 
     def retrieve_object_status(self, key, object_key):
         return self.http_client.url("/events/{key}/objects/{object}", key=key, object=object_key).get_as(ObjectStatus)
