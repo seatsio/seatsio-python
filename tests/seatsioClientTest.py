@@ -1,4 +1,3 @@
-import json
 import os
 import uuid
 
@@ -6,6 +5,7 @@ import requests
 import unittest2
 
 import seatsio
+from seatsio.domain import Subaccount
 
 BASE_URL = "https://api-staging.seatsio.net"
 
@@ -14,7 +14,9 @@ class SeatsioClientTest(unittest2.TestCase):
 
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
-        self.user = self.create_test_user()
+        company = self.create_test_company()
+        self.user = company["admin"]
+        self.subaccount = Subaccount(company["subaccount"])
         self.client = self.create_client(self.user["secretKey"], None)
 
     def tearDown(self):
@@ -23,8 +25,8 @@ class SeatsioClientTest(unittest2.TestCase):
     def newClient(self, secret_key):
         return seatsio.Client(secret_key, None, BASE_URL)
 
-    def create_test_user(self):
-        response = requests.post(BASE_URL + "/system/public/users/actions/create-test-user")
+    def create_test_company(self):
+        response = requests.post(BASE_URL + "/system/public/users/actions/create-test-company")
         if response.ok:
             return response.json()
         else:
