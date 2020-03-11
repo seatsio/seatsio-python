@@ -32,6 +32,10 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.num_booked).is_none()
         assert_that(report_item.capacity).is_none()
         assert_that(report_item.extra_data).is_equal_to(extra_data)
+        assert_that(report_item.is_accessible).is_false()
+        assert_that(report_item.is_companion_seat).is_false()
+        assert_that(report_item.has_restricted_view).is_false()
+        assert_that(report_item.displayed_object_type).is_none()
 
     def test_holdToken(self):
         chart_key = self.create_test_chart()
@@ -71,6 +75,10 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.num_held).is_equal_to(3)
         assert_that(report_item.num_free).is_equal_to(92)
         assert_that(report_item.capacity).is_equal_to(100)
+        assert_that(report_item.is_accessible).is_none()
+        assert_that(report_item.is_companion_seat).is_none()
+        assert_that(report_item.has_restricted_view).is_none()
+        assert_that(report_item.displayed_object_type).is_none()
 
     def testByStatus(self):
         chart_key = self.create_test_chart()

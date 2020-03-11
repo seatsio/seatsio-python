@@ -115,6 +115,10 @@ class EventReportItem:
         self.capacity = item_data.get("capacity")
         self.object_type = item_data.get("objectType")
         self.extra_data = item_data.get("extraData")
+        self.is_accessible = item_data.get("isAccessible")
+        self.is_companion_seat = item_data.get("isCompanionSeat")
+        self.has_restricted_view = item_data.get("hasRestrictedView")
+        self.displayed_object_type = item_data.get("displayObjectType")
 
 
 class UsageSummaryForAllMonths:
