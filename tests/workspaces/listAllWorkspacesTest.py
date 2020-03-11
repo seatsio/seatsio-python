@@ -11,7 +11,7 @@ class ListAllWorkspacesTest(SeatsioClientTest):
 
         workspaces = self.client.workspaces.list()
 
-        assert_that(workspaces).extracting("name").contains_exactly("ws3", "ws2", "ws1", "Main workspace")
+        assert_that(workspaces).extracting("name").contains_exactly("ws3", "ws2", "ws1", "Default workspace")
 
     def test_filter(self):
         self.client.workspaces.create("someWorkspace")
