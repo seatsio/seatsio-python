@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "requests",
         "munch",
-        "jsonpickle",
+        "jsonpickle=1.3",
         "future",
         "six"
     ],
