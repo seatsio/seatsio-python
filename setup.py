@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "requests==2.23.0",
-        "munch==2.5.1",
+        "munch==2.5.1.dev12",
         "jsonpickle==1.3",
         "future==0.18.2",
         "six==1.11.0"
