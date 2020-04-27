@@ -16,11 +16,11 @@ setup(
 
     packages=find_packages(),
     install_requires=[
-        "requests",
-        "munch",
-        "jsonpickle=1.3",
-        "future",
-        "six"
+        "requests==2.23.0",
+        "munch==2.5.1",
+        "jsonpickle==1.3",
+        "future==0.18.2",
+        "six==1.11.0"
     ],
 
     test_suite='tests',
