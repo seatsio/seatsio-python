@@ -20,7 +20,7 @@ setup(
         "munch==2.5.1.dev12",
         "jsonpickle==1.3",
         "future==0.18.2",
-        "six==1.11.0"
+        "six==1.10.0"
     ],
 
     test_suite='tests',
