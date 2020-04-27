@@ -13,6 +13,7 @@ matrix:
     dist: xenial
     sudo: true
 install:
+- pip install zipp==3.5.0
 - python setup.py install
 before_script:
 - export TZ=Europe/Brussels

@@ -13,7 +13,6 @@ setup(
     license="MIT",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
-    zip_safe=True,
 
     packages=find_packages(),
     install_requires=[
