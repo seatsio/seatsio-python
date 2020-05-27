@@ -82,6 +82,8 @@ class ChartReportItem:
         self.entrance = item_data.get("entrance")
         self.capacity = item_data.get("capacity")
         self.object_type = item_data.get("objectType")
+        self.left_neighbour = item_data.get('leftNeighbour')
+        self.right_neighbour = item_data.get('rightNeighbour')
 
 
 class EventReport:
@@ -119,6 +121,8 @@ class EventReportItem:
         self.is_companion_seat = item_data.get("isCompanionSeat")
         self.has_restricted_view = item_data.get("hasRestrictedView")
         self.displayed_object_type = item_data.get("displayedObjectType")
+        self.left_neighbour = item_data.get('leftNeighbour')
+        self.right_neighbour = item_data.get('rightNeighbour')
 
 
 class UsageSummaryForAllMonths:

@@ -30,6 +30,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         assert_that(object.entrance).is_none()
         assert_that(object.num_booked).is_none()
         assert_that(object.capacity).is_none()
+        assert_that(object.left_neighbour).is_none()
+        assert_that(object.right_neighbour).is_equal_to("A-2")
 
     def test_hold_token(self):
         chart_key = self.create_test_chart()

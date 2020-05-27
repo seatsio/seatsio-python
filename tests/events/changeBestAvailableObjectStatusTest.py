@@ -31,6 +31,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(object.entrance).is_none()
         assert_that(object.num_booked).is_none()
         assert_that(object.capacity).is_none()
+        assert_that(object.left_neighbour).is_equal_to("B-4")
+        assert_that(object.right_neighbour).is_equal_to("B-6")
 
     def test_categories(self):
         chart_key = self.create_test_chart()

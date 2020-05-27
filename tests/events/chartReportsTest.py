@@ -21,6 +21,8 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.section).is_none()
         assert_that(report_item.entrance).is_none()
         assert_that(report_item.capacity).is_none()
+        assert_that(report_item.left_neighbour).is_none()
+        assert_that(report_item.right_neighbour).is_equal_to("A-2")
 
     def test_reportItemPropertiesForGA(self):
         chart_key = self.create_test_chart()

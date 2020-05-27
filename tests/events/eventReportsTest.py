@@ -36,6 +36,8 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.is_companion_seat).is_false()
         assert_that(report_item.has_restricted_view).is_false()
         assert_that(report_item.displayed_object_type).is_none()
+        assert_that(report_item.left_neighbour).is_none()
+        assert_that(report_item.right_neighbour).is_equal_to("A-2")
 
     def test_holdToken(self):
         chart_key = self.create_test_chart()
