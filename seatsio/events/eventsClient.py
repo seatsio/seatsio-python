@@ -1,6 +1,7 @@
 from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ChangeObjectStatusResult
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
+from seatsio.events.channelsRequests import UpdateChannelsRequest, AssignObjectsToChannelsRequest
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.eventReports import EventReports
@@ -147,3 +148,14 @@ class EventsClient(ListableObjectsClient):
         self.http_client \
             .url("/events/{key}/actions/update-extra-data", key=key) \
             .post(ExtraDataRequest(extra_datas))
+
+    def update_channels(self, key, channels):
+        self.http_client \
+            .url('/events/{key}/channels/update', key=key) \
+            .post(UpdateChannelsRequest(channels))
+
+    def assign_objects_to_channels(self, key, channels):
+        self.http_client \
+            .url('/events/{key}/channels/assign-objects', key=key) \
+            .post(AssignObjectsToChannelsRequest(channels))
+
