@@ -36,6 +36,7 @@ class Event:
         self.for_sale_config = ForSaleConfig.create(data.get("forSaleConfig"))
         self.created_on = parse_date(data.get("createdOn"))
         self.updated_on = parse_date(data.get("updatedOn"))
+        self.channels = Channel.createList(data.get("channels"))
 
     @classmethod
     def create_list(cls, lst):
@@ -58,6 +59,34 @@ class ForSaleConfig:
     def create(cls, param):
         if param is not None:
             return ForSaleConfig(param)
+
+class Channel:
+    def __init__(self, name, color, index, key=None, objects=None):
+        self.key = key
+        self.name = name
+        self.color = color
+        self.index = index
+        self.objects = objects
+
+    def __eq__(self, other):
+        return self.key == other.key and \
+               self.name == other.name and \
+               self.color == other.color and \
+               self.index == other.index and \
+               self.objects == other.objects
+
+    def __hash__(self):
+        return hash((self.key, self.name, self.color, self.index, self.objects))
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'))
+
+    @classmethod
+    def createList(cls, param):
+        if param is not None:
+            return list(map(Channel.create, param))
 
 
 class ChartReport:
