@@ -1,12 +1,14 @@
+import json
+
 from munch import munchify
 
 from seatsio.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
+from seatsio.charts.socialDistancingRulesetsRequest import SocialDistancingRulesetsRequest
 from seatsio.domain import Chart, ChartValidation
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
-import json
 
 
 class ChartsClient(ListableObjectsClient):
@@ -106,5 +108,9 @@ class ChartsClient(ListableObjectsClient):
         return ChartValidation(json.loads(response.text))
 
     def validate_draft_version(self, key):
-        response =  self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
+        response = self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
         return ChartValidation(json.loads(response.text))
+
+    def save_social_distancing_rulesets(self, key, rulesets):
+        request = SocialDistancingRulesetsRequest(rulesets)
+        self.http_client.url("/charts/{key}/social-distancing-rulesets", key=key).post(request)

@@ -16,6 +16,8 @@ class Chart:
         self.tags = data.get("tags")
         self.archived = data.get("archived")
         self.validation = data.get("validation")
+        self.social_distancing_rulesets = {k: SocialDistancingRuleset.create(v) for k, v in
+                                           data.get("socialDistancingRulesets").items()}
 
 
 class ChartValidation:
@@ -37,6 +39,7 @@ class Event:
         self.created_on = parse_date(data.get("createdOn"))
         self.updated_on = parse_date(data.get("updatedOn"))
         self.channels = Channel.createList(data.get("channels"))
+        self.social_distancing_ruleset_key = data.get("socialDistancingRulesetKey")
 
     @classmethod
     def create_list(cls, lst):
@@ -60,6 +63,7 @@ class ForSaleConfig:
         if param is not None:
             return ForSaleConfig(param)
 
+
 class Channel:
     def __init__(self, name, color, index, key=None, objects=None):
         self.key = key
@@ -81,12 +85,55 @@ class Channel:
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'))
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'),
+                           param.get('objects'))
 
     @classmethod
     def createList(cls, param):
         if param is not None:
             return list(map(Channel.create, param))
+
+
+class SocialDistancingRuleset:
+    def __init__(self, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
+                 number_of_disabled_aisle_seats=0, max_group_size=0, disabled_seats=[], enabled_seats=[], index=0):
+        self.name = name
+        self.number_of_disabled_seats_to_the_sides = number_of_disabled_seats_to_the_sides
+        self.disable_seats_in_front_and_behind = disable_seats_in_front_and_behind
+        self.number_of_disabled_aisle_seats = number_of_disabled_aisle_seats
+        self.max_group_size = max_group_size
+        self.disabled_seats = disabled_seats
+        self.enabled_seats = enabled_seats
+        self.index = index
+
+    def __eq__(self, other):
+        return self.name == other.name and \
+               self.number_of_disabled_seats_to_the_sides == other.number_of_disabled_seats_to_the_sides and \
+               self.disable_seats_in_front_and_behind == other.disable_seats_in_front_and_behind and \
+               self.number_of_disabled_aisle_seats == other.number_of_disabled_aisle_seats and \
+               self.max_group_size == other.max_group_size and \
+               self.disabled_seats == other.disabled_seats and \
+               self.enabled_seats == other.enabled_seats and \
+               self.index == other.index
+
+    def __hash__(self):
+        return hash((self.name, self.number_of_disabled_seats_to_the_sides, self.disable_seats_in_front_and_behind,
+                     self.number_of_disabled_aisle_seats,
+                     self.max_group_size, self.disabled_seats, self.enabled_seats, self.index))
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return SocialDistancingRuleset(
+                param.get('name'),
+                param.get('numberOfDisabledSeatsToTheSides'),
+                param.get('disableSeatsInFrontAndBehind'),
+                param.get('numberOfDisabledAisleSeats'),
+                param.get('maxGroupSize'),
+                param.get('disabledSeats'),
+                param.get('enabledSeats'),
+                param.get('index')
+            )
 
 
 class ChartReport:
