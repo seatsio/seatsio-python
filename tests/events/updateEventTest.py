@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from seatsio import SocialDistancingRuleset
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -54,3 +55,28 @@ class UpdateEventTest(SeatsioClientTest):
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.table_booking_modes).is_equal_to({"T1": "BY_SEAT"})
         assert_that(retrieved_event.updated_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
+
+    def test_updateSocialDistancingRulesetKey(self):
+        chart_key = self.create_test_chart()
+        self.client.charts.save_social_distancing_rulesets(chart_key, {
+            'ruleset1': SocialDistancingRuleset(name='My first ruleset'),
+            'ruleset2': SocialDistancingRuleset(name='My second ruleset'),
+        })
+        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset1')
+
+        self.client.events.update(event.key, social_distancing_ruleset_key='ruleset2')
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.social_distancing_ruleset_key).is_equal_to('ruleset2')
+
+    def test_removeSocialDistancingRulesetKey(self):
+        chart_key = self.create_test_chart()
+        self.client.charts.save_social_distancing_rulesets(chart_key, {
+            'ruleset1': SocialDistancingRuleset(name='My first ruleset')
+        })
+        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset1')
+
+        self.client.events.update(event.key, social_distancing_ruleset_key='')
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.social_distancing_ruleset_key).is_none()
