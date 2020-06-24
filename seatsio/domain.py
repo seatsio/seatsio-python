@@ -199,6 +199,8 @@ class EventReportItem:
         self.displayed_object_type = item_data.get("displayedObjectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
+        self.is_selectable = item_data.get('isSelectable')
+        self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
 
 
 class UsageSummaryForAllMonths:
