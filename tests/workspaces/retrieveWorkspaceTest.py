@@ -13,3 +13,4 @@ class UpdateWorkspaceTest(SeatsioClientTest):
         assert_that(retrieved_workspace.key).is_not_none()
         assert_that(retrieved_workspace.secret_key).is_not_none()
         assert_that(retrieved_workspace.is_test).is_false()
+        assert_that(retrieved_workspace.is_active).is_true()

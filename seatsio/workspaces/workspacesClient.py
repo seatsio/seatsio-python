@@ -24,6 +24,12 @@ class WorkspacesClient(ListableObjectsClient):
         response = self.http_client.url("/workspaces/{key}/actions/regenerate-secret-key", key=key).post()
         return response.json()["secretKey"]
 
+    def activate(self, key):
+        self.http_client.url("/workspaces/{key}/actions/activate", key=key).post()
+
+    def deactivate(self, key):
+        self.http_client.url("/workspaces/{key}/actions/deactivate", key=key).post()
+
     def retrieve(self, key):
         return self.http_client.url("/workspaces/{key}", key=key).get_as(Workspace)
 

@@ -12,6 +12,7 @@ class CreateWorkspaceTest(SeatsioClientTest):
         assert_that(workspace.key).is_not_none()
         assert_that(workspace.secret_key).is_not_none()
         assert_that(workspace.is_test).is_false()
+        assert_that(workspace.is_active).is_true()
 
     def test_create_test_workspace(self):
         workspace = self.client.workspaces.create("my workspace", True)
@@ -21,3 +22,4 @@ class CreateWorkspaceTest(SeatsioClientTest):
         assert_that(workspace.key).is_not_none()
         assert_that(workspace.secret_key).is_not_none()
         assert_that(workspace.is_test).is_true()
+        assert_that(workspace.is_active).is_true()
