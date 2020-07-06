@@ -1,3 +1,4 @@
+from seatsio import Channel
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -128,3 +129,18 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.extra_data).is_none()
+
+    def test_channelKeys(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        self.client.events.change_object_status(event.key, ["A-1"], status="someStatus", channel_keys=["channelKey1"])
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.status).is_equal_to("someStatus")
