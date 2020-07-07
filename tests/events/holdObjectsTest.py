@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus
+from seatsio.domain import ObjectStatus, Channel
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -46,3 +46,19 @@ class HoldObjectsTest(SeatsioClientTest):
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.extra_data).is_equal_to(extra_data)
+
+    def test_channelKeys(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        hold_token = self.client.hold_tokens.create()
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        self.client.events.hold(event.key, ["A-1"], hold_token=hold_token.hold_token, channel_keys=["channelKey1"])
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.status).is_equal_to(ObjectStatus.HELD)
