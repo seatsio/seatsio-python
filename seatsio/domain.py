@@ -311,6 +311,7 @@ class Workspace:
         self.secret_key = data.get("secretKey")
         self.is_test = data.get("isTest")
         self.is_active = data.get("isActive")
+        self.is_default = data.get("isDefault")
 
     @classmethod
     def create(cls, param):

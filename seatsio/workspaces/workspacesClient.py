@@ -30,6 +30,9 @@ class WorkspacesClient(ListableObjectsClient):
     def deactivate(self, key):
         self.http_client.url("/workspaces/{key}/actions/deactivate", key=key).post()
 
+    def set_default(self, key):
+        self.http_client.url("/workspaces/actions/set-default/{key}", key=key).post()
+
     def retrieve(self, key):
         return self.http_client.url("/workspaces/{key}", key=key).get_as(Workspace)
 
