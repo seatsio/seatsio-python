@@ -140,7 +140,22 @@ class ChangeObjectStatusTest(SeatsioClientTest):
             "channelKey1": ["A-1", "A-2"]
         })
 
-        self.client.events.change_object_status(event.key, ["A-1"], status="someStatus", channel_keys=["channelKey1"])
+        self.client.events.change_object_status(event.key, ["A-1"], "someStatus", channel_keys=["channelKey1"])
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.status).is_equal_to("someStatus")
+
+    def test_ignoreChannels(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_channels=True)
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.status).is_equal_to("someStatus")

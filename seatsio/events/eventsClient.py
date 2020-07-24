@@ -58,56 +58,51 @@ class EventsClient(ListableObjectsClient):
         page_fetcher = PageFetcher(StatusChange, self.http_client, url, key=key, objectId=object_id)
         return Lister(page_fetcher)
 
-    def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token,
-                                         order_id, keep_extra_data, channel_keys)
+    def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def book_best_available(self, event_key, number, categories=None, hold_token=None, order_id=None, keep_extra_data=None):
+    def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
             event_key,
             number,
             ObjectStatus.BOOKED,
             categories,
             hold_token,
+            extra_data,
             order_id,
-            keep_extra_data
+            keep_extra_data,
+            ignore_channels,
+            channel_keys
         )
 
-    def hold_best_available(self, event_key, number, categories=None, hold_token=None, order_id=None, keep_extra_data=None):
+    def hold_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
             event_key,
             number,
             ObjectStatus.HELD,
             categories,
             hold_token,
+            extra_data,
             order_id,
-            keep_extra_data
+            keep_extra_data,
+            ignore_channels,
+            channel_keys
         )
 
-    def change_best_available_object_status(
-            self, event_key, number, status, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None):
+    def change_best_available_object_status(self, event_key, number, status, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(
-            ChangeBestAvailableObjectStatusRequest(
-                number=number,
-                status=status,
-                categories=categories,
-                hold_token=hold_token,
-                extra_data=extra_data,
-                order_id=order_id,
-                keep_extra_data=keep_extra_data
-            ))
+            ChangeBestAvailableObjectStatusRequest(number, categories, extra_data, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys))
         return BestAvailableObjects(response.json())
 
-    def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id, keep_extra_data, channel_keys)
+    def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id, keep_extra_data, channel_keys)
+    def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, channel_keys=None):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, channel_keys)
-        response = self.http_client.url("/seasons/actions/change-object-status",
-                                        query_params={"expand": "objects"}).post(request)
+    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys)
+        response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 
     def change_object_status_in_batch(self, status_change_requests):
@@ -117,7 +112,7 @@ class EventsClient(ListableObjectsClient):
         return list(map(lambda r: ChangeObjectStatusResult(r), response.json().get("results")))
 
     def __change_object_status_in_batch_request(self, event_key, object_or_objects, status, hold_token, order_id, keep_extra_data):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data)
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data, None, None)
         request.event = event_key
         delattr(request, "events")
         return request

@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus
+from seatsio.domain import ObjectStatus, Channel
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -135,3 +135,31 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
         status = self.client.events.retrieve_object_status(event.key, "B-5")
         assert_that(status.extra_data).is_none()
+
+    def test_channelKeys(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["B-6"]
+        })
+
+        result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", channel_keys=["channelKey1"])
+
+        assert_that(result.objects).contains_exactly("B-6")
+
+    def test_ignoreChannels(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["B-5"]
+        })
+
+        result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", ignore_channels=True)
+
+        assert_that(result.objects).contains_exactly("B-5")

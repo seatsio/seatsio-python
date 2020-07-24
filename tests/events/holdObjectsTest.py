@@ -27,7 +27,7 @@ class HoldObjectsTest(SeatsioClientTest):
         event = self.client.events.create(chart_key)
         hold_token = self.client.hold_tokens.create()
 
-        self.client.events.hold(event.key, ["A-1", "A-2"], hold_token=hold_token.hold_token, order_id="order1")
+        self.client.events.hold(event.key, ["A-1", "A-2"], hold_token.hold_token, order_id="order1")
 
         status1 = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status1.order_id).is_equal_to("order1")
@@ -58,7 +58,23 @@ class HoldObjectsTest(SeatsioClientTest):
             "channelKey1": ["A-1", "A-2"]
         })
 
-        self.client.events.hold(event.key, ["A-1"], hold_token=hold_token.hold_token, channel_keys=["channelKey1"])
+        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, channel_keys=["channelKey1"])
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.status).is_equal_to(ObjectStatus.HELD)
+
+    def test_ignoreChannels(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        hold_token = self.client.hold_tokens.create()
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_channels=True)
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.status).is_equal_to(ObjectStatus.HELD)
