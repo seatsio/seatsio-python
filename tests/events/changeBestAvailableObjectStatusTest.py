@@ -56,6 +56,20 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(self.client.events.retrieve_object_status(event.key, "B-4").extra_data).is_equal_to(d1)
         assert_that(self.client.events.retrieve_object_status(event.key, "B-5").extra_data).is_equal_to(d2)
 
+    def test_extra_data(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        result = self.client.events.change_best_available_object_status(
+            event_key=event.key,
+            number=2,
+            status="mystatus",
+            ticket_types=["adult", "child"]
+        )
+        assert_that(result.objects).contains_exactly("B-4", "B-5")
+        assert_that(self.client.events.retrieve_object_status(event.key, "B-4").ticket_type).is_equal_to("adult")
+        assert_that(self.client.events.retrieve_object_status(event.key, "B-5").ticket_type).is_equal_to("child")
+
     def test_hold_token(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

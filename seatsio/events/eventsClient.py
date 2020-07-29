@@ -61,7 +61,7 @@ class EventsClient(ListableObjectsClient):
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+    def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
             event_key,
             number,
@@ -69,13 +69,14 @@ class EventsClient(ListableObjectsClient):
             categories,
             hold_token,
             extra_data,
+            ticket_types,
             order_id,
             keep_extra_data,
             ignore_channels,
             channel_keys
         )
 
-    def hold_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+    def hold_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
             event_key,
             number,
@@ -83,15 +84,16 @@ class EventsClient(ListableObjectsClient):
             categories,
             hold_token,
             extra_data,
+            ticket_types,
             order_id,
             keep_extra_data,
             ignore_channels,
             channel_keys
         )
 
-    def change_best_available_object_status(self, event_key, number, status, categories=None, hold_token=None, extra_data=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
+    def change_best_available_object_status(self, event_key, number, status, categories=None, hold_token=None, extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(
-            ChangeBestAvailableObjectStatusRequest(number, categories, extra_data, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys))
+            ChangeBestAvailableObjectStatusRequest(number, categories, extra_data, ticket_types, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys))
         return BestAvailableObjects(response.json())
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
