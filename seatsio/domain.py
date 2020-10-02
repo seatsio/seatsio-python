@@ -201,6 +201,7 @@ class EventReportItem:
         self.right_neighbour = item_data.get('rightNeighbour')
         self.is_selectable = item_data.get('isSelectable')
         self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
+        self.channel = item_data.get('channel')
 
 
 class UsageSummaryForAllMonths:

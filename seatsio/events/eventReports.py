@@ -41,6 +41,12 @@ class EventReports:
     def summary_by_selectability(self, event_key):
         return self.__fetch_summary_report("bySelectability", event_key)
 
+    def by_channel(self, event_key, channel=None):
+        return self.__fetch_report("byChannel", event_key, channel)
+
+    def summary_by_channel(self, event_key):
+        return self.__fetch_summary_report("byChannel", event_key)
+
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"

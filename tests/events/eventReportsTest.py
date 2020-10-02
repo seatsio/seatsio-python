@@ -1,4 +1,4 @@
-from seatsio.domain import EventReport, EventReportItem
+from seatsio.domain import EventReport, EventReportItem, Channel
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -12,6 +12,13 @@ class EventReportsTest(SeatsioClientTest):
         extra_data = {"foo": "bar"}
 
         self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1")
+
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1"]
+        })
 
         report = self.client.events.reports.by_label(event.key)
 
@@ -40,6 +47,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.right_neighbour).is_equal_to("A-2")
         assert_that(report_item.is_selectable).is_false()
         assert_that(report_item.is_disabled_by_social_distancing).is_false()
+        assert_that(report_item.channel).is_equal_to('channelKey1')
 
     def test_holdToken(self):
         chart_key = self.create_test_chart()
@@ -251,3 +259,35 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(list)
         assert_that(report[0]).is_instance(EventReportItem)
         assert_that(report).has_size(32)
+
+    def testByChannel(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        report = self.client.events.reports.by_channel(event.key)
+
+        assert_that(report).is_instance(EventReport)
+        assert_that(report.get("NO_CHANNEL")).has_size(32)
+        assert_that(report.get("channelKey1")).has_size(2)
+
+    def testBySpecificChannel(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.update_channels(event.key, {
+            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
+        })
+        self.client.events.assign_objects_to_channels(event.key, {
+            "channelKey1": ["A-1", "A-2"]
+        })
+
+        report = self.client.events.reports.by_channel(event.key, "channelKey1")
+
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report).has_size(2)
