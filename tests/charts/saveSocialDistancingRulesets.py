@@ -16,6 +16,7 @@ class SaveSocialDistancingRulesetsTest(SeatsioClientTest):
                 max_group_size=1,
                 max_occupancy_absolute=10,
                 max_occupancy_percentage=0,
+                one_group_per_table=True,
                 fixed_group_layout=False,
                 disabled_seats=["A-1"],
                 enabled_seats=["A-2"],
@@ -53,6 +54,7 @@ class SaveSocialDistancingRulesetsTest(SeatsioClientTest):
                 max_group_size=1,
                 max_occupancy_absolute=10,
                 max_occupancy_percentage=0,
+                one_group_per_table=True,
                 disabled_seats=["A-1"],
                 enabled_seats=["A-2"],
                 index=4

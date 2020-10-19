@@ -97,7 +97,7 @@ class Channel:
 class SocialDistancingRuleset:
     def __init__(self, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
                  number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
-                 max_occupancy_percentage=0, fixed_group_layout=False,
+                 max_occupancy_percentage=0, one_group_per_table=False, fixed_group_layout=False,
                  disabled_seats=[], enabled_seats=[], index=0):
         self.name = name
         self.number_of_disabled_seats_to_the_sides = number_of_disabled_seats_to_the_sides
@@ -106,6 +106,7 @@ class SocialDistancingRuleset:
         self.max_group_size = max_group_size
         self.max_occupancy_absolute = max_occupancy_absolute
         self.max_occupancy_percentage = max_occupancy_percentage
+        self.one_group_per_table = one_group_per_table
         self.fixed_group_layout = fixed_group_layout
         self.disabled_seats = disabled_seats
         self.enabled_seats = enabled_seats
@@ -113,15 +114,15 @@ class SocialDistancingRuleset:
 
     @classmethod
     def fixed(cls, name, disabled_seats=[], index=0):
-        return SocialDistancingRuleset(name, 0, False, 0, 0, 0, 0, True, disabled_seats, [], index)
+        return SocialDistancingRuleset(name, 0, False, 0, 0, 0, 0, False, True, disabled_seats, [], index)
 
     @classmethod
     def rule_based(cls, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
                      number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
-                     max_occupancy_percentage=0, disabled_seats=[], enabled_seats=[], index=0):
+                     max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
         return SocialDistancingRuleset(name, number_of_disabled_seats_to_the_sides, disable_seats_in_front_and_behind,
                                        number_of_disabled_aisle_seats, max_group_size, max_occupancy_absolute,
-                                       max_occupancy_percentage, False, disabled_seats, enabled_seats, index)
+                                       max_occupancy_percentage, one_group_per_table, False, disabled_seats, enabled_seats, index)
 
     def __eq__(self, other):
         return self.name == other.name and \
@@ -131,6 +132,7 @@ class SocialDistancingRuleset:
                self.max_group_size == other.max_group_size and \
                self.max_occupancy_absolute == other.max_occupancy_absolute and \
                self.max_occupancy_percentage == other.max_occupancy_percentage and \
+               self.one_group_per_table == other.one_group_per_table and \
                self.fixed_group_layout == other.fixed_group_layout and \
                self.disabled_seats == other.disabled_seats and \
                self.enabled_seats == other.enabled_seats and \
@@ -140,7 +142,7 @@ class SocialDistancingRuleset:
         return hash((self.name, self.number_of_disabled_seats_to_the_sides, self.disable_seats_in_front_and_behind,
                      self.number_of_disabled_aisle_seats,
                      self.max_group_size, self.max_occupancy_absolute, self.max_occupancy_percentage,
-                     self.fixed_group_layout, self.disabled_seats, self.enabled_seats, self.index))
+                     self.fixed_group_layout, self.one_group_per_table, self.disabled_seats, self.enabled_seats, self.index))
 
     @classmethod
     def create(cls, param):
@@ -153,6 +155,7 @@ class SocialDistancingRuleset:
                 param.get('maxGroupSize'),
                 param.get('maxOccupancyAbsolute'),
                 param.get('maxOccupancyPercentage'),
+                param.get('oneGroupPerTable'),
                 param.get('fixedGroupLayout'),
                 param.get('disabledSeats'),
                 param.get('enabledSeats'),

@@ -12,6 +12,7 @@ class SocialDistancingRulesetsRequest:
             "maxGroupSize": ruleset.max_group_size,
             "maxOccupancyAbsolute": ruleset.max_occupancy_absolute,
             "maxOccupancyPercentage": ruleset.max_occupancy_percentage,
+            "oneGroupPerTable": ruleset.one_group_per_table,
             "fixedGroupLayout": ruleset.fixed_group_layout,
             "disabledSeats": ruleset.disabled_seats,
             "enabledSeats": ruleset.enabled_seats,
