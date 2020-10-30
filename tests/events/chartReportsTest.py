@@ -48,3 +48,35 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(ChartReport)
         assert_that(report.get("A-1")).has_size(1)
         assert_that(report.get("A-2")).has_size(1)
+
+    def testByLabel_BookWholeTablesNone(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.by_label(chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.items).has_size(14)
+
+    def testByLabel_BookWholeTablesChart(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.by_label(chart_key, 'chart')
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.items).has_size(7)
+
+    def testByLabel_BookWholeTablesTrue(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.by_label(chart_key, 'true')
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.items).has_size(2)
+
+    def testByLabel_BookWholeTablesFalse(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.by_label(chart_key, 'false')
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.items).has_size(12)
