@@ -32,8 +32,7 @@ class Event:
         self.id = data.get("id")
         self.key = data.get("key")
         self.chart_key = data.get("chartKey")
-        self.book_whole_tables = data.get("bookWholeTables")
-        self.table_booking_modes = data.get("tableBookingModes")
+        self.table_booking_config = TableBookingConfig.create(data.get("tableBookingConfig"))
         self.supports_best_available = data.get("supportsBestAvailable")
         self.for_sale_config = ForSaleConfig.create(data.get("forSaleConfig"))
         self.created_on = parse_date(data.get("createdOn"))
@@ -62,6 +61,39 @@ class ForSaleConfig:
     def create(cls, param):
         if param is not None:
             return ForSaleConfig(param)
+
+
+class TableBookingConfig:
+    def __init__(self, mode, tables=None):
+        self.mode = mode
+        self.tables = tables
+
+    def __eq__(self, other):
+        return self.mode == other.mode and \
+               self.tables == other.tables
+
+    def __hash__(self):
+        return hash((self.mode, self.tables))
+
+    @classmethod
+    def inherit(cls):
+        return TableBookingConfig('INHERIT')
+
+    @classmethod
+    def all_by_table(cls):
+        return TableBookingConfig('ALL_BY_TABLE')
+
+    @classmethod
+    def all_by_seat(cls):
+        return TableBookingConfig('ALL_BY_SEAT')
+
+    @classmethod
+    def custom(cls, tables):
+        return TableBookingConfig('CUSTOM', tables)
+
+    @classmethod
+    def create(cls, data):
+        return TableBookingConfig(data.get("mode"), data.get("tables"))
 
 
 class Channel:
@@ -118,11 +150,12 @@ class SocialDistancingRuleset:
 
     @classmethod
     def rule_based(cls, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                     number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
-                     max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
+                   number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
+                   max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
         return SocialDistancingRuleset(name, number_of_disabled_seats_to_the_sides, disable_seats_in_front_and_behind,
                                        number_of_disabled_aisle_seats, max_group_size, max_occupancy_absolute,
-                                       max_occupancy_percentage, one_group_per_table, False, disabled_seats, enabled_seats, index)
+                                       max_occupancy_percentage, one_group_per_table, False, disabled_seats,
+                                       enabled_seats, index)
 
     def __eq__(self, other):
         return self.name == other.name and \
@@ -142,7 +175,8 @@ class SocialDistancingRuleset:
         return hash((self.name, self.number_of_disabled_seats_to_the_sides, self.disable_seats_in_front_and_behind,
                      self.number_of_disabled_aisle_seats,
                      self.max_group_size, self.max_occupancy_absolute, self.max_occupancy_percentage,
-                     self.fixed_group_layout, self.one_group_per_table, self.disabled_seats, self.enabled_seats, self.index))
+                     self.fixed_group_layout, self.one_group_per_table, self.disabled_seats, self.enabled_seats,
+                     self.index))
 
     @classmethod
     def create(cls, param):

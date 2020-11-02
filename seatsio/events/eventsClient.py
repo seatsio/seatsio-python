@@ -18,9 +18,9 @@ class EventsClient(ListableObjectsClient):
         ListableObjectsClient.__init__(self, http_client, Event, "/events")
         self.reports = EventReports(self.http_client)
 
-    def create(self, chart_key, event_key=None, book_whole_tables=None, table_booking_modes=None, social_distancing_ruleset_key=None):
+    def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None):
         response = self.http_client.url("/events").post(
-            CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes, social_distancing_ruleset_key))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key))
         return Event(response.json())
 
     def create_multiple(self, chart_key, events_properties):
@@ -28,9 +28,9 @@ class EventsClient(ListableObjectsClient):
             CreateMultipleEventsRequest(chart_key, events_properties))
         return Event.create_list(response.json().get("events"))
 
-    def update(self, key, chart_key=None, event_key=None, book_whole_tables=None, table_booking_modes=None, social_distancing_ruleset_key=None):
+    def update(self, key, chart_key=None, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None):
         self.http_client.url("/events/{key}", key=key).post(
-            CreateSingleEventRequest(chart_key, event_key, book_whole_tables, table_booking_modes, social_distancing_ruleset_key))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()
