@@ -8,6 +8,7 @@ class SocialDistancingRulesetsRequest:
             "name": ruleset.name,
             "numberOfDisabledSeatsToTheSides": ruleset.number_of_disabled_seats_to_the_sides,
             "disableSeatsInFrontAndBehind": ruleset.disable_seats_in_front_and_behind,
+            "disableDiagonalSeatsInFrontAndBehind": ruleset.disable_diagonal_seats_in_front_and_behind,
             "numberOfDisabledAisleSeats": ruleset.number_of_disabled_aisle_seats,
             "maxGroupSize": ruleset.max_group_size,
             "maxOccupancyAbsolute": ruleset.max_occupancy_absolute,
