@@ -58,8 +58,8 @@ class EventsClient(ListableObjectsClient):
         page_fetcher = PageFetcher(StatusChange, self.http_client, url, key=key, objectId=object_id)
         return Lister(page_fetcher)
 
-    def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
+    def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
@@ -99,11 +99,11 @@ class EventsClient(ListableObjectsClient):
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
+    def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
 
-    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys)
+    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
         response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 

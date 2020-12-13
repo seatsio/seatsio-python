@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, Channel
+from seatsio.domain import ObjectStatus, Channel, SocialDistancingRuleset
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -108,6 +108,22 @@ class BookObjectsTest(SeatsioClientTest):
         })
 
         self.client.events.book(event.key, ["A-1"], ignore_channels=True)
+
+        status = self.client.events.retrieve_object_status(event.key, "A-1")
+        assert_that(status.status).is_equal_to(ObjectStatus.BOOKED)
+
+    def test_ignore_channels(self):
+        chart_key = self.create_test_chart()
+        rulesets = {
+            'ruleset': SocialDistancingRuleset.fixed(
+                name='My first ruleset',
+                disabled_seats=["A-1"]
+            )
+        }
+        self.client.charts.save_social_distancing_rulesets(chart_key, rulesets)
+        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset')
+
+        self.client.events.book(event.key, ["A-1"], ignore_social_distancing=True)
 
         status = self.client.events.retrieve_object_status(event.key, "A-1")
         assert_that(status.status).is_equal_to(ObjectStatus.BOOKED)

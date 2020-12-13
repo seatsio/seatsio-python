@@ -4,7 +4,7 @@ from seatsio.events.objectProperties import ObjectProperties
 
 
 class ChangeObjectStatusRequest:
-    def __init__(self, object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys):
+    def __init__(self, object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing=None):
         self.objects = self.__normalize_objects(object_or_objects)
         self.status = status
         if hold_token:
@@ -21,6 +21,8 @@ class ChangeObjectStatusRequest:
             self.ignoreChannels = ignore_channels
         if channel_keys is not None:
             self.channelKeys = channel_keys
+        if ignore_social_distancing is not None:
+            self.ignoreSocialDistancing = ignore_social_distancing
 
     def __normalize_objects(self, object_or_objects):
         if isinstance(object_or_objects, list):
