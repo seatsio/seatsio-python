@@ -311,12 +311,12 @@ class UsageDetailsForMonth:
 
 class UsageDetails:
     def __init__(self, json):
-        if json.get("subaccount") is not None:
-            self.subaccount = UsageSubaccount(json)
+        if json.get("workspace") is not None:
+            self.workspace = UsageWorkspace(json)
         self.usage_by_chart = list(map(lambda x: UsageByChart(x), json.get("usageByChart")))
 
 
-class UsageSubaccount:
+class UsageWorkspace:
     def __init__(self, json):
         self.id = json.get("id")
 
