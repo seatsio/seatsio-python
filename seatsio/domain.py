@@ -75,6 +75,12 @@ class TableBookingConfig:
     def __hash__(self):
         return hash((self.mode, self.tables))
 
+    def to_json(self):
+        json = {"mode": self.mode}
+        if self.tables is not None:
+            json["tables"] = self.tables
+        return json
+
     @classmethod
     def inherit(cls):
         return TableBookingConfig('INHERIT')

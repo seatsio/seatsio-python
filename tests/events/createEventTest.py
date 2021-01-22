@@ -27,7 +27,7 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.key).is_equal_to("eventje")
 
-    def test_table_booking_modes_is_optional(self):
+    def test_table_booking_mode_custom_can_be_used(self):
         chart_key = self.create_test_chart_with_tables()
         table_booking_config = TableBookingConfig.custom({"T1": "BY_TABLE", "T2": "BY_SEAT"})
 
@@ -35,6 +35,14 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.key).is_not_blank()
         assert_that(event.table_booking_config).is_equal_to(table_booking_config)
+
+    def test_table_booking_mode_inherit_can_be_used(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.inherit())
+
+        assert_that(event.key).is_not_blank()
+        assert_that(event.table_booking_config).is_equal_to(TableBookingConfig.inherit())
 
     def test_social_distancing_ruleset_key_is_optional(self):
         chart_key = self.create_test_chart()
