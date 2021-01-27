@@ -39,6 +39,7 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.section).is_none()
         assert_that(report_item.entrance).is_none()
         assert_that(report_item.capacity).is_equal_to(100)
+        assert_that(report_item.book_as_a_whole).is_equal_to(False)
 
     def testByLabel(self):
         chart_key = self.create_test_chart()
