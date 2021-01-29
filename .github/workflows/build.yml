@@ -20,6 +20,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - run: python setup.py install
+    - uses: zcong1993/setup-timezone@master
+      with:
+        timezone: Europe/Brussels
     - run: python setup.py test
-      env:
-        TZ: Europe/Brussels
