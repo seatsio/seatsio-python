@@ -5,6 +5,6 @@ class CreateSingleEventRequest:
         if event_key:
             self.eventKey = event_key
         if table_booking_config is not None:
-            self.tableBookingConfig = table_booking_config
+            self.tableBookingConfig = table_booking_config.to_json()
         if social_distancing_ruleset_key is not None:
             self.socialDistancingRulesetKey = social_distancing_ruleset_key

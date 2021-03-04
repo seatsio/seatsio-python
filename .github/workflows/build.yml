@@ -1,0 +1,26 @@
+name: 'Build'
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.4, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - run: python setup.py install
+    - uses: zcong1993/setup-timezone@master
+      with:
+        timezone: Europe/Brussels
+    - run: python setup.py test

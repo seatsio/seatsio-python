@@ -11,17 +11,26 @@ class EventReports:
     def summary_by_status(self, event_key):
         return self.__fetch_summary_report("byStatus", event_key)
 
+    def deep_summary_by_status(self, event_key):
+        return self.__fetch_deep_summary_report("byStatus", event_key)
+
     def by_category_label(self, event_key, category_label=None):
         return self.__fetch_report("byCategoryLabel", event_key, category_label)
 
     def summary_by_category_label(self, event_key):
         return self.__fetch_summary_report("byCategoryLabel", event_key)
 
+    def deep_summary_by_category_label(self, event_key):
+        return self.__fetch_deep_summary_report("byCategoryLabel", event_key)
+
     def by_category_key(self, event_key, category_key=None):
         return self.__fetch_report("byCategoryKey", event_key, category_key)
 
     def summary_by_category_key(self, event_key):
         return self.__fetch_summary_report("byCategoryKey", event_key)
+
+    def deep_summary_by_category_key(self, event_key):
+        return self.__fetch_deep_summary_report("byCategoryKey", event_key)
 
     def by_label(self, event_key, label=None):
         return self.__fetch_report("byLabel", event_key, label)
@@ -35,17 +44,26 @@ class EventReports:
     def summary_by_section(self, event_key):
         return self.__fetch_summary_report("bySection", event_key)
 
+    def deep_summary_by_section(self, event_key):
+        return self.__fetch_deep_summary_report("bySection", event_key)
+
     def by_selectability(self, event_key, selectability=None):
         return self.__fetch_report("bySelectability", event_key, selectability)
 
     def summary_by_selectability(self, event_key):
         return self.__fetch_summary_report("bySelectability", event_key)
 
+    def deep_summary_by_selectability(self, event_key):
+        return self.__fetch_deep_summary_report("bySelectability", event_key)
+
     def by_channel(self, event_key, channel=None):
         return self.__fetch_report("byChannel", event_key, channel)
 
     def summary_by_channel(self, event_key):
         return self.__fetch_summary_report("byChannel", event_key)
+
+    def deep_summary_by_channel(self, event_key):
+        return self.__fetch_deep_summary_report("byChannel", event_key)
 
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
@@ -64,4 +82,8 @@ class EventReports:
 
     def __fetch_summary_report(self, report_type, event_key):
         url = "/reports/events/{key}/{reportType}/summary"
+        return self.http_client.url(url, key=event_key, reportType=report_type).get()
+
+    def __fetch_deep_summary_report(self, report_type, event_key):
+        url = "/reports/events/{key}/{reportType}/summary/deep"
         return self.http_client.url(url, key=event_key, reportType=report_type).get()

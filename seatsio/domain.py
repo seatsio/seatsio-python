@@ -75,6 +75,12 @@ class TableBookingConfig:
     def __hash__(self):
         return hash((self.mode, self.tables))
 
+    def to_json(self):
+        json = {"mode": self.mode}
+        if self.tables is not None:
+            json["tables"] = self.tables
+        return json
+
     @classmethod
     def inherit(cls):
         return TableBookingConfig('INHERIT')
@@ -230,6 +236,7 @@ class ChartReportItem:
         self.section = item_data.get("section")
         self.entrance = item_data.get("entrance")
         self.capacity = item_data.get("capacity")
+        self.book_as_a_whole = item_data.get("bookAsAWhole")
         self.object_type = item_data.get("objectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
@@ -264,6 +271,7 @@ class EventReportItem:
         self.num_free = item_data.get("numFree")
         self.num_held = item_data.get("numHeld")
         self.capacity = item_data.get("capacity")
+        self.book_as_a_whole = item_data.get("bookAsAWhole")
         self.object_type = item_data.get("objectType")
         self.extra_data = item_data.get("extraData")
         self.is_accessible = item_data.get("isAccessible")
@@ -311,14 +319,8 @@ class UsageDetailsForMonth:
 
 class UsageDetails:
     def __init__(self, json):
-        if json.get("subaccount") is not None:
-            self.subaccount = UsageSubaccount(json)
+        self.workspace = json.get("workspace")
         self.usage_by_chart = list(map(lambda x: UsageByChart(x), json.get("usageByChart")))
-
-
-class UsageSubaccount:
-    def __init__(self, json):
-        self.id = json.get("id")
 
 
 class UsageByChart:
