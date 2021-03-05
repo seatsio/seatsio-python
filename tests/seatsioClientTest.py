@@ -8,7 +8,7 @@ import seatsio
 from seatsio.domain import Subaccount
 from seatsio.region import Region
 
-BASE_URL = "https://api-staging.seatsio.net"
+BASE_URL = "https://api-staging-eu.seatsio.net"
 
 
 class SeatsioClientTest(unittest2.TestCase):
