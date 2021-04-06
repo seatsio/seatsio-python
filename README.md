@@ -20,7 +20,7 @@ seatsio-python follows semver since v50.2.0.
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key") # can be found on https://app.seats.io/workspace-settings
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key") # workspace secret key can be found on https://app.seats.io/workspace-settings
 chart = client.charts.create()
 event = client.events.create(chart.key)
 ```
@@ -29,7 +29,7 @@ event = client.events.create(chart.key)
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 client.events.book(event.key, ["A-1", "A-2"])
 ```
 
@@ -37,7 +37,7 @@ client.events.book(event.key, ["A-1", "A-2"])
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 client.events.release(event.key, ["A-1", "A-2"])
 ```
 
@@ -45,7 +45,7 @@ client.events.release(event.key, ["A-1", "A-2"])
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 client.events.book(event.key, ["A-1", "A-2"], hold_token="a-hold-token")
 ```
 
@@ -53,7 +53,7 @@ client.events.book(event.key, ["A-1", "A-2"], hold_token="a-hold-token")
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 client.events.change_object_status("<EVENT KEY>", ["A-1", "A-2"], "my-custom-status")
 ```
 
@@ -61,7 +61,7 @@ client.events.change_object_status("<EVENT KEY>", ["A-1", "A-2"], "my-custom-sta
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-workspace-secret-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 charts = client.charts.list()
 for chart in charts:
   print("Chart: " + chart.key)
@@ -103,7 +103,7 @@ for chart in previousPage.items:
 
 ```python
 import seatsio
-client = seatsio.Client(secret_key="my-company-admin-key")
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-company-admin-key")
 client.workspaces.create("a workspace")
 ```
 

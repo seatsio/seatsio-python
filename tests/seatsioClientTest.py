@@ -6,8 +6,9 @@ import unittest2
 
 import seatsio
 from seatsio.domain import Subaccount
+from seatsio.region import Region
 
-BASE_URL = "https://api-staging.seatsio.net"
+BASE_URL = "https://api-staging-eu.seatsio.net"
 
 
 class SeatsioClientTest(unittest2.TestCase):
@@ -23,7 +24,7 @@ class SeatsioClientTest(unittest2.TestCase):
         super(SeatsioClientTest, self).tearDown()
 
     def newClient(self, secret_key):
-        return seatsio.Client(secret_key, None, BASE_URL)
+        return seatsio.Client(Region(BASE_URL), secret_key)
 
     def create_test_company(self):
         response = requests.post(BASE_URL + "/system/public/users/actions/create-test-company")
