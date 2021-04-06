@@ -35,7 +35,7 @@ class SeatsioClientTest(unittest2.TestCase):
 
     @staticmethod
     def create_client(secretKey, workspaceKey):
-        return seatsio.Client(secretKey, workspaceKey, BASE_URL)
+        return seatsio.Client(Region(BASE_URL), secretKey, workspaceKey)
 
     @staticmethod
     def random_email():

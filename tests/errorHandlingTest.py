@@ -1,4 +1,5 @@
 import seatsio
+from seatsio import Region
 from seatsio.exceptions import SeatsioException
 from tests.util.asserts import assert_that
 from tests.seatsioClientTest import SeatsioClientTest
@@ -23,7 +24,7 @@ class ErrorHandlingTest(SeatsioClientTest):
 
     def test_weird_error(self):
         try:
-            seatsio.Client(secret_key="", base_url="unknownProtocol://").charts.retrieve("unexistingChart")
+            seatsio.Client(Region("unknownProtocol://"), "").charts.retrieve("unexistingChart")
             self.fail("expected exception")
         except SeatsioException as e:
             assert_that(e.message).contains("Error while executing GET unknownProtocol:///charts/unexistingChart")

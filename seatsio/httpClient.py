@@ -1,3 +1,5 @@
+import time
+
 from six.moves.urllib.parse import quote, urlencode
 
 import jsonpickle
@@ -63,14 +65,14 @@ class GET:
         self.workspaceKey = workspaceKey
 
     def execute(self):
-        response = self.try_execute()
+        response = retry(self.try_execute)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
             return response.json()
 
     def execute_raw(self):
-        response = self.try_execute()
+        response = retry(self.try_execute)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
@@ -97,7 +99,7 @@ class POST:
         return self
 
     def execute(self):
-        response = self.try_execute()
+        response = retry(self.try_execute)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
@@ -125,7 +127,7 @@ class DELETE:
         self.workspaceKey = workspaceKey
 
     def execute(self):
-        response = self.try_execute()
+        response = retry(self.try_execute)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
 
@@ -134,3 +136,15 @@ class DELETE:
             return requests.delete(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None})
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
+
+
+def retry(fn):
+    retry_count = 0
+    while True:
+        response = fn()
+        if response.status_code != 429 or retry_count >= 5:
+            return response
+        else:
+            wait_time = (2 ** (retry_count + 2)) / 10.0
+            time.sleep(wait_time)
+            retry_count += 1
