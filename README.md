@@ -1,6 +1,7 @@
 # seatsio-python, the official Seats.io Python client library
 
 [![Build](https://github.com/seatsio/seatsio-python/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-python/actions/workflows/build.yml)
+[![PyPI version](https://badge.fury.io/py/seatsio.svg)](https://badge.fury.io/py/seatsio)
 
 This is the official Python client library for the [Seats.io V2 REST API](https://docs.seats.io/docs/api-overview), supporting python 2.7, and python 3.3 - 3.7. 
 
