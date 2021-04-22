@@ -107,6 +107,18 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report.get("booked")).has_size(1)
         assert_that(report.get("free")).has_size(31)
 
+    def testByObjectType(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_object_type(event.key)
+
+        assert_that(report).is_instance(EventReport)
+        assert_that(report.get("generalAdmission")).has_size(2)
+        assert_that(report.get("seat")).has_size(32)
+        assert_that(report.get("table")).has_size(0)
+        assert_that(report.get("booth")).has_size(0)
+
     def testByStatusEmptyChart(self):
         chart_key = self.client.charts.create().key
         event = self.client.events.create(chart_key)

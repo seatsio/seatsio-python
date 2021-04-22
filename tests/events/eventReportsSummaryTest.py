@@ -28,6 +28,30 @@ class EventReportsSummaryTest(SeatsioClientTest):
         assert_that(report.get("free").get("byCategoryLabel").get("Cat2")).is_equal_to(116)
         assert_that(report.get("free").get("byChannel").get("NO_CHANNEL")).is_equal_to(231)
 
+    def test_summaryByObjectType(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.summary_by_object_type(event.key)
+
+        assert_that(report.get("seat").get("count")).is_equal_to(32)
+        assert_that(report.get("seat").get("bySection").get("NO_SECTION")).is_equal_to(32)
+        assert_that(report.get("seat").get("byCategoryKey").get("9")).is_equal_to(16)
+        assert_that(report.get("seat").get("byCategoryKey").get("10")).is_equal_to(16)
+        assert_that(report.get("seat").get("byCategoryLabel").get("Cat1")).is_equal_to(16)
+        assert_that(report.get("seat").get("byCategoryLabel").get("Cat2")).is_equal_to(16)
+        assert_that(report.get("seat").get("byChannel").get("NO_CHANNEL")).is_equal_to(32)
+        assert_that(report.get("seat").get("byStatus").get("free")).is_equal_to(32)
+
+        assert_that(report.get("generalAdmission").get("count")).is_equal_to(200)
+        assert_that(report.get("generalAdmission").get("bySection").get("NO_SECTION")).is_equal_to(200)
+        assert_that(report.get("generalAdmission").get("byCategoryKey").get("9")).is_equal_to(100)
+        assert_that(report.get("generalAdmission").get("byCategoryKey").get("10")).is_equal_to(100)
+        assert_that(report.get("generalAdmission").get("byCategoryLabel").get("Cat1")).is_equal_to(100)
+        assert_that(report.get("generalAdmission").get("byCategoryLabel").get("Cat2")).is_equal_to(100)
+        assert_that(report.get("generalAdmission").get("byChannel").get("NO_CHANNEL")).is_equal_to(200)
+        assert_that(report.get("generalAdmission").get("byStatus").get("free")).is_equal_to(200)
+
 
     def test_summaryByCategoryKey(self):
         chart_key = self.create_test_chart()

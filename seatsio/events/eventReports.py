@@ -14,6 +14,15 @@ class EventReports:
     def deep_summary_by_status(self, event_key):
         return self.__fetch_deep_summary_report("byStatus", event_key)
 
+    def by_object_type(self, event_key, object_type=None):
+        return self.__fetch_report("byObjectType", event_key, object_type)
+
+    def summary_by_object_type(self, event_key):
+        return self.__fetch_summary_report("byObjectType", event_key)
+
+    def deep_summary_by_object_type(self, event_key):
+        return self.__fetch_deep_summary_report("byObjectType", event_key)
+
     def by_category_label(self, event_key, category_label=None):
         return self.__fetch_report("byCategoryLabel", event_key, category_label)
 

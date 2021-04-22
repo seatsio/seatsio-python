@@ -9,6 +9,9 @@ class ChartReports:
     def by_label(self, chart_key, book_whole_tables = None):
         return self.__fetch_report("byLabel", chart_key, book_whole_tables)
 
+    def by_object_type(self, chart_key, book_whole_tables = None):
+        return self.__fetch_report("byObjectType", chart_key, book_whole_tables)
+
     def by_category_key(self, chart_key, book_whole_tables = None):
         return self.__fetch_report("byCategoryKey", chart_key, book_whole_tables)
 

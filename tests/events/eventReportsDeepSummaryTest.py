@@ -18,6 +18,16 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
         assert_that(report.get("booked").get("bySection").get("NO_SECTION").get("count")).is_equal_to(1)
         assert_that(report.get("booked").get("bySection").get("NO_SECTION").get("bySelectability").get("not_selectable")).is_equal_to(1)
 
+    def test_deepSummaryByObjectType(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.deep_summary_by_object_type(event.key)
+
+        assert_that(report.get("seat").get("count")).is_equal_to(32)
+        assert_that(report.get("seat").get("bySection").get("NO_SECTION").get("count")).is_equal_to(32)
+        assert_that(report.get("seat").get("bySection").get("NO_SECTION").get("bySelectability").get("selectable")).is_equal_to(32)
+
     def test_deepSummaryByCategoryKey(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

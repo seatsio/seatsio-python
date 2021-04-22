@@ -50,6 +50,15 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report.get("A-1")).has_size(1)
         assert_that(report.get("A-2")).has_size(1)
 
+    def testByObjectType(self):
+        chart_key = self.create_test_chart()
+
+        report = self.client.charts.reports.by_object_type(chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.get("seat")).has_size(32)
+        assert_that(report.get("generalAdmission")).has_size(2)
+
     def testByLabel_BookWholeTablesNone(self):
         chart_key = self.create_test_chart_with_tables()
 
