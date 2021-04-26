@@ -240,6 +240,7 @@ class ChartReportItem:
         self.object_type = item_data.get("objectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
+        self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
 
 
 class EventReport:
@@ -283,6 +284,7 @@ class EventReportItem:
         self.is_selectable = item_data.get('isSelectable')
         self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
         self.channel = item_data.get('channel')
+        self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
 
 
 class UsageSummaryForAllMonths:
