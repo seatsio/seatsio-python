@@ -5,7 +5,10 @@ class Lister:
     def __init__(self, page_fetcher):
         self.pageFetcher = page_fetcher
 
-    def list(self):
+    def list(self, filter=None):
+        if filter is not None:
+            self.pageFetcher.set_query_param("filter", filter)
+
         return PagedIterator(self.pageFetcher)
 
     def first_page(self, page_size=None, filter=None):

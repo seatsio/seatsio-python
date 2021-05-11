@@ -10,6 +10,8 @@ class WorkspacesClient(ListableObjectsClient):
 
     def __init__(self, http_client):
         ListableObjectsClient.__init__(self, http_client, Workspace, "/workspaces")
+        self.active = Lister(PageFetcher(Workspace, self.http_client, "/workspaces/active"))
+        self.inactive = Lister(PageFetcher(Workspace, self.http_client, "/workspaces/inactive"))
 
     def create(self, name, is_test=None):
         response = self.http_client.url("/workspaces").post(
