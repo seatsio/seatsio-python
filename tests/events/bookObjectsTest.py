@@ -42,6 +42,7 @@ class BookObjectsTest(SeatsioClientTest):
             {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A",
              "entrance": {"label": "Entrance 1"}}
         )
+        assert_that(res.objects["Section A-A-1"].ids).is_equal_to({"own": "1", "parent": "A", "section": "Section A"})
 
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()

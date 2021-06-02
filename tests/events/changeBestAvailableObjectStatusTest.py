@@ -21,6 +21,7 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(object.status).is_equal_to("myStatus")
         assert_that(object.label).is_equal_to("B-5")
         assert_that(object.labels).is_equal_to({"own": {"label": "5", "type": "seat"}, "parent": {"label": "B", "type": "row"}})
+        assert_that(object.ids).is_equal_to({"own": "5", "parent": "B"})
         assert_that(object.category_label).is_equal_to("Cat1")
         assert_that(object.category_key).is_equal_to("9")
         assert_that(object.ticket_type).is_none()

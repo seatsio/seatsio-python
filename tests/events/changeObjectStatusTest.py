@@ -21,6 +21,7 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         assert_that(object.status).is_equal_to("status_foo")
         assert_that(object.label).is_equal_to("A-1")
         assert_that(object.labels).is_equal_to({"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}})
+        assert_that(object.ids).is_equal_to({"own": "1", "parent": "A"})
         assert_that(object.category_label).is_equal_to("Cat1")
         assert_that(object.category_key).is_equal_to("9")
         assert_that(object.ticket_type).is_none()
