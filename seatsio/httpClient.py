@@ -9,22 +9,22 @@ from seatsio.exceptions import SeatsioException
 
 
 class HttpClient:
-    def __init__(self, base_url, secret_key, workspaceKey):
-        self.baseUrl = base_url
-        self.secretKey = secret_key
-        self.workspaceKey = workspaceKey
+    def __init__(self, base_url, secret_key, workspace_key):
+        self.base_url = base_url
+        self.secret_key = secret_key
+        self.workspace_key = workspace_key
 
     def url(self, relative_url, query_params=None, **path_params):
         if query_params is None:
             query_params = {}
-        return ApiResource(self.secretKey, self.workspaceKey, self.baseUrl, relative_url, query_params, **path_params)
+        return ApiResource(self.secret_key, self.workspace_key, self.base_url, relative_url, query_params, **path_params)
 
 
 class ApiResource:
-    def __init__(self, secret_key, workspaceKey, base_url, relative_url, query_params, **path_params):
+    def __init__(self, secret_key, workspace_key, base_url, relative_url, query_params, **path_params):
         self.url = self.__create_full_url(base_url, relative_url, query_params, **path_params)
-        self.secretKey = secret_key
-        self.workspaceKey = workspaceKey
+        self.secret_key = secret_key
+        self.workspace_key = workspace_key
 
     def __create_full_url(self, base_url, relative_url, query_params, **path_params):
         for key in path_params:
@@ -35,34 +35,34 @@ class ApiResource:
         return full_url
 
     def get(self):
-        return GET(self.url, self.secretKey, self.workspaceKey).execute()
+        return GET(self.url, self.secret_key, self.workspace_key).execute()
 
     def get_raw(self):
-        return GET(self.url, self.secretKey, self.workspaceKey).execute_raw()
+        return GET(self.url, self.secret_key, self.workspace_key).execute_raw()
 
     def get_as(self, cls):
         return cls(self.get())
 
     def post(self, body=None):
         if body is None:
-            return POST(self.url, self.secretKey, self.workspaceKey).execute()
+            return POST(self.url, self.secret_key, self.workspace_key).execute()
         else:
-            return POST(self.url, self.secretKey, self.workspaceKey).body(body).execute()
+            return POST(self.url, self.secret_key, self.workspace_key).body(body).execute()
 
     def post_empty_and_return(self, cls):
         return cls(self.post().json())
 
     def delete(self):
-        return DELETE(self.url, self.secretKey, self.workspaceKey).execute()
+        return DELETE(self.url, self.secret_key, self.workspace_key).execute()
 
 
 class GET:
 
-    def __init__(self, url, secret_key, workspaceKey):
-        self.httpMethod = "GET"
+    def __init__(self, url, secret_key, workspace_key):
+        self.http_method = "GET"
         self.url = url
         self.secret_key = secret_key
-        self.workspaceKey = workspaceKey
+        self.workspace_key = workspace_key
 
     def execute(self):
         response = retry(self.try_execute)
@@ -80,22 +80,22 @@ class GET:
 
     def try_execute(self):
         try:
-            return requests.get(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None})
+            return requests.get(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None})
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 
 
 class POST:
 
-    def __init__(self, url, secret_key, workspaceKey):
-        self.httpMethod = "POST"
+    def __init__(self, url, secret_key, workspace_key):
+        self.http_method = "POST"
         self.url = url
         self.secret_key = secret_key
-        self.workspaceKey = workspaceKey
-        self.bodyObject = None
+        self.workspace_key = workspace_key
+        self.body_object = None
 
     def body(self, body):
-        self.bodyObject = body
+        self.body_object = body
         return self
 
     def execute(self):
@@ -107,11 +107,11 @@ class POST:
 
     def try_execute(self):
         try:
-            json = jsonpickle.encode(self.bodyObject, unpicklable=False)
+            json = jsonpickle.encode(self.body_object, unpicklable=False)
             return requests.post(
                 url=self.url,
                 auth=(self.secret_key, ''),
-                headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None},
+                headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None},
                 data=json
             )
         except Exception as cause:
@@ -120,11 +120,11 @@ class POST:
 
 class DELETE:
 
-    def __init__(self, url, secret_key, workspaceKey):
-        self.httpMethod = "DELETE"
+    def __init__(self, url, secret_key, workspace_key):
+        self.http_method = "DELETE"
         self.url = url
         self.secret_key = secret_key
-        self.workspaceKey = workspaceKey
+        self.workspace_key = workspace_key
 
     def execute(self):
         response = retry(self.try_execute)
@@ -133,7 +133,7 @@ class DELETE:
 
     def try_execute(self):
         try:
-            return requests.delete(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspaceKey) if self.workspaceKey else None})
+            return requests.delete(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None})
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 

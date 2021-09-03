@@ -12,11 +12,11 @@ class SeatsioException(Exception):
             self.errors = None
             self.requestId = None
             self.cause = cause
-            self.message = "Error while executing " + request.httpMethod + " " + request.url
+            self.message = "Error while executing " + request.http_method + " " + request.url
             super(SeatsioException, self).__init__(self.message)
 
     def __build_exception_message(self, request, response):
-        exception_message = request.httpMethod + " " + request.url + " resulted in a "
+        exception_message = request.http_method + " " + request.url + " resulted in a "
         exception_message += str(response.status_code) + " " + str(response.reason) + " response."
         exception_message += " Reason: " + ", ".join(self.__map_errors_to_message(self.errors)) + "."
         exception_message += " Request ID: " + self.requestId

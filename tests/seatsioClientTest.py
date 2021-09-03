@@ -34,8 +34,8 @@ class SeatsioClientTest(unittest2.TestCase):
             raise Exception("Failed to create a test user")
 
     @staticmethod
-    def create_client(secretKey, workspaceKey):
-        return seatsio.Client(Region(BASE_URL), secretKey, workspaceKey)
+    def create_client(secret_key, workspace_key):
+        return seatsio.Client(Region(BASE_URL), secret_key, workspace_key)
 
     @staticmethod
     def random_email():
