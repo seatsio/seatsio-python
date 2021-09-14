@@ -18,3 +18,7 @@ class Client:
         self.workspaces = WorkspacesClient(self.http_client)
         self.hold_tokens = HoldTokensClient(self.http_client)
         self.usage_reports = UsageReports(self.http_client)
+
+    def set_max_retries(self, max_retries):
+        self.http_client.set_max_retries(max_retries)
+        return self

@@ -13,15 +13,20 @@ class HttpClient:
         self.base_url = base_url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
+        self.max_retries = 5
 
     def url(self, relative_url, query_params=None, **path_params):
         if query_params is None:
             query_params = {}
-        return ApiResource(self.secret_key, self.workspace_key, self.base_url, relative_url, query_params, **path_params)
+        return ApiResource(self.max_retries, self.secret_key, self.workspace_key, self.base_url, relative_url, query_params, **path_params)
 
+    def set_max_retries(self, max_retries):
+        self.max_retries = max_retries
+        return self
 
 class ApiResource:
-    def __init__(self, secret_key, workspace_key, base_url, relative_url, query_params, **path_params):
+    def __init__(self, max_retries, secret_key, workspace_key, base_url, relative_url, query_params, **path_params):
+        self.max_retries = max_retries
         self.url = self.__create_full_url(base_url, relative_url, query_params, **path_params)
         self.secret_key = secret_key
         self.workspace_key = workspace_key
@@ -35,44 +40,45 @@ class ApiResource:
         return full_url
 
     def get(self):
-        return GET(self.url, self.secret_key, self.workspace_key).execute()
+        return GET(self.max_retries, self.url, self.secret_key, self.workspace_key).execute()
 
     def get_raw(self):
-        return GET(self.url, self.secret_key, self.workspace_key).execute_raw()
+        return GET(self.max_retries, self.url, self.secret_key, self.workspace_key).execute_raw()
 
     def get_as(self, cls):
         return cls(self.get())
 
     def post(self, body=None):
         if body is None:
-            return POST(self.url, self.secret_key, self.workspace_key).execute()
+            return POST(self.max_retries, self.url, self.secret_key, self.workspace_key).execute()
         else:
-            return POST(self.url, self.secret_key, self.workspace_key).body(body).execute()
+            return POST(self.max_retries, self.url, self.secret_key, self.workspace_key).body(body).execute()
 
     def post_empty_and_return(self, cls):
         return cls(self.post().json())
 
     def delete(self):
-        return DELETE(self.url, self.secret_key, self.workspace_key).execute()
+        return DELETE(self.max_retries, self.url, self.secret_key, self.workspace_key).execute()
 
 
 class GET:
 
-    def __init__(self, url, secret_key, workspace_key):
+    def __init__(self, max_retries, url, secret_key, workspace_key):
         self.http_method = "GET"
+        self.max_retries = max_retries
         self.url = url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
 
     def execute(self):
-        response = retry(self.try_execute)
+        response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
             return response.json()
 
     def execute_raw(self):
-        response = retry(self.try_execute)
+        response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
@@ -87,8 +93,9 @@ class GET:
 
 class POST:
 
-    def __init__(self, url, secret_key, workspace_key):
+    def __init__(self, max_retries, url, secret_key, workspace_key):
         self.http_method = "POST"
+        self.max_retries = max_retries
         self.url = url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
@@ -99,7 +106,7 @@ class POST:
         return self
 
     def execute(self):
-        response = retry(self.try_execute)
+        response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
         else:
@@ -120,14 +127,15 @@ class POST:
 
 class DELETE:
 
-    def __init__(self, url, secret_key, workspace_key):
+    def __init__(self, max_retries, url, secret_key, workspace_key):
         self.http_method = "DELETE"
+        self.max_retries = max_retries
         self.url = url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
 
     def execute(self):
-        response = retry(self.try_execute)
+        response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
             raise SeatsioException(self, response)
 
@@ -138,11 +146,11 @@ class DELETE:
             raise SeatsioException(self, cause=cause)
 
 
-def retry(fn):
+def retry(fn, max_retries):
     retry_count = 0
     while True:
         response = fn()
-        if response.status_code != 429 or retry_count >= 5:
+        if response.status_code != 429 or retry_count >= max_retries:
             return response
         else:
             wait_time = (2 ** (retry_count + 2)) / 10.0

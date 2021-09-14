@@ -52,6 +52,17 @@ class ExponentialBackoffTest(SeatsioClientTest):
             wait_time = int(time.time() - start)
             assert_that(wait_time).is_between(0, 2)
 
+    def test_aborts_directly_if_server_returns_429_but_max_retries_0(self):
+        start = time.time()
+        try:
+            client = HttpClient("https://httpbin.org", "aSecretKey", None).set_max_retries(0)
+            client.url("/status/429").get()
+            raise Exception("Should have failed")
+        except SeatsioException as e:
+            assert_that(e.message).is_equal_to("Error while executing GET https://httpbin.org/status/429")
+            wait_time = int(time.time() - start)
+            assert_that(wait_time).is_between(0, 2)
+
     def test_returns_successfully_when_server_sends_429_and_then_successful_response(self):
         client = HttpClient("https://httpbin.org", "aSecretKey", None)
 
