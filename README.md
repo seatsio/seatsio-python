@@ -123,3 +123,12 @@ This library supports [exponential backoff](https://en.wikipedia.org/wiki/Expone
 
 When you send too many concurrent requests, the server returns an error `429 - Too Many Requests`. The client reacts to this by waiting for a while, and then retrying the request.
 If the request still fails with an error `429`, it waits a little longer, and try again. This happens at most 5 times, before giving up (after approximately 15 seconds).
+
+To change the maximum number of retries, create the `Client` as follows:
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key").set_max_retries(0)
+```
+
+Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request.
