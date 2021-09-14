@@ -8,17 +8,13 @@ from seatsio.workspaces.workspacesClient import WorkspacesClient
 
 
 class Client:
-    def __init__(self, region, secret_key, workspace_key=None):
+    def __init__(self, region, secret_key, workspace_key=None, max_retries=5):
         base_url = region.url
         self.base_url = base_url
-        self.http_client = HttpClient(base_url, secret_key, workspace_key)
+        self.http_client = HttpClient(base_url, secret_key, workspace_key, max_retries)
         self.charts = ChartsClient(self.http_client)
         self.events = EventsClient(self.http_client)
         self.subaccounts = SubaccountsClient(self.http_client)
         self.workspaces = WorkspacesClient(self.http_client)
         self.hold_tokens = HoldTokensClient(self.http_client)
         self.usage_reports = UsageReports(self.http_client)
-
-    def set_max_retries(self, max_retries):
-        self.http_client.set_max_retries(max_retries)
-        return self

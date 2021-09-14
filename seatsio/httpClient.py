@@ -9,20 +9,16 @@ from seatsio.exceptions import SeatsioException
 
 
 class HttpClient:
-    def __init__(self, base_url, secret_key, workspace_key):
+    def __init__(self, base_url, secret_key, workspace_key, max_retries):
         self.base_url = base_url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
-        self.max_retries = 5
+        self.max_retries = max_retries
 
     def url(self, relative_url, query_params=None, **path_params):
         if query_params is None:
             query_params = {}
         return ApiResource(self.max_retries, self.secret_key, self.workspace_key, self.base_url, relative_url, query_params, **path_params)
-
-    def set_max_retries(self, max_retries):
-        self.max_retries = max_retries
-        return self
 
 class ApiResource:
     def __init__(self, max_retries, secret_key, workspace_key, base_url, relative_url, query_params, **path_params):

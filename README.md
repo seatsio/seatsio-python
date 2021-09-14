@@ -128,7 +128,7 @@ To change the maximum number of retries, create the `Client` as follows:
 
 ```python
 import seatsio
-client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key").set_max_retries(3)
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key", max_retries=3)
 ```
 
 Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request.
