@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, Channel
+from seatsio.domain import EventObjectInfo, Channel
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -54,8 +54,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             extra_data=extra_data
         )
         assert_that(result.objects).contains_exactly("B-4", "B-5")
-        assert_that(self.client.events.retrieve_object_status(event.key, "B-4").extra_data).is_equal_to(d1)
-        assert_that(self.client.events.retrieve_object_status(event.key, "B-5").extra_data).is_equal_to(d2)
+        assert_that(self.client.events.retrieve_object_info(event.key, "B-4").extra_data).is_equal_to(d1)
+        assert_that(self.client.events.retrieve_object_info(event.key, "B-5").extra_data).is_equal_to(d2)
 
     def test_extra_data(self):
         chart_key = self.create_test_chart()
@@ -68,8 +68,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             ticket_types=["adult", "child"]
         )
         assert_that(result.objects).contains_exactly("B-4", "B-5")
-        assert_that(self.client.events.retrieve_object_status(event.key, "B-4").ticket_type).is_equal_to("adult")
-        assert_that(self.client.events.retrieve_object_status(event.key, "B-5").ticket_type).is_equal_to("child")
+        assert_that(self.client.events.retrieve_object_info(event.key, "B-4").ticket_type).is_equal_to("adult")
+        assert_that(self.client.events.retrieve_object_info(event.key, "B-5").ticket_type).is_equal_to("child")
 
     def test_hold_token(self):
         chart_key = self.create_test_chart()
@@ -79,12 +79,12 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         best_available_objects = self.client.events.change_best_available_object_status(
             event_key=event.key,
             number=1,
-            status=ObjectStatus.HELD,
+            status=EventObjectInfo.HELD,
             hold_token=hold_token.hold_token
         )
 
-        object_status = self.client.events.retrieve_object_status(event.key, best_available_objects.objects[0])
-        assert_that(object_status.status).is_equal_to(ObjectStatus.HELD)
+        object_status = self.client.events.retrieve_object_info(event.key, best_available_objects.objects[0])
+        assert_that(object_status.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(object_status.hold_token).is_equal_to(hold_token.hold_token)
 
     def test_order_id(self):
@@ -95,7 +95,7 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             status="mystatus",
             order_id="anOrder"
         )
-        object_status = self.client.events.retrieve_object_status(event.key, best_available_objects.objects[0])
+        object_status = self.client.events.retrieve_object_info(event.key, best_available_objects.objects[0])
         assert_that(object_status.order_id).is_equal_to("anOrder")
 
     def test_book_best_available(self):
@@ -114,8 +114,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
         best_available_objects = self.client.events.hold_best_available(event.key, 1, hold_token=hold_token.hold_token)
 
-        object_status = self.client.events.retrieve_object_status(event.key, best_available_objects.objects[0])
-        assert_that(object_status.status).is_equal_to(ObjectStatus.HELD)
+        object_status = self.client.events.retrieve_object_info(event.key, best_available_objects.objects[0])
+        assert_that(object_status.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(object_status.hold_token).is_equal_to(hold_token.hold_token)
 
     def test_keepExtraDataTrue(self):
@@ -126,8 +126,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_best_available_object_status(event.key, 1, "someStatus", keep_extra_data=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "B-5")
-        assert_that(status.extra_data).is_equal_to(extra_data)
+        object_info = self.client.events.retrieve_object_info(event.key, "B-5")
+        assert_that(object_info.extra_data).is_equal_to(extra_data)
 
     def test_keepExtraDataFalse(self):
         chart_key = self.create_test_chart()
@@ -137,8 +137,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_best_available_object_status(event.key, 1, "someStatus", keep_extra_data=False)
 
-        status = self.client.events.retrieve_object_status(event.key, "B-5")
-        assert_that(status.extra_data).is_none()
+        object_info = self.client.events.retrieve_object_info(event.key, "B-5")
+        assert_that(object_info.extra_data).is_none()
 
     def test_noKeepExtraData(self):
         chart_key = self.create_test_chart()
@@ -148,8 +148,8 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_best_available_object_status(event.key, 1, "someStatus")
 
-        status = self.client.events.retrieve_object_status(event.key, "B-5")
-        assert_that(status.extra_data).is_none()
+        object_info = self.client.events.retrieve_object_info(event.key, "B-5")
+        assert_that(object_info.extra_data).is_none()
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()

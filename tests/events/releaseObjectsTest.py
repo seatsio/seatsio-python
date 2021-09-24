@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, Channel
+from seatsio.domain import EventObjectInfo, Channel
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -13,13 +13,13 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         res = self.client.events.release(event.key, ["A-1", "A-2"])
 
-        a1_status = self.client.events.retrieve_object_status(event.key, "A-1").status
-        a2_status = self.client.events.retrieve_object_status(event.key, "A-2").status
-        a3_status = self.client.events.retrieve_object_status(event.key, "A-3").status
+        a1_status = self.client.events.retrieve_object_info(event.key, "A-1").status
+        a2_status = self.client.events.retrieve_object_info(event.key, "A-2").status
+        a3_status = self.client.events.retrieve_object_info(event.key, "A-3").status
 
-        assert_that(a1_status).is_equal_to(ObjectStatus.FREE)
-        assert_that(a2_status).is_equal_to(ObjectStatus.FREE)
-        assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
+        assert_that(a1_status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(a2_status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(a3_status).is_equal_to(EventObjectInfo.FREE)
 
         assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
 
@@ -31,9 +31,9 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         self.client.events.release(event.key, ["A-1"], hold_token.hold_token)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.FREE)
-        assert_that(status.hold_token).is_none()
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(object_info.hold_token).is_none()
 
     def test_withOrderId(self):
         chart_key = self.create_test_chart()
@@ -42,8 +42,8 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         self.client.events.release(event.key, ["A-1"], order_id="order1")
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.order_id).is_equal_to("order1")
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.order_id).is_equal_to("order1")
 
     def test_keepExtraData(self):
         chart_key = self.create_test_chart()
@@ -53,8 +53,8 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         self.client.events.release(event.key, ["A-1"], keep_extra_data=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_equal_to(extra_data)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_equal_to(extra_data)
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
@@ -69,8 +69,8 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         self.client.events.release(event.key, ["A-1"], channel_keys=["channelKey1"])
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.FREE)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.FREE)
 
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
@@ -85,5 +85,5 @@ class ReleaseObjectsTest(SeatsioClientTest):
 
         self.client.events.release(event.key, ["A-1"], ignore_channels=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.FREE)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.FREE)

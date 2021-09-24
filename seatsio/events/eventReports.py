@@ -1,4 +1,4 @@
-from seatsio.domain import EventReportItem, EventReport
+from seatsio.domain import EventObjectInfo, EventReport
 
 
 class EventReports:
@@ -82,7 +82,7 @@ class EventReports:
             if report_filter not in body:
                 return []
             for i in body[report_filter]:
-                result.append(EventReportItem(i))
+                result.append(EventObjectInfo(i))
             return result
         else:
             url = "/reports/events/{key}/{reportType}"

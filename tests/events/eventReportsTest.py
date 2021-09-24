@@ -1,4 +1,4 @@
-from seatsio.domain import EventReport, EventReportItem, Channel
+from seatsio.domain import EventReport, Channel, EventObjectInfo
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -24,7 +24,7 @@ class EventReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(EventReport)
         report_item = report.get("A-1")[0]
-        assert_that(report_item).is_instance(EventReportItem)
+        assert_that(report_item).is_instance(EventObjectInfo)
         assert_that(report_item.status).is_equal_to("booked")
         assert_that(report_item.label).is_equal_to("A-1")
         assert_that(report_item.labels).is_equal_to({"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}})
@@ -75,7 +75,7 @@ class EventReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(EventReport)
         report_item = report.get("GA1")[0]
-        assert_that(report_item).is_instance(EventReportItem)
+        assert_that(report_item).is_instance(EventObjectInfo)
         assert_that(report_item.status).is_equal_to("free")
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
@@ -138,7 +138,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_status(event.key, status="mystatus")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(2)
 
     def testBySpecificNonExistingStatus(self):
@@ -167,7 +167,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_category_label(event.key, "Cat1")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(17)
 
     def testByCategoryKey(self):
@@ -187,7 +187,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_category_key(event.key, "9")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(17)
 
     def testByLabel(self):
@@ -207,7 +207,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_label(event.key, "A-1")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(1)
 
     def testByOrderId(self):
@@ -232,7 +232,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_order_id(event.key, "order1")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(2)
 
     def testBySection(self):
@@ -251,7 +251,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_section(event.key, "NO_SECTION")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(34)
 
     def testBySelectability(self):
@@ -273,7 +273,7 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_selectability(event.key, "selectable")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(32)
 
     def testByChannel(self):
@@ -305,5 +305,5 @@ class EventReportsTest(SeatsioClientTest):
         report = self.client.events.reports.by_channel(event.key, "channelKey1")
 
         assert_that(report).is_instance(list)
-        assert_that(report[0]).is_instance(EventReportItem)
+        assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(2)

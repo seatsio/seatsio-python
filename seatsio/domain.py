@@ -221,13 +221,13 @@ class ChartReport:
         for key, value in iteritems(response_body):
             self.items[key] = []
             for item in value:
-                self.items[key].append(ChartReportItem(item))
+                self.items[key].append(ChartObjectInfo(item))
 
     def get(self, key):
         return self.items.get(key)
 
 
-class ChartReportItem:
+class ChartObjectInfo:
     def __init__(self, item_data):
         self.label = item_data.get("label")
         self.labels = item_data.get("labels")
@@ -250,13 +250,17 @@ class EventReport:
         for key, value in iteritems(response_body):
             self.items[key] = []
             for item in value:
-                self.items[key].append(EventReportItem(item))
+                self.items[key].append(EventObjectInfo(item))
 
     def get(self, key):
         return self.items.get(key)
 
 
-class EventReportItem:
+class EventObjectInfo:
+    FREE = "free"
+    BOOKED = "booked"
+    HELD = "reservedByToken"
+
     def __init__(self, item_data):
         self.status = item_data.get("status")
         self.label = item_data.get("label")
@@ -287,6 +291,7 @@ class EventReportItem:
         self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
         self.channel = item_data.get('channel')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
+        self.holds = item_data.get('holds')
 
 
 class UsageSummaryForAllMonths:
@@ -408,21 +413,6 @@ class HoldToken:
         self.workspace_key = data.get("workspaceKey")
 
 
-class ObjectStatus:
-    FREE = "free"
-    BOOKED = "booked"
-    HELD = "reservedByToken"
-
-    def __init__(self, data):
-        self.status = data.get("status")
-        self.hold_token = data.get("holdToken")
-        self.order_id = data.get("orderId")
-        self.ticket_type = data.get("ticketType")
-        self.quantity = data.get("quantity")
-        self.extra_data = data.get("extraData")
-        self.for_sale = data.get("forSale")
-
-
 class StatusChange:
     def __init__(self, data):
         self.id = data.get("id")
@@ -446,11 +436,11 @@ class BestAvailableObjects:
         self.objects = data.get("objects")
         self.objectDetails = {}
         for key, value in iteritems(data.get("objectDetails")):
-            self.objectDetails[key] = EventReportItem(value)
+            self.objectDetails[key] = EventObjectInfo(value)
 
 
 class ChangeObjectStatusResult:
     def __init__(self, data):
         self.objects = {}
         for key, value in iteritems(data.get("objects")):
-            self.objects[key] = EventReportItem(value)
+            self.objects[key] = EventObjectInfo(value)

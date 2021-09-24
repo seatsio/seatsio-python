@@ -1,4 +1,4 @@
-from seatsio.domain import ChartReport, ChartReportItem
+from seatsio.domain import ChartReport, ChartObjectInfo
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -12,7 +12,7 @@ class ChartReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(ChartReport)
         report_item = report.get("A-1")[0]
-        assert_that(report_item).is_instance(ChartReportItem)
+        assert_that(report_item).is_instance(ChartObjectInfo)
         assert_that(report_item.label).is_equal_to("A-1")
         assert_that(report_item.labels).is_equal_to({"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}})
         assert_that(report_item.ids).is_equal_to({"own": "1", "parent": "A"})
@@ -33,7 +33,7 @@ class ChartReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(ChartReport)
         report_item = report.get("GA1")[0]
-        assert_that(report_item).is_instance(ChartReportItem)
+        assert_that(report_item).is_instance(ChartObjectInfo)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")

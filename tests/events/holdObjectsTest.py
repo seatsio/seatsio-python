@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, Channel, SocialDistancingRuleset
+from seatsio.domain import EventObjectInfo, Channel, SocialDistancingRuleset
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -12,12 +12,12 @@ class HoldObjectsTest(SeatsioClientTest):
 
         res = self.client.events.hold(event.key, ["A-1", "A-2"], hold_token.hold_token)
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status1.status).is_equal_to(ObjectStatus.HELD)
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(status1.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(status1.hold_token).is_equal_to(hold_token.hold_token)
 
-        status2 = self.client.events.retrieve_object_status(event.key, "A-2")
-        assert_that(status2.status).is_equal_to(ObjectStatus.HELD)
+        status2 = self.client.events.retrieve_object_info(event.key, "A-2")
+        assert_that(status2.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(status2.hold_token).is_equal_to(hold_token.hold_token)
 
         assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
@@ -29,10 +29,10 @@ class HoldObjectsTest(SeatsioClientTest):
 
         self.client.events.hold(event.key, ["A-1", "A-2"], hold_token.hold_token, order_id="order1")
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(status1.order_id).is_equal_to("order1")
 
-        status2 = self.client.events.retrieve_object_status(event.key, "A-2")
+        status2 = self.client.events.retrieve_object_info(event.key, "A-2")
         assert_that(status2.order_id).is_equal_to("order1")
 
     def test_keepExtraData(self):
@@ -44,8 +44,8 @@ class HoldObjectsTest(SeatsioClientTest):
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, keep_extra_data=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_equal_to(extra_data)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_equal_to(extra_data)
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
@@ -60,8 +60,8 @@ class HoldObjectsTest(SeatsioClientTest):
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, channel_keys=["channelKey1"])
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.HELD)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.HELD)
 
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
@@ -76,8 +76,8 @@ class HoldObjectsTest(SeatsioClientTest):
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_channels=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.HELD)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.HELD)
 
     def test_ignore_channels(self):
         chart_key = self.create_test_chart()
@@ -93,5 +93,5 @@ class HoldObjectsTest(SeatsioClientTest):
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_social_distancing=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.HELD)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.HELD)

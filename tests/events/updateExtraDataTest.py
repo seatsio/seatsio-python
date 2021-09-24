@@ -11,5 +11,5 @@ class UpdateExtraDataTest(SeatsioClientTest):
 
         self.client.events.update_extra_data(event.key, "A-1", extra_data)
 
-        object_status = self.client.events.retrieve_object_status(event.key, "A-1")
+        object_status = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(object_status.extra_data).is_equal_to(extra_data)

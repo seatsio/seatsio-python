@@ -12,9 +12,9 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         res = self.client.events.change_object_status(event.key, ["A-1", "A-2"], "status_foo")
 
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-1").status).is_equal_to("status_foo")
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-2").status).is_equal_to("status_foo")
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-3").status).is_equal_to("free")
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-1").status).is_equal_to("status_foo")
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-2").status).is_equal_to("status_foo")
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-3").status).is_equal_to("free")
 
         assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
         object = res.objects["A-1"]
@@ -43,11 +43,11 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1", "A-2"], "status_foo", hold_token.hold_token)
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(status1.status).is_equal_to("status_foo")
         assert_that(status1.hold_token).is_none()
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-2")
+        status1 = self.client.events.retrieve_object_info(event.key, "A-2")
         assert_that(status1.status).is_equal_to("status_foo")
         assert_that(status1.hold_token).is_none()
 
@@ -57,8 +57,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1", "A-2"], "status_foo", order_id="myOrder")
 
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-1").order_id).is_equal_to("myOrder")
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-2").order_id).is_equal_to("myOrder")
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-1").order_id).is_equal_to("myOrder")
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-2").order_id).is_equal_to("myOrder")
 
     def test_tickettype(self):
         chart_key = self.create_test_chart()
@@ -68,11 +68,11 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, [props1, props2], "status_foo")
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(status1.status).is_equal_to("status_foo")
         assert_that(status1.ticket_type).is_equal_to("Ticket Type 1")
 
-        status2 = self.client.events.retrieve_object_status(event.key, "A-2")
+        status2 = self.client.events.retrieve_object_info(event.key, "A-2")
         assert_that(status2.status).is_equal_to("status_foo")
         assert_that(status2.ticket_type).is_equal_to("Ticket Type 2")
 
@@ -84,8 +84,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, [props1, props2], "status_foo")
 
-        assert_that(self.client.events.retrieve_object_status(event.key, "GA1").quantity).is_equal_to(5)
-        assert_that(self.client.events.retrieve_object_status(event.key, "GA2").quantity).is_equal_to(10)
+        assert_that(self.client.events.retrieve_object_info(event.key, "GA1").num_booked).is_equal_to(5)
+        assert_that(self.client.events.retrieve_object_info(event.key, "GA2").num_booked).is_equal_to(10)
 
     def test_extra_data(self):
         chart_key = self.create_test_chart()
@@ -95,8 +95,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, [props1, props2], "status_foo")
 
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-1").extra_data).is_equal_to({"foo": "bar"})
-        assert_that(self.client.events.retrieve_object_status(event.key, "A-2").extra_data).is_equal_to({"foo": "baz"})
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-1").extra_data).is_equal_to({"foo": "bar"})
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-2").extra_data).is_equal_to({"foo": "baz"})
 
     def test_keepExtraDataTrue(self):
         chart_key = self.create_test_chart()
@@ -106,8 +106,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", keep_extra_data=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_equal_to(extra_data)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_equal_to(extra_data)
 
     def test_keepExtraDataFalse(self):
         chart_key = self.create_test_chart()
@@ -117,8 +117,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", keep_extra_data=False)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_none()
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_none()
 
     def test_noKeepExtraData(self):
         chart_key = self.create_test_chart()
@@ -128,8 +128,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus")
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_none()
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_none()
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
@@ -143,8 +143,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", channel_keys=["channelKey1"])
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to("someStatus")
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to("someStatus")
 
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
@@ -158,8 +158,8 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_channels=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to("someStatus")
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to("someStatus")
 
     def test_ignoreSocialDistancing(self):
         chart_key = self.create_test_chart()
@@ -174,5 +174,5 @@ class ChangeObjectStatusTest(SeatsioClientTest):
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_social_distancing=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to("someStatus")
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to("someStatus")

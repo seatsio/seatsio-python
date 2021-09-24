@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, Channel, SocialDistancingRuleset
+from seatsio.domain import EventObjectInfo, Channel, SocialDistancingRuleset
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -11,13 +11,13 @@ class BookObjectsTest(SeatsioClientTest):
 
         res = self.client.events.book(event.key, ["A-1", "A-2"])
 
-        a1_status = self.client.events.retrieve_object_status(event.key, "A-1").status
-        a2_status = self.client.events.retrieve_object_status(event.key, "A-2").status
-        a3_status = self.client.events.retrieve_object_status(event.key, "A-3").status
+        a1_status = self.client.events.retrieve_object_info(event.key, "A-1").status
+        a2_status = self.client.events.retrieve_object_info(event.key, "A-2").status
+        a3_status = self.client.events.retrieve_object_info(event.key, "A-3").status
 
-        assert_that(a1_status).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
+        assert_that(a1_status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(a2_status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(a3_status).is_equal_to(EventObjectInfo.FREE)
 
         assert_that(list(res.objects)).contains_exactly_in_any_order("A-1", "A-2")
 
@@ -27,13 +27,13 @@ class BookObjectsTest(SeatsioClientTest):
 
         res = self.client.events.book(event.key, ["Section A-A-1", "Section A-A-2"])
 
-        a1_status = self.client.events.retrieve_object_status(event.key, "Section A-A-1").status
-        a2_status = self.client.events.retrieve_object_status(event.key, "Section A-A-2").status
-        a3_status = self.client.events.retrieve_object_status(event.key, "Section A-A-3").status
+        a1_status = self.client.events.retrieve_object_info(event.key, "Section A-A-1").status
+        a2_status = self.client.events.retrieve_object_info(event.key, "Section A-A-2").status
+        a3_status = self.client.events.retrieve_object_info(event.key, "Section A-A-3").status
 
-        assert_that(a1_status).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(a2_status).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(a3_status).is_equal_to(ObjectStatus.FREE)
+        assert_that(a1_status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(a2_status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(a3_status).is_equal_to(EventObjectInfo.FREE)
 
         assert_that(list(res.objects)).contains_exactly_in_any_order("Section A-A-1", "Section A-A-2")
         assert_that(res.objects["Section A-A-1"].entrance).is_equal_to("Entrance 1")
@@ -52,12 +52,12 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1", "A-2"], hold_token.hold_token)
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status1.status).is_equal_to(ObjectStatus.BOOKED)
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(status1.status).is_equal_to(EventObjectInfo.BOOKED)
         assert_that(status1.hold_token).is_none()
 
-        status2 = self.client.events.retrieve_object_status(event.key, "A-2")
-        assert_that(status2.status).is_equal_to(ObjectStatus.BOOKED)
+        status2 = self.client.events.retrieve_object_info(event.key, "A-2")
+        assert_that(status2.status).is_equal_to(EventObjectInfo.BOOKED)
         assert_that(status2.hold_token).is_none()
 
     def test_withOrderId(self):
@@ -66,10 +66,10 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1", "A-2"], order_id="order1")
 
-        status1 = self.client.events.retrieve_object_status(event.key, "A-1")
+        status1 = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(status1.order_id).is_equal_to("order1")
 
-        status2 = self.client.events.retrieve_object_status(event.key, "A-2")
+        status2 = self.client.events.retrieve_object_info(event.key, "A-2")
         assert_that(status2.order_id).is_equal_to("order1")
 
     def test_keepExtraData(self):
@@ -80,8 +80,8 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1"], keep_extra_data=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.extra_data).is_equal_to(extra_data)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.extra_data).is_equal_to(extra_data)
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
@@ -95,8 +95,8 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1"], channel_keys=["channelKey1"])
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.BOOKED)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.BOOKED)
 
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
@@ -110,8 +110,8 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1"], ignore_channels=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.BOOKED)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.BOOKED)
 
     def test_ignore_channels(self):
         chart_key = self.create_test_chart()
@@ -126,5 +126,5 @@ class BookObjectsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, ["A-1"], ignore_social_distancing=True)
 
-        status = self.client.events.retrieve_object_status(event.key, "A-1")
-        assert_that(status.status).is_equal_to(ObjectStatus.BOOKED)
+        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
+        assert_that(object_info.status).is_equal_to(EventObjectInfo.BOOKED)

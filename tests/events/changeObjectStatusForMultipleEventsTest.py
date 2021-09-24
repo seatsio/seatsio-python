@@ -1,4 +1,4 @@
-from seatsio.domain import ObjectStatus, SocialDistancingRuleset
+from seatsio.domain import EventObjectInfo, SocialDistancingRuleset
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -31,10 +31,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             object_or_objects=["A-1", "A-2"],
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(ObjectStatus.BOOKED)
+        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
 
     def test_hold(self):
         chart_key = self.create_test_chart()
@@ -48,10 +48,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             hold_token=hold_token.hold_token
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(ObjectStatus.HELD)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(ObjectStatus.HELD)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(ObjectStatus.HELD)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(ObjectStatus.HELD)
+        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.HELD)
 
     def test_release(self):
         chart_key = self.create_test_chart()
@@ -68,13 +68,13 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             object_or_objects=["A-1", "A-2"],
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(ObjectStatus.FREE)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(ObjectStatus.FREE)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(ObjectStatus.FREE)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(ObjectStatus.FREE)
+        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.FREE)
 
     def fetch_status(self, event, o):
-        return self.client.events.retrieve_object_status(event, o).status
+        return self.client.events.retrieve_object_info(event, o).status
 
     def test_ignoreSocialDistancing(self):
         chart_key = self.create_test_chart()
@@ -94,5 +94,5 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             ignore_social_distancing=True
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(ObjectStatus.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(ObjectStatus.BOOKED)
+        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)

@@ -17,10 +17,10 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
             StatusChangeRequest(event2.key, ["A-2"], "lolzor")
         ])
 
-        assert_that(self.client.events.retrieve_object_status(event1.key, "A-1").status).is_equal_to("lolzor")
+        assert_that(self.client.events.retrieve_object_info(event1.key, "A-1").status).is_equal_to("lolzor")
         assert_that(res[0].objects["A-1"].status).is_equal_to("lolzor")
 
-        assert_that(self.client.events.retrieve_object_status(event2.key, "A-2").status).is_equal_to("lolzor")
+        assert_that(self.client.events.retrieve_object_info(event2.key, "A-2").status).is_equal_to("lolzor")
         assert_that(res[1].objects["A-2"].status).is_equal_to("lolzor")
 
     def test_channelKeys(self):

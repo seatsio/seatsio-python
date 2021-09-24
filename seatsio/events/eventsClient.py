@@ -1,4 +1,6 @@
-from seatsio.domain import Event, StatusChange, ObjectStatus, BestAvailableObjects, ChangeObjectStatusResult
+from six import iteritems
+
+from seatsio.domain import Event, StatusChange, EventObjectInfo, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsRequests import UpdateChannelsRequest, AssignObjectsToChannelsRequest
@@ -59,13 +61,13 @@ class EventsClient(ListableObjectsClient):
         return Lister(page_fetcher)
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.BOOKED, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
         return self.change_best_available_object_status(
             event_key,
             number,
-            ObjectStatus.BOOKED,
+            EventObjectInfo.BOOKED,
             categories,
             hold_token,
             extra_data,
@@ -80,7 +82,7 @@ class EventsClient(ListableObjectsClient):
         return self.change_best_available_object_status(
             event_key,
             number,
-            ObjectStatus.HELD,
+            EventObjectInfo.HELD,
             categories,
             hold_token,
             extra_data,
@@ -97,10 +99,10 @@ class EventsClient(ListableObjectsClient):
         return BestAvailableObjects(response.json())
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.FREE, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.FREE, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys)
 
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, ObjectStatus.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
@@ -119,8 +121,16 @@ class EventsClient(ListableObjectsClient):
         delattr(request, "events")
         return request
 
-    def retrieve_object_status(self, key, object_key):
-        return self.http_client.url("/events/{key}/objects/{object}", key=key, object=object_key).get_as(ObjectStatus)
+    def retrieve_object_info(self, key, object_key):
+        return self.http_client.url("/events/{key}/objects/{object}", key=key, object=object_key).get_as(EventObjectInfo)
+
+    def retrieve_object_infos(self, key, object_labels):
+        query_params = { "label": object_labels }
+        response_body = self.http_client.url("/events/{key}/objects", query_params, key=key).get()
+        items = {}
+        for key, value in iteritems(response_body):
+            items[key] = EventObjectInfo(value)
+        return items
 
     def mark_as_for_sale(self, event_key, objects=None, categories=None):
         self.http_client \

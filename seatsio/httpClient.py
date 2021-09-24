@@ -32,7 +32,7 @@ class ApiResource:
             path_params[key] = quote(str(path_params[key]), safe='')
         full_url = base_url + relative_url.format(**path_params)
         if query_params:
-            full_url += "?" + urlencode(query_params)
+            full_url += "?" + urlencode(query_params, True)
         return full_url
 
     def get(self):
