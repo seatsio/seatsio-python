@@ -58,6 +58,22 @@ client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key
 client.events.change_object_status("<EVENT KEY>", ["A-1", "A-2"], "my-custom-status")
 ```
 
+### Retrieving object category and status (and other information)
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
+object_infos = client.events.retrieve_object_infos(event.key, ["A-1", "A-2"])
+
+print(object_infos["A-1"].category_key)
+print(object_infos["A-1"].category_label)
+print(object_infos["A-1"].status)
+
+print(object_infos["A-2"].category_key)
+print(object_infos["A-2"].category_label)
+print(object_infos["A-2"].status)
+```
+
 ### Listing all charts
 
 ```python
