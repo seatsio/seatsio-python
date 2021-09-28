@@ -121,8 +121,9 @@ class EventsClient(ListableObjectsClient):
         delattr(request, "events")
         return request
 
-    def retrieve_object_info(self, key, object_key):
-        return self.http_client.url("/events/{key}/objects/{object}", key=key, object=object_key).get_as(EventObjectInfo)
+    def retrieve_object_info(self, key, object_label):
+        result = self.retrieve_object_infos(key, [object_label])
+        return result[object_label]
 
     def retrieve_object_infos(self, key, object_labels):
         query_params = { "label": object_labels }
