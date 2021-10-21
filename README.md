@@ -124,6 +124,17 @@ client = seatsio.Client(seatsio.Region.EU(), secret_key="my-company-admin-key")
 client.workspaces.create("a workspace")
 ```
 
+### Creating a chart and an event with the company admin key
+
+```python
+import seatsio
+# company admin key can be found on https://app.seats.io/company-settings
+# workspace public key can be found on https://app.seats.io/workspace-settings
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-company-admin-key", workspace_key="my-workspace-public-key")
+chart = client.charts.create()
+event = client.events.create(chart.key)
+```
+
 ## Error handling
 
 When an API call results in a 4xx or 5xx error (e.g. when a chart could not be found), a SeatsioException is raised.
