@@ -5,7 +5,14 @@ from six.moves.urllib.parse import quote, urlencode
 import jsonpickle
 import requests
 
-from seatsio.exceptions import SeatsioException
+from seatsio.exceptions import SeatsioException, RateLimitExceededException
+
+
+def handle_error(request, response):
+    if response.status_code == 429:
+        raise RateLimitExceededException(request, response)
+    else:
+        raise SeatsioException(request, response)
 
 
 class HttpClient:
@@ -69,14 +76,14 @@ class GET:
     def execute(self):
         response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
-            raise SeatsioException(self, response)
+            handle_error(self, response)
         else:
             return response.json()
 
     def execute_raw(self):
         response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
-            raise SeatsioException(self, response)
+            handle_error(self, response)
         else:
             return response.content
 
@@ -104,7 +111,7 @@ class POST:
     def execute(self):
         response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
-            raise SeatsioException(self, response)
+            handle_error(self, response)
         else:
             return response
 
@@ -133,7 +140,7 @@ class DELETE:
     def execute(self):
         response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
-            raise SeatsioException(self, response)
+            handle_error(self, response)
 
     def try_execute(self):
         try:

@@ -1,7 +1,7 @@
 class SeatsioException(Exception):
 
     def __init__(self, request, response=None, cause=None):
-        if (response is not None) and ("application/json" in response.headers["Content-Type"]):
+        if (response is not None) and ("application/json" in response.headers.get("content-type", "")):
             body = response.json()
             self.errors = body["errors"]
             self.requestId = body["requestId"]
@@ -24,3 +24,9 @@ class SeatsioException(Exception):
 
     def __map_errors_to_message(self, errors):
         return list(map(lambda e: e.get("message"), errors))
+
+
+class RateLimitExceededException(SeatsioException):
+
+    def __init__(self, request, response=None, cause=None):
+        super(RateLimitExceededException, self).__init__(request, response, cause)
