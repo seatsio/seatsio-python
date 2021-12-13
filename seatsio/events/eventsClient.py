@@ -106,7 +106,7 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
-        response = self.http_client.url("/seasons/actions/change-object-status", query_params={"expand": "objects"}).post(request)
+        response = self.http_client.url("/events/groups/actions/change-object-status", query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 
     def change_object_status_in_batch(self, status_change_requests):
