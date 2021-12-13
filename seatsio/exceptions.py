@@ -4,7 +4,7 @@ class SeatsioException(Exception):
         if (response is not None) and ("application/json" in response.headers.get("content-type", "")):
             body = response.json()
             self.errors = body["errors"]
-            self.requestId = body["requestId"]
+            self.requestId = body.get("requestId")  # For some reason, the API doesn't always return a requestId
             self.cause = cause
             self.message = self.__build_exception_message(request, response)
             super(SeatsioException, self).__init__(self.message)
