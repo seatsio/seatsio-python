@@ -16,7 +16,7 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
 
         assert_that(report.get("booked").get("count")).is_equal_to(1)
         assert_that(report.get("booked").get("bySection").get("NO_SECTION").get("count")).is_equal_to(1)
-        assert_that(report.get("booked").get("bySection").get("NO_SECTION").get("bySelectability").get("not_selectable")).is_equal_to(1)
+        assert_that(report.get("booked").get("bySection").get("NO_SECTION").get("byAvailability").get("not_available")).is_equal_to(1)
 
     def test_deepSummaryByObjectType(self):
         chart_key = self.create_test_chart()
@@ -26,7 +26,7 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
 
         assert_that(report.get("seat").get("count")).is_equal_to(32)
         assert_that(report.get("seat").get("bySection").get("NO_SECTION").get("count")).is_equal_to(32)
-        assert_that(report.get("seat").get("bySection").get("NO_SECTION").get("bySelectability").get("selectable")).is_equal_to(32)
+        assert_that(report.get("seat").get("bySection").get("NO_SECTION").get("byAvailability").get("available")).is_equal_to(32)
 
     def test_deepSummaryByCategoryKey(self):
         chart_key = self.create_test_chart()
@@ -38,7 +38,7 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
 
         assert_that(report.get("9").get("count")).is_equal_to(116)
         assert_that(report.get("9").get("bySection").get("NO_SECTION").get("count")).is_equal_to(116)
-        assert_that(report.get("9").get("bySection").get("NO_SECTION").get("bySelectability").get("not_selectable")).is_equal_to(1)
+        assert_that(report.get("9").get("bySection").get("NO_SECTION").get("byAvailability").get("not_available")).is_equal_to(1)
 
     def test_deepSummaryByCategoryLabel(self):
         chart_key = self.create_test_chart()
@@ -50,7 +50,7 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
 
         assert_that(report.get("Cat1").get("count")).is_equal_to(116)
         assert_that(report.get("Cat1").get("bySection").get("NO_SECTION").get("count")).is_equal_to(116)
-        assert_that(report.get("Cat1").get("bySection").get("NO_SECTION").get("bySelectability").get("not_selectable")).is_equal_to(1)
+        assert_that(report.get("Cat1").get("bySection").get("NO_SECTION").get("byAvailability").get("not_available")).is_equal_to(1)
 
     def test_deepSummaryBySection(self):
         chart_key = self.create_test_chart()
@@ -62,19 +62,19 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
 
         assert_that(report.get("NO_SECTION").get("count")).is_equal_to(232)
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(116)
-        assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1").get("bySelectability").get("not_selectable")).is_equal_to(1)
+        assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1").get("byAvailability").get("not_available")).is_equal_to(1)
 
-    def test_deepSummaryBySelectability(self):
+    def test_deepSummaryByAvailability(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
 
         self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1")], order_id="order1")
 
-        report = self.client.events.reports.deep_summary_by_selectability(event.key)
+        report = self.client.events.reports.deep_summary_by_availability(event.key)
 
-        assert_that(report.get("not_selectable").get("count")).is_equal_to(1)
-        assert_that(report.get("not_selectable").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(1)
-        assert_that(report.get("not_selectable").get("byCategoryLabel").get("Cat1").get("bySection").get("NO_SECTION")).is_equal_to(1)
+        assert_that(report.get("not_available").get("count")).is_equal_to(1)
+        assert_that(report.get("not_available").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(1)
+        assert_that(report.get("not_available").get("byCategoryLabel").get("Cat1").get("bySection").get("NO_SECTION")).is_equal_to(1)
 
     def test_deepSummaryByChannel(self):
         chart_key = self.create_test_chart()

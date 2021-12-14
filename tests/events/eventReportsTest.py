@@ -47,7 +47,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.displayed_object_type).is_none()
         assert_that(report_item.left_neighbour).is_none()
         assert_that(report_item.right_neighbour).is_equal_to("A-2")
-        assert_that(report_item.is_selectable).is_false()
+        assert_that(report_item.is_available).is_false()
         assert_that(report_item.is_disabled_by_social_distancing).is_false()
         assert_that(report_item.channel).is_equal_to('channelKey1')
         assert_that(report_item.distance_to_focal_point).is_not_none()
@@ -254,23 +254,23 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(34)
 
-    def testBySelectability(self):
+    def testByAvailability(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         self.client.events.book(event.key, ["A-1", "A-2"])
 
-        report = self.client.events.reports.by_selectability(event.key)
+        report = self.client.events.reports.by_availability(event.key)
 
         assert_that(report).is_instance(EventReport)
-        assert_that(report.get("selectable")).has_size(32)
-        assert_that(report.get("not_selectable")).has_size(2)
+        assert_that(report.get("available")).has_size(32)
+        assert_that(report.get("not_available")).has_size(2)
 
-    def testBySpecificSelectability(self):
+    def testBySpecificAvailability(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         self.client.events.book(event.key, ["A-1", "A-2"])
 
-        report = self.client.events.reports.by_selectability(event.key, "selectable")
+        report = self.client.events.reports.by_availability(event.key, "available")
 
         assert_that(report).is_instance(list)
         assert_that(report[0]).is_instance(EventObjectInfo)

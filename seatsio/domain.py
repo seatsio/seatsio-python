@@ -287,7 +287,7 @@ class EventObjectInfo:
         self.displayed_object_type = item_data.get("displayedObjectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
-        self.is_selectable = item_data.get('isSelectable')
+        self.is_available = item_data.get('isAvailable')
         self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
         self.channel = item_data.get('channel')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')

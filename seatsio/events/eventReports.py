@@ -56,14 +56,14 @@ class EventReports:
     def deep_summary_by_section(self, event_key):
         return self.__fetch_deep_summary_report("bySection", event_key)
 
-    def by_selectability(self, event_key, selectability=None):
-        return self.__fetch_report("bySelectability", event_key, selectability)
+    def by_availability(self, event_key, availability=None):
+        return self.__fetch_report("byAvailability", event_key, availability)
 
-    def summary_by_selectability(self, event_key):
-        return self.__fetch_summary_report("bySelectability", event_key)
+    def summary_by_availability(self, event_key):
+        return self.__fetch_summary_report("byAvailability", event_key)
 
-    def deep_summary_by_selectability(self, event_key):
-        return self.__fetch_deep_summary_report("bySelectability", event_key)
+    def deep_summary_by_availability(self, event_key):
+        return self.__fetch_deep_summary_report("byAvailability", event_key)
 
     def by_channel(self, event_key, channel=None):
         return self.__fetch_report("byChannel", event_key, channel)
