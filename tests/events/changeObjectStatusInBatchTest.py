@@ -1,5 +1,6 @@
 from seatsio import Channel
 from seatsio.events.statusChangeRequest import StatusChangeRequest
+from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -54,3 +55,33 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
         ])
 
         assert_that(res[0].objects["A-1"].status).is_equal_to("lolzor")
+
+    def test_allowed_previous_statuses(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        try:
+            self.client.events.change_object_status_in_batch([
+                StatusChangeRequest(event.key, ["A-1"], "lolzor", allowed_previous_statuses=['SomeOtherStatus']),
+            ])
+            self.fail("expected exception")
+        except SeatsioException as e:
+            assert_that(e.errors).has_size(1).is_equal_to([{
+                "code": "ILLEGAL_STATUS_CHANGE",
+                "message": "Cannot change from [free] to [lolzor]: free is not in the list of allowed previous statuses"
+            }])
+
+    def test_reject_previous_statuses(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        try:
+            self.client.events.change_object_status_in_batch([
+                StatusChangeRequest(event.key, ["A-1"], "lolzor", rejected_previous_statuses=['free']),
+            ])
+            self.fail("expected exception")
+        except SeatsioException as e:
+            assert_that(e.errors).has_size(1).is_equal_to([{
+                "code": "ILLEGAL_STATUS_CHANGE",
+                "message": "Cannot change from [free] to [lolzor]: free is in the list of rejected previous statuses"
+            }])
