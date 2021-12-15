@@ -1,6 +1,6 @@
 from six import iteritems
 
-from seatsio.domain import Event, StatusChange, EventObjectInfo, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo
+from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsRequests import UpdateChannelsRequest, AssignObjectsToChannelsRequest
@@ -104,19 +104,19 @@ class EventsClient(ListableObjectsClient):
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.HELD, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
 
-    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing)
+    def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None, keep_extra_data=None, ignore_channels=None, channel_keys=None, ignore_social_distancing=None, allowed_previous_statuses=None, rejected_previous_statuses=None):
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing, allowed_previous_statuses, rejected_previous_statuses)
         response = self.http_client.url("/events/groups/actions/change-object-status", query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
 
     def change_object_status_in_batch(self, status_change_requests):
-        requests = list(map(lambda r: self.__change_object_status_in_batch_request(r.event_key, r.object_or_objects, r.status, r.hold_token, r.order_id, r.keep_extra_data, r.ignore_channels, r.channel_keys), status_change_requests))
+        requests = list(map(lambda r: self.__change_object_status_in_batch_request(r.event_key, r.object_or_objects, r.status, r.hold_token, r.order_id, r.keep_extra_data, r.ignore_channels, r.channel_keys, r.allowed_previous_statuses, r.rejected_previous_statuses), status_change_requests))
         response = self.http_client.url("/events/actions/change-object-status",
                                         query_params={"expand": "objects"}).post({"statusChanges": requests})
         return list(map(lambda r: ChangeObjectStatusResult(r), response.json().get("results")))
 
-    def __change_object_status_in_batch_request(self, event_key, object_or_objects, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys):
-        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data, ignore_channels, channel_keys)
+    def __change_object_status_in_batch_request(self, event_key, object_or_objects, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, allowed_previous_statuses, rejected_previous_statuses):
+        request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data, ignore_channels, channel_keys, None, allowed_previous_statuses, rejected_previous_statuses)
         request.event = event_key
         delattr(request, "events")
         return request
