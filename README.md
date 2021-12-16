@@ -43,7 +43,7 @@ If you're unsure about your region, have a look at your [company settings page](
 
 ```python
 import seatsio
-client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key") # workspace secret key can be found on https://app.seats.io/workspace-settings
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 chart = client.charts.create()
 event = client.events.create(chart.key)
 ```
