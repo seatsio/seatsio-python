@@ -65,6 +65,15 @@ class EventReports:
     def deep_summary_by_availability(self, event_key):
         return self.__fetch_deep_summary_report("byAvailability", event_key)
 
+    def by_availability_reason(self, event_key, availability_reason=None):
+        return self.__fetch_report("byAvailabilityReason", event_key, availability_reason)
+
+    def summary_by_availability_reason(self, event_key):
+        return self.__fetch_summary_report("byAvailabilityReason", event_key)
+
+    def deep_summary_by_availability_reason(self, event_key):
+        return self.__fetch_deep_summary_report("byAvailabilityReason", event_key)
+
     def by_channel(self, event_key, channel=None):
         return self.__fetch_report("byChannel", event_key, channel)
 

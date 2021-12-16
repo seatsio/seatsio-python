@@ -276,6 +276,28 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(32)
 
+    def testByAvailabilityReason(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1", "A-2"])
+
+        report = self.client.events.reports.by_availability_reason(event.key)
+
+        assert_that(report).is_instance(EventReport)
+        assert_that(report.get("available")).has_size(32)
+        assert_that(report.get("booked")).has_size(2)
+
+    def testBySpecificAvailabilityReason(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1", "A-2"])
+
+        report = self.client.events.reports.by_availability_reason(event.key, "booked")
+
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventObjectInfo)
+        assert_that(report).has_size(2)
+
     def testByChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

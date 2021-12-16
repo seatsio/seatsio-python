@@ -132,6 +132,30 @@ class EventReportsSummaryTest(SeatsioClientTest):
         assert_that(report.get("not_available").get("byCategoryLabel").get("Cat1")).is_equal_to(1)
         assert_that(report.get("not_available").get("byChannel").get("NO_CHANNEL")).is_equal_to(1)
 
+    def test_summaryByAvailabilityReason(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        self.client.events.book(event.key, "A-1")
+
+        report = self.client.events.reports.summary_by_availability_reason(event.key)
+
+        assert_that(report.get("available").get("count")).is_equal_to(231)
+        assert_that(report.get("available").get("bySection").get("NO_SECTION")).is_equal_to(231)
+        assert_that(report.get("available").get("byStatus").get("free")).is_equal_to(231)
+        assert_that(report.get("available").get("byCategoryKey").get("9")).is_equal_to(115)
+        assert_that(report.get("available").get("byCategoryLabel").get("Cat1")).is_equal_to(115)
+        assert_that(report.get("available").get("byCategoryKey").get("10")).is_equal_to(116)
+        assert_that(report.get("available").get("byCategoryLabel").get("Cat2")).is_equal_to(116)
+        assert_that(report.get("available").get("byChannel").get("NO_CHANNEL")).is_equal_to(231)
+
+        assert_that(report.get("booked").get("count")).is_equal_to(1)
+        assert_that(report.get("booked").get("bySection").get("NO_SECTION")).is_equal_to(1)
+        assert_that(report.get("booked").get("byStatus").get("booked")).is_equal_to(1)
+        assert_that(report.get("booked").get("byCategoryKey").get("9")).is_equal_to(1)
+        assert_that(report.get("booked").get("byCategoryLabel").get("Cat1")).is_equal_to(1)
+        assert_that(report.get("booked").get("byChannel").get("NO_CHANNEL")).is_equal_to(1)
+
     def test_summaryByChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

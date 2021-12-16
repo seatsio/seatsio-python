@@ -76,6 +76,18 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
         assert_that(report.get("not_available").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(1)
         assert_that(report.get("not_available").get("byCategoryLabel").get("Cat1").get("bySection").get("NO_SECTION")).is_equal_to(1)
 
+    def test_deepSummaryByAvailabilityReason(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1")], order_id="order1")
+
+        report = self.client.events.reports.deep_summary_by_availability_reason(event.key)
+
+        assert_that(report.get("booked").get("count")).is_equal_to(1)
+        assert_that(report.get("booked").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(1)
+        assert_that(report.get("booked").get("byCategoryLabel").get("Cat1").get("bySection").get("NO_SECTION")).is_equal_to(1)
+
     def test_deepSummaryByChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
