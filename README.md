@@ -15,7 +15,29 @@ pip install seatsio
 
 seatsio-python follows semver since v50.2.0.
 
-## Examples
+
+## Usage
+
+### General instructions
+
+To use this library, you'll need to create a `seatsio.Client`:
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
+...
+```
+
+You can find your _workspace secret key_ in the [settings section of the workspace](https://app.seats.io/workspace-settings).
+
+The region should correspond to the region of your account:
+
+- `seatsio.Region.EU()`: Europe
+- `seatsio.Region.NA()`: North-America
+- `seatsio.Region.SA()`: South-America
+- `seatsio.Region.OC()`: Oceania
+
+If you're unsure about your region, have a look at your [company settings page](https://app.seats.io/company-settings).
 
 ### Creating a chart and an event
 
