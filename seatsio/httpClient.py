@@ -141,6 +141,8 @@ class DELETE:
         response = retry(self.try_execute, self.max_retries)
         if response.status_code >= 400:
             handle_error(self, response)
+        else:
+            return response
 
     def try_execute(self):
         try:

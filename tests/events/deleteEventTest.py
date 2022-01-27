@@ -13,5 +13,6 @@ class DeleteEventTest(SeatsioClientTest):
 
         try:
             self.client.events.retrieve(event.key)
+            self.fail("expected an exception")
         except SeatsioException as e:
             assert_that(e.message).contains("404")
