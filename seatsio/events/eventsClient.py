@@ -6,7 +6,7 @@ from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsRequests import UpdateChannelsRequest, AssignObjectsToChannelsRequest
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
-from seatsio.events.eventReports import EventReports
+from seatsio.reports.events.eventReports import EventReports
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
