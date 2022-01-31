@@ -2,7 +2,7 @@ import json
 
 from munch import munchify
 
-from seatsio.charts.chartReports import ChartReports
+from seatsio.reports.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
 from seatsio.charts.socialDistancingRulesetsRequest import SocialDistancingRulesetsRequest
 from seatsio.domain import Chart, ChartValidation
