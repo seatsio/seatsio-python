@@ -23,6 +23,14 @@ class ChartReportsSummaryTest(SeatsioClientTest):
         assert_that(report.get("generalAdmission").get("byCategoryLabel").get("Cat1")).is_equal_to(100)
         assert_that(report.get("generalAdmission").get("byCategoryLabel").get("Cat2")).is_equal_to(100)
 
+    def test_summaryByObjectType_bookWholeTablesTrue(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.summary_by_object_type(chart_key, 'true')
+
+        assert_that(report.get("seat").get("count")).is_equal_to(0)
+        assert_that(report.get("table").get("count")).is_equal_to(2)
+
     def test_summaryByCategoryKey(self):
         chart_key = self.create_test_chart()
 
