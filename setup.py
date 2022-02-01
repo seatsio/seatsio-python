@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='seatsio',
-    version='v64.3.0',
+    version='v65.0.0',
     description='The official Seats.io Python client library',
     author='The seats.io dev team',
     author_email='hello@seats.io',

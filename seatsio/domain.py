@@ -27,6 +27,15 @@ class ChartValidation:
         self.warnings = data.get("warnings")
 
 
+class Season:
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.key = data.get("key")
+        self.partial_season_keys = data.get("partialSeasonKeys")
+        self.season_event = Event(data.get("seasonEvent"))
+        self.events = Event.create_list(data.get("events"))
+
+
 class Event:
     def __init__(self, data):
         self.id = data.get("id")
@@ -42,13 +51,13 @@ class Event:
 
     @classmethod
     def create_list(cls, lst):
-        if lst:
+        if lst is None:
+            return None
+        else:
             result = []
             for e in lst:
                 result.append(Event(e))
             return result
-        else:
-            return None
 
 
 class ForSaleConfig:
@@ -134,7 +143,8 @@ class Channel:
 
 class SocialDistancingRuleset:
     def __init__(self, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                 disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
+                 disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
+                 max_occupancy_absolute=0,
                  max_occupancy_percentage=0, one_group_per_table=False, fixed_group_layout=False,
                  disabled_seats=[], enabled_seats=[], index=0):
         self.name = name
@@ -157,7 +167,8 @@ class SocialDistancingRuleset:
 
     @classmethod
     def rule_based(cls, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                   disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
+                   disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
+                   max_occupancy_absolute=0,
                    max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
         return SocialDistancingRuleset(name,
                                        number_of_disabled_seats_to_the_sides=number_of_disabled_seats_to_the_sides,
