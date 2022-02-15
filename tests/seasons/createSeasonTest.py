@@ -16,16 +16,12 @@ class CreateSeasonTest(SeatsioClientTest):
         assert_that(season.key).is_not_none()
         assert_that(season.partial_season_keys).is_empty()
         assert_that(season.events).is_empty()
-
-        season_event = season.season_event
-        assert_that(season_event.id).is_not_zero()
-        assert_that(season_event.key).is_equal_to(season.key)
-        assert_that(season_event.chart_key).is_equal_to(chart_key)
-        assert_that(season_event.table_booking_config).is_equal_to(TableBookingConfig.inherit())
-        assert_that(season_event.supports_best_available).is_true()
-        assert_that(season_event.for_sale_config).is_none()
-        assert_that(season_event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
-        assert_that(season_event.updated_on).is_none()
+        assert_that(season.chart_key).is_equal_to(chart_key)
+        assert_that(season.table_booking_config).is_equal_to(TableBookingConfig.inherit())
+        assert_that(season.supports_best_available).is_true()
+        assert_that(season.for_sale_config).is_none()
+        assert_that(season.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
+        assert_that(season.updated_on).is_none()
 
     def test_key_is_optional(self):
         chart = self.client.charts.create()
@@ -56,7 +52,7 @@ class CreateSeasonTest(SeatsioClientTest):
 
         season = self.client.seasons.create(chart_key, table_booking_config=table_booking_config)
 
-        assert_that(season.season_event.table_booking_config).is_equal_to(table_booking_config)
+        assert_that(season.table_booking_config).is_equal_to(table_booking_config)
 
     def test_social_distancing_ruleset_key_is_optional(self):
         chart_key = self.create_test_chart()
@@ -66,4 +62,4 @@ class CreateSeasonTest(SeatsioClientTest):
 
         season = self.client.seasons.create(chart_key, social_distancing_ruleset_key='ruleset1')
 
-        assert_that(season.season_event.social_distancing_ruleset_key).is_equal_to('ruleset1')
+        assert_that(season.social_distancing_ruleset_key).is_equal_to('ruleset1')

@@ -2,10 +2,11 @@ from seatsio.domain import Season
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 
 
-class SeasonsClient(ListableObjectsClient):
+class SeasonsClient:
 
-    def __init__(self, http_client):
-        ListableObjectsClient.__init__(self, http_client, Season, "/seasons")
+    def __init__(self, http_client, seatsio_client):
+        self.http_client = http_client
+        self.seatsio_client = seatsio_client
 
     def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None,
                social_distancing_ruleset_key=None):
@@ -36,17 +37,8 @@ class SeasonsClient(ListableObjectsClient):
         response = self.http_client.url("/seasons/{top_level_season_key}/partial-seasons", top_level_season_key=top_level_season_key).post(request)
         return Season(response.json())
 
-    def delete(self, key):
-        self.http_client.url("/seasons/{key}", key=key).delete()
-
-    def delete_partial_season(self, top_level_season_key, partial_season_key):
-        self.http_client.url("/seasons/{top_level_season_key}/partial-seasons/{partial_season_key}", top_level_season_key=top_level_season_key, partial_season_key=partial_season_key).delete()
-
     def retrieve(self, key):
-        return self.http_client.url("/seasons/{key}", key=key).get_as(Season)
-
-    def retrieve_partial_season(self, top_level_season_key, partial_season_key):
-        return self.http_client.url("/seasons/{top_level_season_key}/partial-seasons/{partial_season_key}", top_level_season_key=top_level_season_key, partial_season_key=partial_season_key).get_as(Season)
+        return self.seatsio_client.events.retrieve(key)
 
     def create_events(self, key, event_keys=None, number_of_events=None):
         request = {}
