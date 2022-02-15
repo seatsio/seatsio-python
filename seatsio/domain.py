@@ -27,15 +27,6 @@ class ChartValidation:
         self.warnings = data.get("warnings")
 
 
-class Season:
-    def __init__(self, data):
-        self.id = data.get("id")
-        self.key = data.get("key")
-        self.partial_season_keys = data.get("partialSeasonKeys")
-        self.season_event = Event(data.get("seasonEvent"))
-        self.events = Event.create_list(data.get("events"))
-
-
 class Event:
     def __init__(self, data):
         self.id = data.get("id")
@@ -56,8 +47,28 @@ class Event:
         else:
             result = []
             for e in lst:
-                result.append(Event(e))
+                result.append(event_from_json(e))
             return result
+
+    def is_season(self):
+        return False
+
+
+class Season(Event):
+    def __init__(self, data):
+        Event.__init__(self, data)
+        self.partial_season_keys = data.get("partialSeasonKeys")
+        self.events = Event.create_list(data.get("events"))
+
+    def is_season(self):
+        return True
+
+
+def event_from_json(json):
+    if json.get("isSeason"):
+        return Season(json)
+    else:
+        return Event(json)
 
 
 class ForSaleConfig:

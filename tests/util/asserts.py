@@ -1,9 +1,9 @@
-from past.builtins import basestring
 import collections
 from datetime import datetime, timedelta
 
-from tests.util.joiner import join
+from past.builtins import basestring
 
+from tests.util.joiner import join
 
 
 def assert_that(actual):
@@ -87,6 +87,7 @@ class BooleanAssert(AbstractAssert):
     def is_true(self):
         assert self.actual, "Expected " + str(self.actual) + " to be True, but it was False"
 
+
 class NumberAssert(AbstractAssert):
 
     def is_not_zero(self):
@@ -100,6 +101,7 @@ class NumberAssert(AbstractAssert):
             self.actual) + ") to be in the range [" + str(
             min) + ", " + str(max) + "]"
         return self
+
 
 class IterableAssert(AbstractAssert):
 
@@ -140,4 +142,10 @@ class IterableAssert(AbstractAssert):
                 values.append(item.get(field_name))
             else:
                 values.append(getattr(item, field_name, None))
+        return assert_that(values)
+
+    def mapping(self, fn):
+        values = []
+        for item in self.actual:
+            values.append(fn(item))
         return assert_that(values)
