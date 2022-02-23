@@ -39,6 +39,7 @@ class Event:
         self.updated_on = parse_date(data.get("updatedOn"))
         self.channels = Channel.createList(data.get("channels"))
         self.social_distancing_ruleset_key = data.get("socialDistancingRulesetKey")
+        self.object_categories = data.get("objectCategories")
 
     @classmethod
     def create_list(cls, lst):

@@ -1,6 +1,6 @@
 from six import iteritems
 
-from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo, Season, \
+from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo, \
     event_from_json
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
@@ -21,9 +21,9 @@ class EventsClient(ListableObjectsClient):
         ListableObjectsClient.__init__(self, http_client, event_from_json, "/events")
         self.reports = EventReports(self.http_client)
 
-    def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None):
+    def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None, object_categories=None):
         response = self.http_client.url("/events").post(
-            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key, object_categories))
         return Event(response.json())
 
     def create_multiple(self, chart_key, events_properties):
@@ -32,9 +32,9 @@ class EventsClient(ListableObjectsClient):
         return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, table_booking_config=None,
-               social_distancing_ruleset_key=None):
+               social_distancing_ruleset_key=None, object_categories=None):
         self.http_client.url("/events/{key}", key=key).post(
-            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key, object_categories))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()

@@ -53,3 +53,10 @@ class CreateEventTest(SeatsioClientTest):
         event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset1')
 
         assert_that(event.social_distancing_ruleset_key).is_equal_to('ruleset1')
+
+    def test_object_categories_is_optional(self):
+        chart_key = self.create_test_chart()
+
+        event = self.client.events.create(chart_key, object_categories={'A-1': 10})
+
+        assert_that(event.object_categories).is_equal_to({'A-1': 10})
