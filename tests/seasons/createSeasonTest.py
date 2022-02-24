@@ -14,6 +14,8 @@ class CreateSeasonTest(SeatsioClientTest):
 
         assert_that(season.id).is_not_zero()
         assert_that(season.key).is_not_none()
+        assert_that(season.is_top_level_season).is_true()
+        assert_that(season.top_level_season_key).is_none()
         assert_that(season.partial_season_keys).is_empty()
         assert_that(season.events).is_empty()
         assert_that(season.chart_key).is_equal_to(chart_key)
