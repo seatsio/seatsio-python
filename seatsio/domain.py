@@ -39,6 +39,10 @@ class Event:
         self.updated_on = parse_date(data.get("updatedOn"))
         self.channels = Channel.createList(data.get("channels"))
         self.social_distancing_ruleset_key = data.get("socialDistancingRulesetKey")
+        self.is_top_level_season = data.get("isTopLevelSeason")
+        self.is_partial_season = data.get("isPartialSeason")
+        self.is_event_in_season = data.get("isEventInSeason")
+        self.top_level_season_key = data.get("topLevelSeasonKey")
         self.object_categories = data.get("objectCategories")
 
     @classmethod
