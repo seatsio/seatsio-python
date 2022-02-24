@@ -64,3 +64,21 @@ class UpdateEventTest(SeatsioClientTest):
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.social_distancing_ruleset_key).is_none()
+
+    def test_updateObjectCategories(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key, object_categories={'A-1': 10})
+
+        self.client.events.update(event.key, object_categories={'A-2': 9})
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.object_categories).is_equal_to({'A-2' : 9})
+
+    def test_removeObjectCategories(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key, object_categories={'A-1': 10})
+
+        self.client.events.update(event.key, object_categories={})
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.object_categories).is_none()
