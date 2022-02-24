@@ -449,6 +449,8 @@ class StatusChange:
         self.event_id = data.get("eventId")
         self.extra_data = data.get("extraData")
         self.origin = StatusChangeOrigin(data['origin'])
+        self.is_present_on_chart = data.get("isPresentOnChart")
+        self.not_present_on_chart_reason = data.get("notPresentOnChartReason")
 
 
 class StatusChangeOrigin:
