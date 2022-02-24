@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from seatsio import TableBookingConfig
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -36,6 +37,20 @@ class ListStatusChangesTest(SeatsioClientTest):
         assert_that(status_change.extra_data).is_equal_to({"foo": "bar"})
         assert_that(status_change.origin.type).is_equal_to("API_CALL")
         assert_that(status_change.origin.ip).is_not_none()
+        assert_that(status_change.is_present_on_chart).is_true()
+        assert_that(status_change.not_present_on_chart_reason).is_none()
+
+    def test_notPresentOnChartAnymore(self):
+        chart_key = self.create_test_chart_with_tables()
+        event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.all_by_table())
+        self.client.events.book(event.key, ["T1"])
+        self.client.events.update(event.key, table_booking_config=TableBookingConfig.all_by_seat())
+
+        status_changes = self.client.events.status_changes(event.key).list()
+        status_change = status_changes[0]
+
+        assert_that(status_change.is_present_on_chart).is_false()
+        assert_that(status_change.not_present_on_chart_reason).is_equal_to("SWITCHED_TO_BOOK_BY_SEAT")
 
     def test_filter(self):
         chart_key = self.create_test_chart()
