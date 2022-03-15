@@ -15,6 +15,12 @@
         "color": "#5E42ED",
         "accessible": false,
         "key": 10
+      },
+      {
+        "label": "Cat3",
+        "color": "#5E42BB",
+        "accessible": false,
+        "key": "string11"
       }
     ],
     "maxCategoryKey": 10
@@ -421,7 +427,7 @@
         "categoryLabel": "Cat2",
         "categoryKey": 10,
         "capacity": 100,
-        "label": "GA2",
+        "label": "34",
         "labelSize": 24,
         "labelShown": true,
         "labelHorizontalOffset": 0,
