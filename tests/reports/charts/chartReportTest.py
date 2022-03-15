@@ -14,16 +14,18 @@ class ChartReportTest(SeatsioClientTest):
 
     def test_by_category_key(self):
         report = self.client.charts.reports.by_category_key(self.chart_key)
-        assert_that(report.items).has_size(3)
+        assert_that(report.items).has_size(4)
         assert_that(report.items['9']).has_size(17)
         assert_that(report.items['10']).has_size(17)
+        assert_that(report.items['string11']).has_size(0)
         assert_that(report.items['NO_CATEGORY']).has_size(0)
 
     def test_by_category_label(self):
         report = self.client.charts.reports.by_category_label(self.chart_key)
-        assert_that(report.items).has_size(3)
+        assert_that(report.items).has_size(4)
         assert_that(report.items['Cat1']).has_size(17)
         assert_that(report.items['Cat2']).has_size(17)
+        assert_that(report.items['Cat3']).has_size(0)
         assert_that(report.items['NO_CATEGORY']).has_size(0)
 
     def test_by_object_type(self):
