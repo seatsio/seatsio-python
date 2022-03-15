@@ -44,6 +44,7 @@ class Event:
         self.is_event_in_season = data.get("isEventInSeason")
         self.top_level_season_key = data.get("topLevelSeasonKey")
         self.object_categories = data.get("objectCategories")
+        self.categories = data.get("categories")
 
     @classmethod
     def create_list(cls, lst):
