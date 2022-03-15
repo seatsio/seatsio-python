@@ -1,5 +1,4 @@
-from seatsio.domain import Season
-from seatsio.pagination.listableObjectsClient import ListableObjectsClient
+from seatsio.domain import Season, Event
 
 
 class SeasonsClient:
@@ -47,7 +46,7 @@ class SeasonsClient:
         if number_of_events:
             request['numberOfEvents'] = number_of_events
         response = self.http_client.url("/seasons/{key}/actions/create-events", key=key).post(request)
-        return Season(response.json())
+        return Event.create_list(response.json().get('events'))
 
     def add_events_to_partial_season(self, top_level_season_key, partial_season_key, event_keys):
         request = {'eventKeys': event_keys}
