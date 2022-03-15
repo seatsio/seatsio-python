@@ -22,6 +22,7 @@ class RetrieveEventTest(SeatsioClientTest):
         assert_that(retrieved_event.for_sale_config).is_none()
         assert_that(retrieved_event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
         assert_that(retrieved_event.updated_on).is_none()
+        assert_that(retrieved_event.categories).has_size(3)
 
     def test_retrieve_season(self):
         chart_key = self.create_test_chart()
