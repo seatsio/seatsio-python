@@ -74,6 +74,16 @@ class ChartsClient(ListableObjectsClient):
         request = ChartRequest(name=new_name, categories=categories)
         self.http_client.url("/charts/{key}", key=key).post(request)
 
+    def add_category(self, chart_key, category):
+        self.http_client.url("/charts/{chart_key}/categories", chart_key=chart_key)\
+            .post(category)
+
+    def remove_category(self, chart_key, category_key):
+        self.http_client.url("/charts/{chart_key}/categories/{category_key}",
+                             chart_key=chart_key,
+                             category_key=category_key) \
+            .delete()
+
     def move_to_archive(self, chart_key):
         self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
 
