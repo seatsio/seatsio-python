@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import TableBookingConfig
+from seatsio import TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -22,7 +22,11 @@ class RetrieveEventTest(SeatsioClientTest):
         assert_that(retrieved_event.for_sale_config).is_none()
         assert_that(retrieved_event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
         assert_that(retrieved_event.updated_on).is_none()
-        assert_that(retrieved_event.categories).has_size(3)
+        assert_that(retrieved_event.categories).has_size(2)
+        assert_that(retrieved_event.categories).contains_exactly(
+            Category(9, 'Cat1', '#87A9CD', False),
+            Category(10, 'Cat2', '#5E42ED', False)
+        )
 
     def test_retrieve_season(self):
         chart_key = self.create_test_chart()
@@ -40,3 +44,7 @@ class RetrieveEventTest(SeatsioClientTest):
         assert_that(retrieved_season.for_sale_config).is_none()
         assert_that(retrieved_season.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
         assert_that(retrieved_season.updated_on).is_none()
+        assert_that(retrieved_season.categories).contains_exactly(
+            Category(9, 'Cat1', '#87A9CD', False),
+            Category(10, 'Cat2', '#5E42ED', False)
+        )

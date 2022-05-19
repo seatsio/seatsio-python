@@ -27,6 +27,33 @@ class ChartValidation:
         self.warnings = data.get("warnings")
 
 
+class Category:
+
+    def __init__(self, key, label, color, accessible):
+        self.key = key
+        self.label = label
+        self.color = color
+        self.accessible = accessible
+
+    def __eq__(self, other):
+        return self.key == other.key and \
+               self.label == other.label and \
+               self.color == other.color and \
+               self.accessible == other.accessible
+
+    def __hash__(self):
+        return hash((self.key, self.label, self.color, self.accessible))
+
+    @classmethod
+    def create(cls, data):
+        return Category(data.get("key"), data.get("label"), data.get("color"), data.get("accessible"))
+
+    @classmethod
+    def create_list(cls, lst):
+        if lst is not None:
+            return list(map(Category.create, lst))
+
+
 class Event:
     def __init__(self, data):
         self.id = data.get("id")
@@ -44,7 +71,7 @@ class Event:
         self.is_event_in_season = data.get("isEventInSeason")
         self.top_level_season_key = data.get("topLevelSeasonKey")
         self.object_categories = data.get("objectCategories")
-        self.categories = data.get("categories")
+        self.categories = Category.create_list(data.get("categories"))
 
     @classmethod
     def create_list(cls, lst):
@@ -149,8 +176,7 @@ class Channel:
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'),
-                           param.get('objects'))
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'))
 
     @classmethod
     def createList(cls, param):

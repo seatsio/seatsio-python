@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig
+from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -19,6 +19,10 @@ class CreateEventTest(SeatsioClientTest):
         assert_that(event.for_sale_config).is_none()
         assert_that(event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
         assert_that(event.updated_on).is_none()
+        assert_that(event.categories).contains_exactly(
+            Category(9, 'Cat1', '#87A9CD', False),
+            Category(10, 'Cat2', '#5E42ED', False)
+        )
 
     def test_event_key_is_optional(self):
         chart = self.client.charts.create()
