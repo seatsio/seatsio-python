@@ -1,8 +1,8 @@
 import os
+import unittest
 import uuid
 
 import requests
-import unittest2
 
 import seatsio
 from seatsio.domain import Subaccount
@@ -11,7 +11,7 @@ from seatsio.region import Region
 BASE_URL = "https://api-staging-eu.seatsio.net"
 
 
-class SeatsioClientTest(unittest2.TestCase):
+class SeatsioClientTest(unittest.TestCase):
 
     def setUp(self):
         super(SeatsioClientTest, self).setUp()

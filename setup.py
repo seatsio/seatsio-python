@@ -23,6 +23,5 @@ setup(
         "six>=1.10"
     ],
 
-    test_suite='tests',
-    tests_require=['unittest2']
+    test_suite='tests'
 )
