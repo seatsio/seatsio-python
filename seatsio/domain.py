@@ -44,6 +44,7 @@ class Event:
         self.is_event_in_season = data.get("isEventInSeason")
         self.top_level_season_key = data.get("topLevelSeasonKey")
         self.object_categories = data.get("objectCategories")
+        self.categories = data.get("categories")
 
     @classmethod
     def create_list(cls, lst):
@@ -449,6 +450,8 @@ class StatusChange:
         self.event_id = data.get("eventId")
         self.extra_data = data.get("extraData")
         self.origin = StatusChangeOrigin(data['origin'])
+        self.is_present_on_chart = data.get("isPresentOnChart")
+        self.not_present_on_chart_reason = data.get("notPresentOnChartReason")
 
 
 class StatusChangeOrigin:
