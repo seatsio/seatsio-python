@@ -1,6 +1,7 @@
 import os
 import unittest
 import uuid
+import time
 
 import requests
 
@@ -68,3 +69,15 @@ class SeatsioClientTest(unittest.TestCase):
                 return chart_key
             else:
                 raise Exception("Failed to create a test user")
+
+    def wait_for_status_changes(self, event):
+        start = time.time()
+        while True:
+            status_changes = self.client.events.status_changes(event.key).list()
+            if len(list(status_changes)) == 0:
+                if time.time() - start > 10:
+                    raise Exception("No status changes for event " + event.key)
+                else:
+                    time.sleep(1)
+            else:
+                return status_changes
