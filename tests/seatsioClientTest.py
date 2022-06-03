@@ -70,11 +70,11 @@ class SeatsioClientTest(unittest.TestCase):
             else:
                 raise Exception("Failed to create a test user")
 
-    def wait_for_status_changes(self, event):
+    def wait_for_status_changes(self, event, num_status_changes):
         start = time.time()
         while True:
             status_changes = self.client.events.status_changes(event.key).list()
-            if len(list(status_changes)) == 0:
+            if len(list(status_changes)) != num_status_changes:
                 if time.time() - start > 10:
                     raise Exception("No status changes for event " + event.key)
                 else:

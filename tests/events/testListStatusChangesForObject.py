@@ -15,7 +15,7 @@ class ListStatusChangesForObjectTest(SeatsioClientTest):
             StatusChangeRequest(event.key, ["A-1"], "status4"),
             StatusChangeRequest(event.key, ["A-2"], "status5")
         ])
-        self.wait_for_status_changes(event)
+        self.wait_for_status_changes(event, 5)
 
         status_changes = self.client.events.status_changes_for_object(event.key, "A-1").list()
 
