@@ -404,9 +404,6 @@ class UsageByEvent:
         self.event = UsageEvent(json.get("event"))
         self.num_used_objects = json.get("numUsedObjects")
         self.num_first_bookings = json.get("numFirstBookings")
-        self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
-        self.num_ga_selections_without_booking = json.get("numGASelectionsWithoutBooking")
-        self.num_non_ga_selections_without_booking = json.get("numNonGASelectionsWithoutBooking")
         self.num_object_selections = json.get("numObjectSelections")
 
 
