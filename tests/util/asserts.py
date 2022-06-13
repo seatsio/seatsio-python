@@ -1,4 +1,4 @@
-import collections
+from collections.abc import Iterable
 from datetime import datetime, timedelta
 
 from past.builtins import basestring
@@ -13,7 +13,7 @@ def assert_that(actual):
         return BooleanAssert(actual)
     elif isinstance(actual, int):
         return NumberAssert(actual)
-    elif isinstance(actual, collections.Iterable):
+    elif isinstance(actual, Iterable):
         return IterableAssert(actual)
     elif isinstance(actual, datetime):
         return DatetimeAssert(actual)
