@@ -1,24 +1,35 @@
-from seatsio.events.channelsRequests import ReplaceChannelsRequest, AssignObjectsToChannelsRequest
+from seatsio.events.channelsRequests import ReplaceChannelsRequest, AssignObjectsToChannelsRequest, AddChannelRequest, \
+    EditObjectsForChannelRequest, UpdateChannelRequest
 
 
 class ChannelsClient:
     def __init__(self, http_client):
         self.http_client = http_client
 
-    def add(self):
-        return 'TODO'
+    def add(self, event_key, channel_key, channel_name, channel_color, index=None, objects=None):
+        self.http_client \
+            .url('/events/{key}/channels', key=event_key) \
+            .post(AddChannelRequest(channel_key, channel_name, channel_color, index, objects))
 
-    def remove(self):
-        return 'TODO'
+    def remove(self, event_key, channel_key):
+        self.http_client \
+            .url('/events/{event_key}/channels/{channel_key}', event_key=event_key, channel_key=channel_key) \
+            .delete()
 
-    def update(self):
-        return 'TODO'
+    def update(self, event_key, channel_key, name=None, color=None, objects=None):
+        self.http_client \
+            .url("/events/{event_key}/channels/{channel_key}", event_key=event_key, channel_key=channel_key) \
+            .post(UpdateChannelRequest(name, color, objects))
 
-    def add_objects(self):
-        return 'TODO'
+    def add_objects(self, event_key, channel_key, objects):
+        self.http_client \
+            .url("/events/{event_key}/channels/{channel_key}/objects", event_key=event_key, channel_key=channel_key) \
+            .post(EditObjectsForChannelRequest(objects))
 
-    def remove_objects(self):
-        return 'TODO'
+    def remove_objects(self, event_key, channel_key, objects):
+        self.http_client \
+            .url("/events/{event_key}/channels/{channel_key}/objects", event_key=event_key, channel_key=channel_key) \
+            .delete(EditObjectsForChannelRequest(objects))
 
     def replace(self, event_key, channels):
         self.http_client \

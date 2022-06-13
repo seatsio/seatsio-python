@@ -3,7 +3,7 @@ from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
 
-class SetChannelsTest(SeatsioClientTest):
+class ReplaceChannelsTest(SeatsioClientTest):
 
     def test_updateChannels(self):
         chart = self.client.charts.create()
