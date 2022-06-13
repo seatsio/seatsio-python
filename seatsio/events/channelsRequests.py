@@ -1,4 +1,4 @@
-class UpdateChannelsRequest:
+class ReplaceChannelsRequest:
     def __init__(self, channels):
         if channels:
             self.channels = channels

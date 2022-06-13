@@ -4,7 +4,8 @@ from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObje
     event_from_json
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
-from seatsio.events.channelsRequests import UpdateChannelsRequest, AssignObjectsToChannelsRequest
+from seatsio.events.channelsClient import ChannelsClient
+from seatsio.events.channelsRequests import AssignObjectsToChannelsRequest
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
@@ -20,6 +21,7 @@ class EventsClient(ListableObjectsClient):
     def __init__(self, http_client):
         ListableObjectsClient.__init__(self, http_client, event_from_json, "/events")
         self.reports = EventReports(self.http_client)
+        self.channels = ChannelsClient(self.http_client)
 
     def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None, object_categories=None):
         response = self.http_client.url("/events").post(
@@ -188,13 +190,3 @@ class EventsClient(ListableObjectsClient):
         self.http_client \
             .url("/events/{key}/actions/update-extra-data", key=key) \
             .post(ExtraDataRequest(extra_datas))
-
-    def update_channels(self, key, channels):
-        self.http_client \
-            .url('/events/{key}/channels/update', key=key) \
-            .post(UpdateChannelsRequest(channels))
-
-    def assign_objects_to_channels(self, key, channels):
-        self.http_client \
-            .url('/events/{key}/channels/assign-objects', key=key) \
-            .post(AssignObjectsToChannelsRequest(channels))

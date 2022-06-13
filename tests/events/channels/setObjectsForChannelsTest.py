@@ -5,15 +5,15 @@ from tests.util.asserts import assert_that
 
 class SetObjectsForChannelsTest(SeatsioClientTest):
 
-    def test_assignObjectsToChannels(self):
+    def test_setObjectsForChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.update_channels(event.key, {
+        self.client.events.channels.replace(event.key, {
             'channelKey1': Channel(name='channel 1', color='#00FF00', index=1),
             'channelKey2': Channel(name='channel 2', color='#FF0000', index=2),
         })
 
-        self.client.events.assign_objects_to_channels(event.key, {
+        self.client.events.channels.set_objects(event.key, {
             "channelKey1": ["A-1", "A-2"],
             "channelKey2": ["A-3"]
         })
