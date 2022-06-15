@@ -60,8 +60,11 @@ class ApiResource:
     def post_empty_and_return(self, cls):
         return cls(self.post().json())
 
-    def delete(self):
-        return DELETE(self.max_retries, self.url, self.secret_key, self.workspace_key).execute()
+    def delete(self, body=None):
+        if body is None:
+            return DELETE(self.max_retries, self.url, self.secret_key, self.workspace_key).execute()
+        else:
+            return DELETE(self.max_retries, self.url, self.secret_key, self.workspace_key).body(body).execute()
 
 
 class GET:
@@ -136,6 +139,11 @@ class DELETE:
         self.url = url
         self.secret_key = secret_key
         self.workspace_key = workspace_key
+        self.body_object = None
+
+    def body(self, body):
+        self.body_object = body
+        return self
 
     def execute(self):
         response = retry(self.try_execute, self.max_retries)
@@ -146,7 +154,13 @@ class DELETE:
 
     def try_execute(self):
         try:
-            return requests.delete(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None})
+            json = jsonpickle.encode(self.body_object, unpicklable=False)
+            return requests.delete(
+                self.url,
+                auth=(self.secret_key, ''),
+                headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None},
+                data=json
+            )
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 
