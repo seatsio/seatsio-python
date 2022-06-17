@@ -43,6 +43,15 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.capacity).is_equal_to(100)
         assert_that(report_item.book_as_a_whole).is_equal_to(False)
 
+    def test_reportItemPropertiesForTable(self):
+        chart_key = self.create_test_chart_with_tables()
+
+        report = self.client.charts.reports.by_label(chart_key, "true")
+
+        report_item = report.get("T1")[0]
+        assert_that(report_item.num_seats).is_equal_to(6)
+        assert_that(report_item.book_as_a_whole).is_false()
+
     def testByLabel(self):
         chart_key = self.create_test_chart()
 

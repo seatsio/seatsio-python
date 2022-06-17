@@ -1,4 +1,4 @@
-from seatsio.domain import EventReport, Channel, EventObjectInfo
+from seatsio.domain import EventReport, Channel, EventObjectInfo, TableBookingConfig
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -95,6 +95,16 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.is_companion_seat).is_none()
         assert_that(report_item.has_restricted_view).is_none()
         assert_that(report_item.displayed_object_type).is_none()
+
+    def test_reportItemPropertiesForTable(self):
+        chart_key = self.create_test_chart_with_tables()
+        event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.all_by_table())
+
+        report = self.client.events.reports.by_label(event.key)
+
+        report_item = report.get("T1")[0]
+        assert_that(report_item.num_seats).is_equal_to(6)
+        assert_that(report_item.book_as_a_whole).is_false()
 
     def testByStatus(self):
         chart_key = self.create_test_chart()

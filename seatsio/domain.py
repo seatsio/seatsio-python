@@ -296,6 +296,7 @@ class ChartObjectInfo:
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
+        self.num_seats = item_data.get('numSeats')
 
 
 class EventReport:
@@ -346,6 +347,7 @@ class EventObjectInfo:
         self.channel = item_data.get('channel')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
         self.holds = item_data.get('holds')
+        self.num_seats = item_data.get('numSeats')
 
 
 class UsageSummaryForAllMonths:
