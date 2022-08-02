@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='seatsio',
-    version='v62.1.0',
+    version='v69.1.0',
     description='The official Seats.io Python client library',
     author='The seats.io dev team',
     author_email='hello@seats.io',
@@ -23,6 +23,5 @@ setup(
         "six>=1.10"
     ],
 
-    test_suite='tests',
-    tests_require=['unittest2']
+    test_suite='tests'
 )

@@ -3,7 +3,7 @@
 [![Build](https://github.com/seatsio/seatsio-python/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-python/actions/workflows/build.yml)
 [![PyPI version](https://badge.fury.io/py/seatsio.svg)](https://badge.fury.io/py/seatsio)
 
-This is the official Python client library for the [Seats.io V2 REST API](https://docs.seats.io/docs/api-overview), supporting python 2.7, and python 3.3 - 3.7. 
+This is the official Python client library for the [Seats.io V2 REST API](https://docs.seats.io/docs/api-overview), supporting Python 3.7+. 
 
 ## Installing
 
@@ -15,13 +15,35 @@ pip install seatsio
 
 seatsio-python follows semver since v50.2.0.
 
-## Examples
+
+## Usage
+
+### General instructions
+
+To use this library, you'll need to create a `seatsio.Client`:
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
+...
+```
+
+You can find your _workspace secret key_ in the [settings section of the workspace](https://app.seats.io/workspace-settings).
+
+The region should correspond to the region of your account:
+
+- `seatsio.Region.EU()`: Europe
+- `seatsio.Region.NA()`: North-America
+- `seatsio.Region.SA()`: South-America
+- `seatsio.Region.OC()`: Oceania
+
+If you're unsure about your region, have a look at your [company settings page](https://app.seats.io/company-settings).
 
 ### Creating a chart and an event
 
 ```python
 import seatsio
-client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key") # workspace secret key can be found on https://app.seats.io/workspace-settings
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
 chart = client.charts.create()
 event = client.events.create(chart.key)
 ```

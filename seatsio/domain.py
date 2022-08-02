@@ -27,6 +27,33 @@ class ChartValidation:
         self.warnings = data.get("warnings")
 
 
+class Category:
+
+    def __init__(self, key, label, color, accessible):
+        self.key = key
+        self.label = label
+        self.color = color
+        self.accessible = accessible
+
+    def __eq__(self, other):
+        return self.key == other.key and \
+               self.label == other.label and \
+               self.color == other.color and \
+               self.accessible == other.accessible
+
+    def __hash__(self):
+        return hash((self.key, self.label, self.color, self.accessible))
+
+    @classmethod
+    def create(cls, data):
+        return Category(data.get("key"), data.get("label"), data.get("color"), data.get("accessible"))
+
+    @classmethod
+    def create_list(cls, lst):
+        if lst is not None:
+            return list(map(Category.create, lst))
+
+
 class Event:
     def __init__(self, data):
         self.id = data.get("id")
@@ -39,16 +66,42 @@ class Event:
         self.updated_on = parse_date(data.get("updatedOn"))
         self.channels = Channel.createList(data.get("channels"))
         self.social_distancing_ruleset_key = data.get("socialDistancingRulesetKey")
+        self.is_top_level_season = data.get("isTopLevelSeason")
+        self.is_partial_season = data.get("isPartialSeason")
+        self.is_event_in_season = data.get("isEventInSeason")
+        self.top_level_season_key = data.get("topLevelSeasonKey")
+        self.object_categories = data.get("objectCategories")
+        self.categories = Category.create_list(data.get("categories"))
 
     @classmethod
     def create_list(cls, lst):
-        if lst:
+        if lst is None:
+            return None
+        else:
             result = []
             for e in lst:
-                result.append(Event(e))
+                result.append(event_from_json(e))
             return result
-        else:
-            return None
+
+    def is_season(self):
+        return False
+
+
+class Season(Event):
+    def __init__(self, data):
+        Event.__init__(self, data)
+        self.partial_season_keys = data.get("partialSeasonKeys")
+        self.events = Event.create_list(data.get("events"))
+
+    def is_season(self):
+        return True
+
+
+def event_from_json(json):
+    if json.get("isSeason"):
+        return Season(json)
+    else:
+        return Event(json)
 
 
 class ForSaleConfig:
@@ -123,8 +176,7 @@ class Channel:
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'),
-                           param.get('objects'))
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'))
 
     @classmethod
     def createList(cls, param):
@@ -134,7 +186,8 @@ class Channel:
 
 class SocialDistancingRuleset:
     def __init__(self, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                 disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
+                 disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
+                 max_occupancy_absolute=0,
                  max_occupancy_percentage=0, one_group_per_table=False, fixed_group_layout=False,
                  disabled_seats=[], enabled_seats=[], index=0):
         self.name = name
@@ -157,7 +210,8 @@ class SocialDistancingRuleset:
 
     @classmethod
     def rule_based(cls, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                   disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0, max_occupancy_absolute=0,
+                   disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
+                   max_occupancy_absolute=0,
                    max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
         return SocialDistancingRuleset(name,
                                        number_of_disabled_seats_to_the_sides=number_of_disabled_seats_to_the_sides,
@@ -242,6 +296,7 @@ class ChartObjectInfo:
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
+        self.num_seats = item_data.get('numSeats')
 
 
 class EventReport:
@@ -287,11 +342,12 @@ class EventObjectInfo:
         self.displayed_object_type = item_data.get("displayedObjectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
-        self.is_selectable = item_data.get('isSelectable')
+        self.is_available = item_data.get('isAvailable')
         self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
         self.channel = item_data.get('channel')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
         self.holds = item_data.get('holds')
+        self.num_seats = item_data.get('numSeats')
 
 
 class UsageSummaryForAllMonths:
@@ -350,9 +406,6 @@ class UsageByEvent:
         self.event = UsageEvent(json.get("event"))
         self.num_used_objects = json.get("numUsedObjects")
         self.num_first_bookings = json.get("numFirstBookings")
-        self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
-        self.num_ga_selections_without_booking = json.get("numGASelectionsWithoutBooking")
-        self.num_non_ga_selections_without_booking = json.get("numNonGASelectionsWithoutBooking")
         self.num_object_selections = json.get("numObjectSelections")
 
 
@@ -422,6 +475,8 @@ class StatusChange:
         self.event_id = data.get("eventId")
         self.extra_data = data.get("extraData")
         self.origin = StatusChangeOrigin(data['origin'])
+        self.is_present_on_chart = data.get("isPresentOnChart")
+        self.not_present_on_chart_reason = data.get("notPresentOnChartReason")
 
 
 class StatusChangeOrigin:
