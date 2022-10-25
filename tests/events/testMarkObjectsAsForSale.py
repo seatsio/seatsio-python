@@ -6,14 +6,15 @@ from tests.util.asserts import assert_that
 class MarkObjectsAsForSaleTest(SeatsioClientTest):
 
     def test_objects_and_categories(self):
-        chart = self.client.charts.create()
-        event = self.client.events.create(chart.key)
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
 
-        self.client.events.mark_as_for_sale(event.key, ["o1", "o2"], ["cat1", "cat2"])
+        self.client.events.mark_as_for_sale(event.key, ["o1", "o2"], {"GA1": 3}, ["cat1", "cat2"])
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.for_sale_config.for_sale).is_true()
         assert_that(retrieved_event.for_sale_config.objects).contains_exactly("o1", "o2")
+        assert_that(retrieved_event.for_sale_config.area_places).is_equal_to({"GA1": 3})
         assert_that(retrieved_event.for_sale_config.categories).contains_exactly("cat1", "cat2")
 
     def test_objects(self):

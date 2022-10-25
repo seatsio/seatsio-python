@@ -108,6 +108,7 @@ class ForSaleConfig:
     def __init__(self, data):
         self.for_sale = data.get("forSale")
         self.objects = data.get("objects")
+        self.area_places = data.get("areaPlaces")
         self.categories = data.get("categories")
 
     @classmethod

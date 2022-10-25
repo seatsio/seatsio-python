@@ -23,9 +23,11 @@ class EventsClient(ListableObjectsClient):
         self.reports = EventReports(self.http_client)
         self.channels = ChannelsClient(self.http_client)
 
-    def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None, object_categories=None):
+    def create(self, chart_key, event_key=None, table_booking_config=None, social_distancing_ruleset_key=None,
+               object_categories=None):
         response = self.http_client.url("/events").post(
-            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key, object_categories))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key,
+                                     object_categories))
         return Event(response.json())
 
     def create_multiple(self, chart_key, events_properties):
@@ -36,7 +38,8 @@ class EventsClient(ListableObjectsClient):
     def update(self, key, chart_key=None, event_key=None, table_booking_config=None,
                social_distancing_ruleset_key=None, object_categories=None):
         self.http_client.url("/events/{key}", key=key).post(
-            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key, object_categories))
+            CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key,
+                                     object_categories))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()
@@ -168,15 +171,15 @@ class EventsClient(ListableObjectsClient):
             items[key] = EventObjectInfo(value)
         return items
 
-    def mark_as_for_sale(self, event_key, objects=None, categories=None):
+    def mark_as_for_sale(self, event_key, objects=None, area_places=None, categories=None):
         self.http_client \
             .url("/events/{key}/actions/mark-as-for-sale", key=event_key) \
-            .post(ForSaleRequest(objects, categories))
+            .post(ForSaleRequest(objects, area_places, categories))
 
-    def mark_as_not_for_sale(self, key, objects=None, categories=None):
+    def mark_as_not_for_sale(self, key, objects=None, area_places=None, categories=None):
         self.http_client \
             .url("/events/{key}/actions/mark-as-not-for-sale", key=key) \
-            .post(ForSaleRequest(objects, categories))
+            .post(ForSaleRequest(objects, area_places, categories))
 
     def mark_everything_as_for_sale(self, key):
         self.http_client.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
