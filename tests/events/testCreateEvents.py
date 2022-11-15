@@ -24,7 +24,7 @@ class CreateEventsTest(SeatsioClientTest):
         assert_that(event.key).is_not_none()
         assert_that(event.chart_key).is_equal_to(chart_key)
         assert_that(event.table_booking_config).is_equal_to(TableBookingConfig.inherit())
-        assert_that(event.supports_best_available).is_none()
+        assert_that(event.supports_best_available).is_equal_to(True)
         assert_that(event.for_sale_config).is_none()
         assert_that(event.created_on).is_between_now_minus_and_plus_minutes(datetime.utcnow(), 1)
         assert_that(event.updated_on).is_none()
