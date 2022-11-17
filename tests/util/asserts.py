@@ -117,6 +117,10 @@ class IterableAssert(AbstractAssert):
         assert len(self.actual) > 0, "expected " + str(self.actual) + " to be empty."
         return self
 
+    def contains(self, *args):
+        for arg in args:
+            assert arg in self.actual, "expected " + str(self.actual) + " to contain " + str(args)
+
     def contains_exactly_in_any_order(self, *args):
         self.has_size(len(args))
         for arg in args:
