@@ -63,6 +63,18 @@ class CreateEventsTest(SeatsioClientTest):
             'ruleset1', 'ruleset1'
         )
 
+    def test_object_categories_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(object_categories={'A-1': 10})
+        ])
+
+        assert_that(events).extracting("object_categories").contains_exactly(
+            {'A-1': 10}
+        )
+
+
     def test_error_on_duplicate_key(self):
         try:
             chart_key = self.create_test_chart()
