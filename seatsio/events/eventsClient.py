@@ -41,6 +41,15 @@ class EventsClient(ListableObjectsClient):
             CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key,
                                      object_categories, categories))
 
+    def remove_social_distancing_ruleset_key(self, key):
+        self.update(key, social_distancing_ruleset_key='')
+
+    def remove_object_categories(self, key):
+        self.update(key, object_categories={})
+
+    def remove_categories(self, key):
+        self.update(key, categories=[])
+
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()
 
