@@ -36,10 +36,10 @@ class EventsClient(ListableObjectsClient):
         return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, table_booking_config=None,
-               social_distancing_ruleset_key=None, object_categories=None):
+               social_distancing_ruleset_key=None, object_categories=None, categories=None):
         self.http_client.url("/events/{key}", key=key).post(
             CreateSingleEventRequest(chart_key, event_key, table_booking_config, social_distancing_ruleset_key,
-                                     object_categories))
+                                     object_categories, categories))
 
     def delete(self, key):
         self.http_client.url("/events/{key}", key=key).delete()

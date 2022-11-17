@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig
+from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -82,3 +82,25 @@ class UpdateEventTest(SeatsioClientTest):
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.object_categories).is_none()
+
+    def test_updateCategories(self):
+        chart_key = self.create_test_chart()
+        cat1 = Category(key='eventCategory1', label='Event Level Category 1', color='#AAABBB')
+        cat2 = Category(key='eventCategory2', label='Event Level Category 2', color='#BBBCCC')
+        event = self.client.events.create(chart_key, categories=[cat1])
+
+        self.client.events.update(event.key, categories=[cat2])
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.categories).extracting("key").contains("eventCategory2")
+
+    def test_removeCategories(self):
+        chart_key = self.create_test_chart()
+        cat1 = Category(key='eventCategory1', label='Event Level Category 1', color='#AAABBB')
+        event = self.client.events.create(chart_key, categories=[cat1])
+
+        self.client.events.update(event.key, categories=[])
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.categories).extracting("key").does_not_contain("eventCategory1")
+
