@@ -64,3 +64,15 @@ class CreateEventTest(SeatsioClientTest):
         event = self.client.events.create(chart_key, object_categories={'A-1': 10})
 
         assert_that(event.object_categories).is_equal_to({'A-1': 10})
+
+    def test_categories_is_optional(self):
+        chart_key = self.create_test_chart()
+        event_category = Category(key='eventCategory', label='Event Level Category', color='#AAABBB')
+        categories = [event_category]
+
+        event = self.client.events.create(chart_key, categories=categories)
+
+        assert_that(event.categories).has_size(3) # 2 categories from sampleChart.json, 1 newly created category
+        assert_that(event.categories).extracting("key").contains("eventCategory")
+
+

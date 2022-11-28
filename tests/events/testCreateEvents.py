@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig
+from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from seatsio.events.eventProperties import EventProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -62,6 +62,30 @@ class CreateEventsTest(SeatsioClientTest):
         assert_that(events).extracting("social_distancing_ruleset_key").contains_exactly(
             'ruleset1', 'ruleset1'
         )
+
+    def test_object_categories_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(object_categories={'A-1': 10})
+        ])
+
+        assert_that(events).extracting("object_categories").contains_exactly(
+            {'A-1': 10}
+        )
+
+    def test_categories_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+        event_category = Category(key='eventCategory', label='Event Level Category', color='#AAABBB')
+        categories = [event_category]
+
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(categories=categories)
+        ])
+
+        assert_that(events).has_size(1)
+        event = events[0]
+        assert_that(event.categories).extracting("key").contains("eventCategory")
 
     def test_error_on_duplicate_key(self):
         try:

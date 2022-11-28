@@ -29,7 +29,7 @@ class ChartValidation:
 
 class Category:
 
-    def __init__(self, key, label, color, accessible):
+    def __init__(self, key, label, color, accessible = False):
         self.key = key
         self.label = label
         self.color = color

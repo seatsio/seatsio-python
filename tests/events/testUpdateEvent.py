@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig
+from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -60,7 +60,7 @@ class UpdateEventTest(SeatsioClientTest):
         })
         event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset1')
 
-        self.client.events.update(event.key, social_distancing_ruleset_key='')
+        self.client.events.remove_social_distancing_ruleset_key(event.key)
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.social_distancing_ruleset_key).is_none()
@@ -78,7 +78,29 @@ class UpdateEventTest(SeatsioClientTest):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, object_categories={'A-1': 10})
 
-        self.client.events.update(event.key, object_categories={})
+        self.client.events.remove_object_categories(event.key)
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.object_categories).is_none()
+
+    def test_updateCategories(self):
+        chart_key = self.create_test_chart()
+        cat1 = Category(key='eventCategory1', label='Event Level Category 1', color='#AAABBB')
+        cat2 = Category(key='eventCategory2', label='Event Level Category 2', color='#BBBCCC')
+        event = self.client.events.create(chart_key, categories=[cat1])
+
+        self.client.events.update(event.key, categories=[cat2])
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.categories).extracting("key").contains("eventCategory2")
+
+    def test_removeCategories(self):
+        chart_key = self.create_test_chart()
+        cat1 = Category(key='eventCategory1', label='Event Level Category 1', color='#AAABBB')
+        event = self.client.events.create(chart_key, categories=[cat1])
+
+        self.client.events.remove_categories(event.key)
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.categories).extracting("key").does_not_contain("eventCategory1")
+
