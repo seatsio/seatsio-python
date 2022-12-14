@@ -168,7 +168,8 @@ class DELETE:
 
 def common_headers(workspace_key):
     return {
-        'X-Workspace-Key': str(workspace_key) if workspace_key else None
+        'X-Workspace-Key': str(workspace_key) if workspace_key else None,
+        'X-Client-Lib': 'python'
     }
 
 
