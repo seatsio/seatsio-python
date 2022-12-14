@@ -14,5 +14,3 @@ class CopyChartToWorkspaceTest(SeatsioClientTest):
         assert_that(copied_chart.name).is_equal_to("my chart")
         retrieved_chart = workspace_client.charts.retrieve(copied_chart.key)
         assert_that(retrieved_chart.name).is_equal_to("my chart")
-        drawing = workspace_client.charts.retrieve_published_version(copied_chart.key)
-        assert_that(drawing.venueType).is_equal_to("BOOTHS")

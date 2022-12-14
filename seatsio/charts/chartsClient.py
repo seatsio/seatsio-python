@@ -29,14 +29,6 @@ class ChartsClient(ListableObjectsClient):
         response = self.http_client.url("/charts").post(request)
         return Chart(response.json())
 
-    def retrieve_published_version(self, key):
-        response = self.http_client.url("/charts/{key}/version/published", key=key).get()
-        return munchify(response)
-
-    def retrieve_draft_version(self, key):
-        response = self.http_client.url("/charts/{key}/version/draft", key=key).get()
-        return munchify(response)
-
     def retrieve_draft_version_thumbnail(self, key):
         return self.http_client.url("/charts/{key}/version/draft/thumbnail", key=key).get_raw()
 

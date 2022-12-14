@@ -10,5 +10,3 @@ class CopyChartTest(SeatsioClientTest):
         copied_chart = self.client.charts.copy(chart.key)
 
         assert_that(copied_chart.name).is_equal_to("my chart (copy)")
-        drawing = self.client.charts.retrieve_published_version(copied_chart.key)
-        assert_that(drawing.venueType).is_equal_to("BOOTHS")

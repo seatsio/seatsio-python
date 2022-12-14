@@ -13,9 +13,6 @@ class UpdateChartTest(SeatsioClientTest):
 
         retrieved_chart = self.client.charts.retrieve(chart.key)
         assert_that(retrieved_chart.name).is_equal_to("aChart")
-        drawing = self.client.charts.retrieve_published_version(retrieved_chart.key)
-        assert_that(drawing.venueType).is_equal_to("BOOTHS")
-        assert_that(drawing.categories.list).contains_exactly(category)
 
     def test_update_categories(self):
         chart = self.client.charts.create(name="aChart - unchanged", venue_type="BOOTHS", categories=[])
@@ -26,9 +23,6 @@ class UpdateChartTest(SeatsioClientTest):
 
         retrieved_chart = self.client.charts.retrieve(chart.key)
         assert_that(retrieved_chart.name).is_equal_to("aChart - unchanged")
-        drawing = self.client.charts.retrieve_published_version(retrieved_chart.key)
-        assert_that(drawing.venueType).is_equal_to("BOOTHS")
-        assert_that(drawing.categories.list).contains_exactly(category1, category2)
 
     def test_update_categories_post_garbage(self):
         chart = self.client.charts.create(name="aChart - unchanged", venue_type="BOOTHS", categories=[])

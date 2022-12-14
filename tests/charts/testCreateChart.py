@@ -19,25 +19,13 @@ class CreateChartTest(SeatsioClientTest):
         assert_that(chart.tags).is_empty()
         assert_that(chart.archived).is_false()
 
-        drawing = self.client.charts.retrieve_published_version(chart.key)
-        assert_that(drawing.venueType).is_equal_to("MIXED")
-        assert_that(drawing.categories.list).is_empty()
-
     def testName(self):
         chart = self.client.charts.create(name="aChart")
-
         assert_that(chart.name).is_equal_to("aChart")
-        drawing = self.client.charts.retrieve_published_version(chart.key)
-        assert_that(drawing.venueType).is_equal_to("MIXED")
-        assert_that(drawing.categories.list).is_empty()
 
     def testVenueType(self):
         chart = self.client.charts.create(venue_type="BOOTHS")
-
         assert_that(chart.name).is_equal_to("Untitled chart")
-        drawing = self.client.charts.retrieve_published_version(chart.key)
-        assert_that(drawing.venueType).is_equal_to("BOOTHS")
-        assert_that(drawing.categories.list).is_empty()
 
     def testCategories(self):
         chart = self.client.charts.create(
@@ -45,11 +33,4 @@ class CreateChartTest(SeatsioClientTest):
                 {"key": 1, "label": "Category 1", "color": "#aaaaaa"},
                 {"key": 2, "label": "Category 2", "color": "#bbbbbb", "accessible": True}
             ])
-
         assert_that(chart.name).is_equal_to("Untitled chart")
-        drawing = self.client.charts.retrieve_published_version(chart.key)
-        assert_that(drawing.venueType).is_equal_to("MIXED")
-        assert_that(drawing.categories.list).contains_exactly_in_any_order(
-            {"key": 1, "label": "Category 1", "color": "#aaaaaa", "accessible": False},
-            {"key": 2, "label": "Category 2", "color": "#bbbbbb", "accessible": True}
-        )
