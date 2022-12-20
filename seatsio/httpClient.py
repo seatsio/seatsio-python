@@ -1,9 +1,8 @@
 import time
 
-from six.moves.urllib.parse import quote, urlencode
-
 import jsonpickle
 import requests
+from six.moves.urllib.parse import quote, urlencode
 
 from seatsio.exceptions import SeatsioException, RateLimitExceededException
 
@@ -25,7 +24,9 @@ class HttpClient:
     def url(self, relative_url, query_params=None, **path_params):
         if query_params is None:
             query_params = {}
-        return ApiResource(self.max_retries, self.secret_key, self.workspace_key, self.base_url, relative_url, query_params, **path_params)
+        return ApiResource(self.max_retries, self.secret_key, self.workspace_key, self.base_url, relative_url,
+                           query_params, **path_params)
+
 
 class ApiResource:
     def __init__(self, max_retries, secret_key, workspace_key, base_url, relative_url, query_params, **path_params):
@@ -92,7 +93,7 @@ class GET:
 
     def try_execute(self):
         try:
-            return requests.get(self.url, auth=(self.secret_key, ''), headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None})
+            return requests.get(self.url, auth=(self.secret_key, ''), headers=(common_headers(self.workspace_key)))
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
 
@@ -124,7 +125,7 @@ class POST:
             return requests.post(
                 url=self.url,
                 auth=(self.secret_key, ''),
-                headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None},
+                headers=(common_headers(self.workspace_key)),
                 data=json
             )
         except Exception as cause:
@@ -158,11 +159,18 @@ class DELETE:
             return requests.delete(
                 self.url,
                 auth=(self.secret_key, ''),
-                headers={'X-Workspace-Key': str(self.workspace_key) if self.workspace_key else None},
+                headers=(common_headers(self.workspace_key)),
                 data=json
             )
         except Exception as cause:
             raise SeatsioException(self, cause=cause)
+
+
+def common_headers(workspace_key):
+    return {
+        'X-Workspace-Key': str(workspace_key) if workspace_key else None,
+        'X-Client-Lib': 'python'
+    }
 
 
 def retry(fn, max_retries):
