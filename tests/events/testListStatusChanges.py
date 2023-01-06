@@ -45,6 +45,18 @@ class ListStatusChangesTest(SeatsioClientTest):
         assert_that(status_change.is_present_on_chart).is_true()
         assert_that(status_change.not_present_on_chart_reason).is_none()
 
+    def test_propertiesOfStatusChange_holdToken(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        hold_token = self.client.hold_tokens.create()
+        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token)
+        self.wait_for_status_changes(event, 1)
+
+        status_changes = self.client.events.status_changes(event.key).list()
+        status_change = status_changes[0]
+
+        assert_that(status_change.hold_token).is_equal_to(hold_token.hold_token)
+
     def test_notPresentOnChartAnymore(self):
         chart_key = self.create_test_chart_with_tables()
         event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.all_by_table())

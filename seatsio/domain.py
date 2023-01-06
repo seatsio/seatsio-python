@@ -478,6 +478,7 @@ class StatusChange:
         self.origin = StatusChangeOrigin(data['origin'])
         self.is_present_on_chart = data.get("isPresentOnChart")
         self.not_present_on_chart_reason = data.get("notPresentOnChartReason")
+        self.hold_token = data.get("holdToken")
 
 
 class StatusChangeOrigin:
