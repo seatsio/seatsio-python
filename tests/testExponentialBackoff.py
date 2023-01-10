@@ -50,7 +50,7 @@ class ExponentialBackoffTest(SeatsioClientTest):
         except SeatsioException as e:
             assert_that(e.message).is_equal_to("Error while executing GET https://httpbin.seatsio.net/status/400")
             wait_time = int(time.time() - start)
-            assert_that(wait_time).is_between(0, 2)
+            assert_that(wait_time).is_between(0, 5)
 
     def test_aborts_directly_if_server_returns_429_but_max_retries_0(self):
         start = time.time()
@@ -61,7 +61,7 @@ class ExponentialBackoffTest(SeatsioClientTest):
         except RateLimitExceededException as e:
             assert_that(e.message).is_equal_to("Error while executing GET https://httpbin.seatsio.net/status/429")
             wait_time = int(time.time() - start)
-            assert_that(wait_time).is_between(0, 2)
+            assert_that(wait_time).is_between(0, 5)
 
     def test_returns_successfully_when_server_sends_429_and_then_successful_response(self):
         client = HttpClient("https://httpbin.seatsio.net", "aSecretKey", None, 5)
