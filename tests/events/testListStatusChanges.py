@@ -57,6 +57,18 @@ class ListStatusChangesTest(SeatsioClientTest):
 
         assert_that(status_change.hold_token).is_equal_to(hold_token.hold_token)
 
+    def test_propertiesOfStatusChange_originWithoutIp(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        hold_token = self.client.hold_tokens.create()
+        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token)
+        self.client.hold_tokens.expire_in_minutes(hold_token.hold_token, 0)
+        self.wait_for_status_changes(event, 2)
+
+        status_changes = self.client.events.status_changes(event.key).list()
+
+        assert_that(status_changes[0].origin.ip).is_none()
+
     def test_notPresentOnChartAnymore(self):
         chart_key = self.create_test_chart_with_tables()
         event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.all_by_table())

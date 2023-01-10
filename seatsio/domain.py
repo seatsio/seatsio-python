@@ -483,8 +483,8 @@ class StatusChange:
 
 class StatusChangeOrigin:
     def __init__(self, data):
-        self.type = data['type']
-        self.ip = data['ip']
+        self.type = data.get("type")
+        self.ip = data.get("ip")
 
 
 class BestAvailableObjects:
