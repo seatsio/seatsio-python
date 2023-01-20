@@ -38,6 +38,6 @@ class UpdateChartTest(SeatsioClientTest):
             self.client.charts.update(chart.key, categories=[category])
             self.fail("expected an exception")
         except SeatsioException as e:
-            assert_that(e.message).contains("400 Bad Request")
+            assert_that(e.message).is_equal_to("#/categories/0: expected type: JSONObject, found: String.")
             assert_that(e.requestId).is_not_none()
             assert_that(e.cause).is_none()

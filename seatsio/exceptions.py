@@ -6,7 +6,7 @@ class SeatsioException(Exception):
             self.errors = body["errors"]
             self.requestId = body["requestId"]
             self.cause = cause
-            self.message = self.__build_exception_message(request, response)
+            self.message = self.__build_exception_message()
             super(SeatsioException, self).__init__(self.message)
         else:
             self.errors = None
@@ -15,12 +15,8 @@ class SeatsioException(Exception):
             self.message = "Error while executing " + request.http_method + " " + request.url
             super(SeatsioException, self).__init__(self.message)
 
-    def __build_exception_message(self, request, response):
-        exception_message = request.http_method + " " + request.url + " resulted in a "
-        exception_message += str(response.status_code) + " " + str(response.reason) + " response."
-        exception_message += " Reason: " + ", ".join(self.__map_errors_to_message(self.errors)) + "."
-        exception_message += " Request ID: " + self.requestId
-        return exception_message
+    def __build_exception_message(self):
+        return ", ".join(self.__map_errors_to_message(self.errors)) + "."
 
     def __map_errors_to_message(self, errors):
         return list(map(lambda e: e.get("message"), errors))
