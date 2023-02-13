@@ -11,6 +11,11 @@ class ChannelsClient:
             .url('/events/{key}/channels', key=event_key) \
             .post(AddChannelRequest(channel_key, channel_name, channel_color, index, objects))
 
+    def add_multiple(self, event_key, channels_properties):
+        self.http_client \
+            .url('/events/{key}/channels', key=event_key) \
+            .post(channels_properties)
+
     def remove(self, event_key, channel_key):
         self.http_client \
             .url('/events/{event_key}/channels/{channel_key}', event_key=event_key, channel_key=channel_key) \
