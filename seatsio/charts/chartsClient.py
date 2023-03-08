@@ -5,7 +5,7 @@ from munch import munchify
 from seatsio.reports.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
 from seatsio.charts.socialDistancingRulesetsRequest import SocialDistancingRulesetsRequest
-from seatsio.domain import Chart, ChartValidation
+from seatsio.domain import Chart, ChartValidation, Category
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -83,6 +83,12 @@ class ChartsClient(ListableObjectsClient):
                              chart_key=chart_key,
                              category_key=category_key) \
             .delete()
+
+    def list_categories(self, chart_key):
+        response = self.http_client.url("/charts/{chart_key}/categories",
+                                        chart_key=chart_key) \
+            .get()
+        return Category.create_list(response["categories"])
 
     def move_to_archive(self, chart_key):
         self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()

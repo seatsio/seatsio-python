@@ -96,6 +96,16 @@ print(object_infos["A-2"].category_label)
 print(object_infos["A-2"].status)
 ```
 
+### Listing a chart's categories
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
+category_list = client.charts.list_categories(<chart key>)
+for category in category_list:
+  print(category.label)
+```
+
 ### Listing all charts
 
 ```python
