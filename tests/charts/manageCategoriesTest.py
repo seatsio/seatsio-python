@@ -27,4 +27,11 @@ class UpdateChartTest(SeatsioClientTest):
         drawing = self.client.charts.retrieve_published_version(retrieved_chart.key)
         assert_that(drawing.categories.list).is_empty()
 
+    def test_list_categories(self):
+        category1 = {"key": 1, "label": "Category 1", "color": "#aaaaaa", "accessible": False}
+        category2 = {"key": "cat2", "label": "Category 2", "color": "#bbbbbb", "accessible": True}
+        chart = self.client.charts.create(name="aChart", categories=[category1, category2])
 
+        category_list = self.client.charts.list_categories(chart.key)
+        assert_that(category_list[0].key).is_equal_to(category1["key"])
+        assert_that(category_list[1].key).is_equal_to(category2["key"])
