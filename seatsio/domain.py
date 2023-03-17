@@ -360,9 +360,6 @@ class UsageSummaryForMonth(object):
     def __init__(self, json):
         self.month = Month.from_json(json.get("month"))
         self.numUsedObjects = json.get("numUsedObjects")
-        self.numFirstBookings = json.get("numFirstBookings")
-        self.numFirstBookingsByStatus = json.get("numFirstBookingsByStatus")
-        self.numFirstBookingsOrSelections = json.get("numFirstBookingsOrSelections")
 
 
 class Month(object):
@@ -406,8 +403,6 @@ class UsageByEvent:
     def __init__(self, json):
         self.event = UsageEvent(json.get("event"))
         self.num_used_objects = json.get("numUsedObjects")
-        self.num_first_bookings = json.get("numFirstBookings")
-        self.num_object_selections = json.get("numObjectSelections")
 
 
 class UsageEvent:
@@ -416,18 +411,29 @@ class UsageEvent:
         self.key = json.get("key")
 
 
-class UsageDetailsForEventInMonth:
+class UsageDetailsForEventInMonthV1:
     def __init__(self, json):
-        self.items = list(map(lambda x: UsageForObject(x), json))
+        self.items = list(map(lambda x: UsageForObjectV1(x), json))
 
 
-class UsageForObject:
+class UsageForObjectV1:
     def __init__(self, json):
         self.object = json.get("object")
         self.num_first_bookings = json.get("numFirstBookings")
         self.first_booking_date = parse_date(json.get("firstBookingDate"))
         self.num_first_selections = json.get("numFirstSelections")
         self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
+
+class UsageDetailsForEventInMonthV2:
+    def __init__(self, json):
+        self.items = list(map(lambda x: UsageForObjectV2(x), json))
+
+
+class UsageForObjectV2:
+    def __init__(self, json):
+        self.object = json.get("object")
+        self.num_usedObjects = json.get("numUsedObjects")
+        self.usage_by_reason = json.get("usageByReason")
 
 
 class Subaccount:

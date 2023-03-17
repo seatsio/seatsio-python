@@ -1,6 +1,6 @@
-from seatsio.domain import UsageSummaryForAllMonths, UsageDetailsForEventInMonth
-
 from seatsio.domain import UsageDetailsForMonth
+from seatsio.domain import UsageSummaryForAllMonths, UsageDetailsForEventInMonthV1, \
+    UsageDetailsForEventInMonthV2
 
 
 class UsageReports:
@@ -21,4 +21,7 @@ class UsageReports:
     def details_for_event_in_month(self, event_id, month):
         url = "/reports/usage/month/" + month.serialize() + "/event/" + str(event_id)
         body = self.http_client.url(url).get()
-        return UsageDetailsForEventInMonth(body)
+        if len(body) == 0 or "usageByReason" not in body[0]:
+            return UsageDetailsForEventInMonthV1(body)
+        else:
+            return UsageDetailsForEventInMonthV2(body)
