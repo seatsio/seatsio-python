@@ -1,6 +1,8 @@
-from seatsio.domain import ChartReport, ChartObjectInfo
+from seatsio.domain import ChartReport, ChartObjectInfo, Month
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
+import seatsio
+from seatsio.region import Region
 
 
 class ChartReportsTest(SeatsioClientTest):
