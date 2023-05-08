@@ -21,7 +21,8 @@ class CreateEventTest(SeatsioClientTest):
         assert_that(event.updated_on).is_none()
         assert_that(event.categories).contains_exactly(
             Category(9, 'Cat1', '#87A9CD', False),
-            Category(10, 'Cat2', '#5E42ED', False)
+            Category(10, 'Cat2', '#5E42ED', False),
+            Category('string11', 'Cat3', '#5E42BB', False)
         )
 
     def test_event_key_is_optional(self):
@@ -72,7 +73,7 @@ class CreateEventTest(SeatsioClientTest):
 
         event = self.client.events.create(chart_key, categories=categories)
 
-        assert_that(event.categories).has_size(3) # 2 categories from sampleChart.json, 1 newly created category
+        assert_that(event.categories).has_size(4) # 3 categories from sampleChart.json, 1 newly created category
         assert_that(event.categories).extracting("key").contains("eventCategory")
 
 
