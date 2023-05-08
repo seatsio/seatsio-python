@@ -1,5 +1,5 @@
 class ChangeBestAvailableObjectStatusRequest:
-    def __init__(self, number, categories, extra_data, ticket_types, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys):
+    def __init__(self, number, categories, extra_data, ticket_types, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, try_to_prevent_orphan_seats):
         best_available = {"number": number}
         if categories:
             best_available["categories"] = categories
@@ -7,6 +7,8 @@ class ChangeBestAvailableObjectStatusRequest:
             best_available["extraData"] = extra_data
         if ticket_types:
             best_available["ticketTypes"] = ticket_types
+        if try_to_prevent_orphan_seats is not None:
+            best_available["tryToPreventOrphanSeats"] = try_to_prevent_orphan_seats
         self.bestAvailable = best_available
         self.status = status
         if hold_token:
