@@ -27,12 +27,9 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-1"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1"])
+        ])
 
         res = self.client.events.change_object_status_in_batch([
             StatusChangeRequest(event.key, ["A-1"], "lolzor", channel_keys=["channelKey1"]),
@@ -43,12 +40,9 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-1"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1"])
+        ])
 
         res = self.client.events.change_object_status_in_batch([
             StatusChangeRequest(event.key, ["A-1"], "lolzor", ignore_channels=True),

@@ -167,12 +167,9 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-6"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-6"])
+        ])
 
         result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", channel_keys=["channelKey1"])
 
@@ -181,12 +178,9 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-5"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-5"])
+        ])
 
         result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", ignore_channels=True)
 

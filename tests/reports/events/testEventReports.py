@@ -13,12 +13,9 @@ class EventReportsTest(SeatsioClientTest):
 
         self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1")
 
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-1"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1"])
+        ])
 
         report = self.client.events.reports.by_label(event.key)
 
@@ -311,12 +308,9 @@ class EventReportsTest(SeatsioClientTest):
     def testByChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-1", "A-2"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+        ])
 
         report = self.client.events.reports.by_channel(event.key)
 
@@ -327,12 +321,9 @@ class EventReportsTest(SeatsioClientTest):
     def testBySpecificChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, {
-            'channelKey1': Channel(name='channel 1', color='#00FF00', index=1)
-        })
-        self.client.events.channels.set_objects(event.key, {
-            "channelKey1": ["A-1", "A-2"]
-        })
+        self.client.events.channels.replace(event.key, [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+        ])
 
         report = self.client.events.reports.by_channel(event.key, "channelKey1")
 

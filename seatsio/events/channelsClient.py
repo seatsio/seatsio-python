@@ -38,10 +38,5 @@ class ChannelsClient:
 
     def replace(self, event_key, channels):
         self.http_client \
-            .url('/events/{event_key}/channels/update', event_key=event_key) \
+            .url('/events/{event_key}/channels/replace', event_key=event_key) \
             .post(ReplaceChannelsRequest(channels))
-
-    def set_objects(self, event_key, channels):
-        self.http_client \
-            .url('/events/{event_key}/channels/assign-objects', event_key=event_key) \
-            .post(AssignObjectsToChannelsRequest(channels))
