@@ -298,6 +298,9 @@ class ChartObjectInfo:
         self.right_neighbour = item_data.get('rightNeighbour')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
         self.num_seats = item_data.get('numSeats')
+        self.is_accessible = item_data.get("isAccessible")
+        self.is_companion_seat = item_data.get("isCompanionSeat")
+        self.has_restricted_view = item_data.get("hasRestrictedView")
 
 
 class EventReport:
