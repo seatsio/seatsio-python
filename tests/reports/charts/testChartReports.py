@@ -1,8 +1,6 @@
-from seatsio.domain import ChartReport, ChartObjectInfo, Month
+from seatsio.domain import ChartReport, ChartObjectInfo
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
-import seatsio
-from seatsio.region import Region
 
 
 class ChartReportsTest(SeatsioClientTest):
@@ -27,6 +25,9 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.left_neighbour).is_none()
         assert_that(report_item.right_neighbour).is_equal_to("A-2")
         assert_that(report_item.distance_to_focal_point).is_not_none()
+        assert_that(report_item.is_accessible).is_not_none()
+        assert_that(report_item.is_companion_seat).is_not_none()
+        assert_that(report_item.has_restricted_view).is_not_none()
 
     def test_reportItemPropertiesForGA(self):
         chart_key = self.create_test_chart()
