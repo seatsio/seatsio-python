@@ -1,3 +1,5 @@
+from datetime import date
+
 from six import iteritems
 
 from seatsio.util import parse_date
@@ -58,6 +60,8 @@ class Event:
     def __init__(self, data):
         self.id = data.get("id")
         self.key = data.get("key")
+        self.name = data.get("name")
+        self.date = None if data.get("date") is None else date.fromisoformat(data.get("date"))
         self.chart_key = data.get("chartKey")
         self.table_booking_config = TableBookingConfig.create(data.get("tableBookingConfig"))
         self.supports_best_available = data.get("supportsBestAvailable")

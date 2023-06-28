@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
@@ -104,3 +104,20 @@ class UpdateEventTest(SeatsioClientTest):
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.categories).extracting("key").does_not_contain("eventCategory1")
 
+    def test_updateName(self):
+        chart = self.client.charts.create()
+        event = self.client.events.create(chart.key, name="An event")
+
+        self.client.events.update(event.key, name="Another event")
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.name).is_equal_to("Another event")
+
+    def test_updateDate(self):
+        chart = self.client.charts.create()
+        event = self.client.events.create(chart.key, date=date(2022, 1, 10))
+
+        self.client.events.update(event.key, date=date(2023, 1, 10))
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.date).is_equal_to(date(2023, 1, 10))

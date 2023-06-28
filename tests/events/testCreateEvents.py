@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from seatsio.events.eventProperties import EventProperties
@@ -34,7 +34,7 @@ class CreateEventsTest(SeatsioClientTest):
         events = self.client.events.create_multiple(chart_key, [
             EventProperties(event_key="event1"), EventProperties(event_key="event2")
         ])
-        assert_that(events).extracting("key").contains_exactly_in_any_order("event1", "event2")
+        assert_that(events).extracting("key").contains_exactly("event1", "event2")
 
     def test_table_booking_config_can_be_passed_in(self):
         chart_key = self.create_test_chart_with_tables()
@@ -94,3 +94,17 @@ class CreateEventsTest(SeatsioClientTest):
             self.fail("expected exception")
         except SeatsioException as e:
             assert_that(e.errors).is_not_empty()
+
+    def test_name_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(name="My event")
+        ])
+        assert_that(events).extracting("name").contains_exactly("My event")
+
+    def test_date_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(date=date(2022, 1, 10))
+        ])
+        assert_that(events).extracting("date").contains_exactly(date(2022, 1, 10))
