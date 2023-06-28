@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
@@ -76,4 +76,16 @@ class CreateEventTest(SeatsioClientTest):
         assert_that(event.categories).has_size(4) # 3 categories from sampleChart.json, 1 newly created category
         assert_that(event.categories).extracting("key").contains("eventCategory")
 
+    def test_name_is_optional(self):
+        chart = self.client.charts.create()
 
+        event = self.client.events.create(chart.key, name="My event")
+
+        assert_that(event.name).is_equal_to("My event")
+
+    def test_date_is_optional(self):
+        chart = self.client.charts.create()
+
+        event = self.client.events.create(chart.key, date=date(2022, 1, 10))
+
+        assert_that(event.date).is_equal_to(date(2022, 1, 10))
