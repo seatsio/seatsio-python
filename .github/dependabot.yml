@@ -9,4 +9,3 @@ updates:
   - dependency-name: jsonpickle
     versions:
     - 2.0.0
-  - dependency-name: munch
