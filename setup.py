@@ -19,7 +19,7 @@ setup(
         "requests==2.31",
         "munch==4.0",
         "jsonpickle>=1.0, <1.4",
-        "future==0.18",
+        "future==0.18.3",
         "six==1.16",
     ],
 
