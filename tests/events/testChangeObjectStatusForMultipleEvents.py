@@ -1,4 +1,4 @@
-from seatsio.domain import EventObjectInfo, SocialDistancingRuleset
+from seatsio.domain import EventObjectInfo
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -75,24 +75,3 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
 
     def fetch_status(self, event, o):
         return self.client.events.retrieve_object_info(event, o).status
-
-    def test_ignoreSocialDistancing(self):
-        chart_key = self.create_test_chart()
-        rulesets = {
-            'ruleset': SocialDistancingRuleset.fixed(
-                name='My first ruleset',
-                disabled_seats=["A-1"]
-            )
-        }
-        self.client.charts.save_social_distancing_rulesets(chart_key, rulesets)
-        event1 = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset')
-        event2 = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset')
-
-        self.client.events.book(
-            event_key_or_keys=[event1.key, event2.key],
-            object_or_objects=["A-1"],
-            ignore_social_distancing=True
-        )
-
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)

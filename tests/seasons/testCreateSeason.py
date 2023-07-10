@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig
+from seatsio import TableBookingConfig
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -55,13 +55,3 @@ class CreateSeasonTest(SeatsioClientTest):
         season = self.client.seasons.create(chart_key, table_booking_config=table_booking_config)
 
         assert_that(season.table_booking_config).is_equal_to(table_booking_config)
-
-    def test_social_distancing_ruleset_key_is_optional(self):
-        chart_key = self.create_test_chart()
-        self.client.charts.save_social_distancing_rulesets(chart_key, {
-            'ruleset1': SocialDistancingRuleset(name='My first ruleset'),
-        })
-
-        season = self.client.seasons.create(chart_key, social_distancing_ruleset_key='ruleset1')
-
-        assert_that(season.social_distancing_ruleset_key).is_equal_to('ruleset1')

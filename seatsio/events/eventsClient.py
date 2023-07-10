@@ -23,10 +23,10 @@ class EventsClient(ListableObjectsClient):
         self.reports = EventReports(self.http_client)
         self.channels = ChannelsClient(self.http_client)
 
-    def create(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None, social_distancing_ruleset_key=None,
+    def create(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None,
                object_categories=None, categories=None):
         response = self.http_client.url("/events").post(
-            CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config, social_distancing_ruleset_key,
+            CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config,
                                      object_categories, categories))
         return Event(response.json())
 
@@ -36,13 +36,10 @@ class EventsClient(ListableObjectsClient):
         return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, name=None, date=None, table_booking_config=None,
-               social_distancing_ruleset_key=None, object_categories=None, categories=None):
+               object_categories=None, categories=None):
         self.http_client.url("/events/{key}", key=key).post(
-            CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config, social_distancing_ruleset_key,
+            CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config,
                                      object_categories, categories))
-
-    def remove_social_distancing_ruleset_key(self, key):
-        self.update(key, social_distancing_ruleset_key='')
 
     def remove_object_categories(self, key):
         self.update(key, object_categories={})
@@ -77,10 +74,9 @@ class EventsClient(ListableObjectsClient):
         return Lister(page_fetcher)
 
     def book(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None,
-             ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
+             ignore_channels=None, channel_keys=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.BOOKED, hold_token,
-                                         order_id, keep_extra_data, ignore_channels, channel_keys,
-                                         ignore_social_distancing)
+                                         order_id, keep_extra_data, ignore_channels, channel_keys)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None,
                             ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None,
@@ -131,17 +127,16 @@ class EventsClient(ListableObjectsClient):
                                          order_id, keep_extra_data, ignore_channels, channel_keys)
 
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None,
-             ignore_channels=None, channel_keys=None, ignore_social_distancing=None):
+             ignore_channels=None, channel_keys=None):
         return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.HELD, hold_token,
-                                         order_id, keep_extra_data, ignore_channels, channel_keys,
-                                         ignore_social_distancing)
+                                         order_id, keep_extra_data, ignore_channels, channel_keys)
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None,
                              keep_extra_data=None, ignore_channels=None, channel_keys=None,
-                             ignore_social_distancing=None, allowed_previous_statuses=None,
+                             allowed_previous_statuses=None,
                              rejected_previous_statuses=None):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys,
-                                            keep_extra_data, ignore_channels, channel_keys, ignore_social_distancing,
+                                            keep_extra_data, ignore_channels, channel_keys,
                                             allowed_previous_statuses, rejected_previous_statuses)
         response = self.http_client.url("/events/groups/actions/change-object-status",
                                         query_params={"expand": "objects"}).post(request)
@@ -163,8 +158,7 @@ class EventsClient(ListableObjectsClient):
                                                 keep_extra_data, ignore_channels, channel_keys,
                                                 allowed_previous_statuses, rejected_previous_statuses):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, "", keep_extra_data,
-                                            ignore_channels, channel_keys, None, allowed_previous_statuses,
-                                            rejected_previous_statuses)
+                                            ignore_channels, channel_keys, allowed_previous_statuses, rejected_previous_statuses)
         request.event = event_key
         delattr(request, "events")
         return request

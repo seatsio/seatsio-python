@@ -1,4 +1,4 @@
-from seatsio import Channel, SocialDistancingRuleset
+from seatsio import Channel
 from seatsio.events.objectProperties import ObjectProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -152,22 +152,6 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         ])
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_channels=True)
-
-        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
-        assert_that(object_info.status).is_equal_to("someStatus")
-
-    def test_ignoreSocialDistancing(self):
-        chart_key = self.create_test_chart()
-        rulesets = {
-            'ruleset': SocialDistancingRuleset.fixed(
-                name='My first ruleset',
-                disabled_seats=["A-1"]
-            )
-        }
-        self.client.charts.save_social_distancing_rulesets(chart_key, rulesets)
-        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset')
-
-        self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_social_distancing=True)
 
         object_info = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(object_info.status).is_equal_to("someStatus")

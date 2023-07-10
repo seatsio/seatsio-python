@@ -1,4 +1,4 @@
-from seatsio.domain import EventObjectInfo, Channel, SocialDistancingRuleset
+from seatsio.domain import EventObjectInfo, Channel
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -69,23 +69,6 @@ class HoldObjectsTest(SeatsioClientTest):
         ])
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_channels=True)
-
-        object_info = self.client.events.retrieve_object_info(event.key, "A-1")
-        assert_that(object_info.status).is_equal_to(EventObjectInfo.HELD)
-
-    def test_ignore_channels(self):
-        chart_key = self.create_test_chart()
-        rulesets = {
-            'ruleset': SocialDistancingRuleset.fixed(
-                name='My first ruleset',
-                disabled_seats=["A-1"]
-            )
-        }
-        self.client.charts.save_social_distancing_rulesets(chart_key, rulesets)
-        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset')
-        hold_token = self.client.hold_tokens.create()
-
-        self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_social_distancing=True)
 
         object_info = self.client.events.retrieve_object_info(event.key, "A-1")
         assert_that(object_info.status).is_equal_to(EventObjectInfo.HELD)

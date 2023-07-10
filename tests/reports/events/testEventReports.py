@@ -45,7 +45,6 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.left_neighbour).is_none()
         assert_that(report_item.right_neighbour).is_equal_to("A-2")
         assert_that(report_item.is_available).is_false()
-        assert_that(report_item.is_disabled_by_social_distancing).is_false()
         assert_that(report_item.channel).is_equal_to('channelKey1')
         assert_that(report_item.distance_to_focal_point).is_not_none()
 

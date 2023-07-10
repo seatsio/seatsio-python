@@ -1,6 +1,6 @@
 class CreateSingleEventRequest:
     def __init__(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None,
-                 social_distancing_ruleset_key=None, object_categories=None, categories=None):
+                 object_categories=None, categories=None):
         if chart_key:
             self.chartKey = chart_key
         if event_key:
@@ -11,8 +11,6 @@ class CreateSingleEventRequest:
             self.date = date
         if table_booking_config is not None:
             self.tableBookingConfig = table_booking_config.to_json()
-        if social_distancing_ruleset_key is not None:
-            self.socialDistancingRulesetKey = social_distancing_ruleset_key
         if object_categories is not None:
             self.objectCategories = object_categories
         if categories is not None:

@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
+from seatsio import TableBookingConfig, Category
 from seatsio.events.eventProperties import EventProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -46,21 +46,6 @@ class CreateEventsTest(SeatsioClientTest):
         assert_that(events).extracting("table_booking_config").contains_exactly(
             TableBookingConfig.custom({"T1": "BY_TABLE", "T2": "BY_SEAT"}),
             TableBookingConfig.custom({"T1": "BY_SEAT", "T2": "BY_TABLE"})
-        )
-
-    def test_social_distancing_ruleset_key_can_be_passed_in(self):
-        chart_key = self.create_test_chart()
-        self.client.charts.save_social_distancing_rulesets(chart_key, {
-            'ruleset1': SocialDistancingRuleset(name='My first ruleset'),
-        })
-
-        events = self.client.events.create_multiple(chart_key, [
-            EventProperties(social_distancing_ruleset_key='ruleset1'),
-            EventProperties(social_distancing_ruleset_key='ruleset1')
-        ])
-
-        assert_that(events).extracting("social_distancing_ruleset_key").contains_exactly(
-            'ruleset1', 'ruleset1'
         )
 
     def test_object_categories_can_be_passed_in(self):
