@@ -7,8 +7,7 @@ class SeasonsClient:
         self.http_client = http_client
         self.seatsio_client = seatsio_client
 
-    def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None,
-               social_distancing_ruleset_key=None):
+    def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None):
         request = {}
         if chart_key:
             request['chartKey'] = chart_key
@@ -20,8 +19,6 @@ class SeasonsClient:
             request['eventKeys'] = event_keys
         if table_booking_config is not None:
             request['tableBookingConfig'] = table_booking_config.to_json()
-        if social_distancing_ruleset_key is not None:
-            request['socialDistancingRulesetKey'] = social_distancing_ruleset_key
 
         response = self.http_client.url("/seasons").post(request)
         return Season(response.json())

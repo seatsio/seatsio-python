@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from seatsio import SocialDistancingRuleset, TableBookingConfig, Category
+from seatsio import TableBookingConfig, Category
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -48,16 +48,6 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.key).is_not_blank()
         assert_that(event.table_booking_config).is_equal_to(TableBookingConfig.inherit())
-
-    def test_social_distancing_ruleset_key_is_optional(self):
-        chart_key = self.create_test_chart()
-        self.client.charts.save_social_distancing_rulesets(chart_key, {
-            'ruleset1': SocialDistancingRuleset(name='My first ruleset'),
-        })
-
-        event = self.client.events.create(chart_key, social_distancing_ruleset_key='ruleset1')
-
-        assert_that(event.social_distancing_ruleset_key).is_equal_to('ruleset1')
 
     def test_object_categories_is_optional(self):
         chart_key = self.create_test_chart()

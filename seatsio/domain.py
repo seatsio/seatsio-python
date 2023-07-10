@@ -18,8 +18,6 @@ class Chart:
         self.tags = data.get("tags")
         self.archived = data.get("archived")
         self.validation = data.get("validation")
-        self.social_distancing_rulesets = {k: SocialDistancingRuleset.create(v) for k, v in
-                                           data.get("socialDistancingRulesets").items()}
 
 
 class ChartValidation:
@@ -69,7 +67,6 @@ class Event:
         self.created_on = parse_date(data.get("createdOn"))
         self.updated_on = parse_date(data.get("updatedOn"))
         self.channels = Channel.createList(data.get("channels"))
-        self.social_distancing_ruleset_key = data.get("socialDistancingRulesetKey")
         self.is_top_level_season = data.get("isTopLevelSeason")
         self.is_partial_season = data.get("isPartialSeason")
         self.is_event_in_season = data.get("isEventInSeason")
@@ -189,91 +186,6 @@ class Channel:
             return list(map(Channel.create, param))
 
 
-class SocialDistancingRuleset:
-    def __init__(self, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                 disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
-                 max_occupancy_absolute=0,
-                 max_occupancy_percentage=0, one_group_per_table=False, fixed_group_layout=False,
-                 disabled_seats=[], enabled_seats=[], index=0):
-        self.name = name
-        self.number_of_disabled_seats_to_the_sides = number_of_disabled_seats_to_the_sides
-        self.disable_seats_in_front_and_behind = disable_seats_in_front_and_behind
-        self.disable_diagonal_seats_in_front_and_behind = disable_diagonal_seats_in_front_and_behind
-        self.number_of_disabled_aisle_seats = number_of_disabled_aisle_seats
-        self.max_group_size = max_group_size
-        self.max_occupancy_absolute = max_occupancy_absolute
-        self.max_occupancy_percentage = max_occupancy_percentage
-        self.one_group_per_table = one_group_per_table
-        self.fixed_group_layout = fixed_group_layout
-        self.disabled_seats = disabled_seats
-        self.enabled_seats = enabled_seats
-        self.index = index
-
-    @classmethod
-    def fixed(cls, name, disabled_seats=[], index=0):
-        return SocialDistancingRuleset(name, index=index, disabled_seats=disabled_seats)
-
-    @classmethod
-    def rule_based(cls, name, number_of_disabled_seats_to_the_sides=0, disable_seats_in_front_and_behind=False,
-                   disable_diagonal_seats_in_front_and_behind=False, number_of_disabled_aisle_seats=0, max_group_size=0,
-                   max_occupancy_absolute=0,
-                   max_occupancy_percentage=0, one_group_per_table=False, disabled_seats=[], enabled_seats=[], index=0):
-        return SocialDistancingRuleset(name,
-                                       number_of_disabled_seats_to_the_sides=number_of_disabled_seats_to_the_sides,
-                                       disable_seats_in_front_and_behind=disable_seats_in_front_and_behind,
-                                       disable_diagonal_seats_in_front_and_behind=disable_diagonal_seats_in_front_and_behind,
-                                       number_of_disabled_aisle_seats=number_of_disabled_aisle_seats,
-                                       max_group_size=max_group_size,
-                                       max_occupancy_absolute=max_occupancy_absolute,
-                                       max_occupancy_percentage=max_occupancy_percentage,
-                                       one_group_per_table=one_group_per_table,
-                                       fixed_group_layout=False,
-                                       disabled_seats=disabled_seats,
-                                       enabled_seats=enabled_seats,
-                                       index=index)
-
-    def __eq__(self, other):
-        return self.name == other.name and \
-               self.number_of_disabled_seats_to_the_sides == other.number_of_disabled_seats_to_the_sides and \
-               self.disable_seats_in_front_and_behind == other.disable_seats_in_front_and_behind and \
-               self.disable_diagonal_seats_in_front_and_behind == other.disable_diagonal_seats_in_front_and_behind and \
-               self.number_of_disabled_aisle_seats == other.number_of_disabled_aisle_seats and \
-               self.max_group_size == other.max_group_size and \
-               self.max_occupancy_absolute == other.max_occupancy_absolute and \
-               self.max_occupancy_percentage == other.max_occupancy_percentage and \
-               self.one_group_per_table == other.one_group_per_table and \
-               self.fixed_group_layout == other.fixed_group_layout and \
-               self.disabled_seats == other.disabled_seats and \
-               self.enabled_seats == other.enabled_seats and \
-               self.index == other.index
-
-    def __hash__(self):
-        return hash((self.name, self.number_of_disabled_seats_to_the_sides, self.disable_seats_in_front_and_behind,
-                     self.disable_diagonal_seats_in_front_and_behind, self.number_of_disabled_aisle_seats,
-                     self.max_group_size, self.max_occupancy_absolute, self.max_occupancy_percentage,
-                     self.fixed_group_layout, self.one_group_per_table, self.disabled_seats, self.enabled_seats,
-                     self.index))
-
-    @classmethod
-    def create(cls, param):
-        if param is not None:
-            return SocialDistancingRuleset(
-                param.get('name'),
-                param.get('numberOfDisabledSeatsToTheSides'),
-                param.get('disableSeatsInFrontAndBehind'),
-                param.get('disableDiagonalSeatsInFrontAndBehind'),
-                param.get('numberOfDisabledAisleSeats'),
-                param.get('maxGroupSize'),
-                param.get('maxOccupancyAbsolute'),
-                param.get('maxOccupancyPercentage'),
-                param.get('oneGroupPerTable'),
-                param.get('fixedGroupLayout'),
-                param.get('disabledSeats'),
-                param.get('enabledSeats'),
-                param.get('index')
-            )
-
-
 class ChartReport:
     def __init__(self, response_body):
         self.items = {}
@@ -351,7 +263,6 @@ class EventObjectInfo:
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
         self.is_available = item_data.get('isAvailable')
-        self.is_disabled_by_social_distancing = item_data.get('isDisabledBySocialDistancing')
         self.channel = item_data.get('channel')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
         self.holds = item_data.get('holds')
