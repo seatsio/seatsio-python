@@ -48,6 +48,11 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.channel).is_equal_to('channelKey1')
         assert_that(report_item.distance_to_focal_point).is_not_none()
 
+        ga_item = report.get("GA1")[0]
+        assert_that(ga_item.variable_occupancy).is_true()
+        assert_that(ga_item.min_occupancy).is_equal_to(1)
+        assert_that(ga_item.max_occupancy).is_equal_to(100)
+
     def test_holdToken(self):
         chart_key = self.create_test_chart()
         hold_token = self.client.hold_tokens.create()

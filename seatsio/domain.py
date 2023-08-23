@@ -267,6 +267,9 @@ class EventObjectInfo:
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
         self.holds = item_data.get('holds')
         self.num_seats = item_data.get('numSeats')
+        self.variable_occupancy = item_data.get('variableOccupancy')
+        self.min_occupancy = item_data.get('minOccupancy')
+        self.max_occupancy = item_data.get('maxOccupancy')
 
 
 class UsageSummaryForAllMonths:
