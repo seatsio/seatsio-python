@@ -1,5 +1,5 @@
 class EventProperties:
-    def __init__(self, event_key=None, name=None, date=None, table_booking_config=None, object_categories=None, categories=None):
+    def __init__(self, event_key=None, name=None, date=None, table_booking_config=None, object_categories=None, categories=None, channels=None):
         if event_key:
             self.eventKey = event_key
         if name:
@@ -12,3 +12,5 @@ class EventProperties:
             self.objectCategories = object_categories
         if categories is not None:
             self.categories = categories
+        if channels is not None:
+            self.channels = channels

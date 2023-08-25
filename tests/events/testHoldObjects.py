@@ -49,11 +49,10 @@ class HoldObjectsTest(SeatsioClientTest):
 
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
-        event = self.client.events.create(chart_key)
-        hold_token = self.client.hold_tokens.create()
-        self.client.events.channels.replace(event.key, [
+        event = self.client.events.create(chart_key, channels=[
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
+        hold_token = self.client.hold_tokens.create()
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, channel_keys=["channelKey1"])
 
@@ -62,11 +61,10 @@ class HoldObjectsTest(SeatsioClientTest):
 
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
-        event = self.client.events.create(chart_key)
-        hold_token = self.client.hold_tokens.create()
-        self.client.events.channels.replace(event.key, [
+        event = self.client.events.create(chart_key, channels=[
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
+        hold_token = self.client.hold_tokens.create()
 
         self.client.events.hold(event.key, ["A-1"], hold_token.hold_token, ignore_channels=True)
 

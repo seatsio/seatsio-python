@@ -7,7 +7,7 @@ class SeasonsClient:
         self.http_client = http_client
         self.seatsio_client = seatsio_client
 
-    def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None):
+    def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None, channels=None):
         request = {}
         if chart_key:
             request['chartKey'] = chart_key
@@ -19,6 +19,8 @@ class SeasonsClient:
             request['eventKeys'] = event_keys
         if table_booking_config is not None:
             request['tableBookingConfig'] = table_booking_config.to_json()
+        if channels is not None:
+            request['channels'] = channels
 
         response = self.http_client.url("/seasons").post(request)
         return Season(response.json())

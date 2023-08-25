@@ -24,10 +24,10 @@ class EventsClient(ListableObjectsClient):
         self.channels = ChannelsClient(self.http_client)
 
     def create(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None,
-               object_categories=None, categories=None):
+               object_categories=None, categories=None, channels=None):
         response = self.http_client.url("/events").post(
             CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config,
-                                     object_categories, categories))
+                                     object_categories, categories, channels))
         return Event(response.json())
 
     def create_multiple(self, chart_key, events_properties):

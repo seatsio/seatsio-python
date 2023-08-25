@@ -1,6 +1,6 @@
 class CreateSingleEventRequest:
     def __init__(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None,
-                 object_categories=None, categories=None):
+                 object_categories=None, categories=None, channels=None):
         if chart_key:
             self.chartKey = chart_key
         if event_key:
@@ -15,4 +15,6 @@ class CreateSingleEventRequest:
             self.objectCategories = object_categories
         if categories is not None:
             self.categories = categories
+        if channels is not None:
+            self.channels = channels
 
