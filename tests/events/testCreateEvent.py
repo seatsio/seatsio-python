@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from seatsio import TableBookingConfig, Category
+from seatsio import TableBookingConfig, Category, Channel
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -79,3 +79,14 @@ class CreateEventTest(SeatsioClientTest):
         event = self.client.events.create(chart.key, date=date(2022, 1, 10))
 
         assert_that(event.date).is_equal_to(date(2022, 1, 10))
+
+    def test_channels_are_optional(self):
+        chart_key = self.create_test_chart()
+        channels = [
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"]),
+            Channel(key='channelKey2', name='channel 2', color='#FF0000', index=2, objects=[]),
+        ]
+
+        event = self.client.events.create(chart_key, channels=channels)
+
+        assert_that(event.channels).is_equal_to(channels)

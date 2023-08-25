@@ -8,14 +8,11 @@ class EventReportsTest(SeatsioClientTest):
 
     def test_reportItemProperties(self):
         chart_key = self.create_test_chart()
-        event = self.client.events.create(chart_key)
-        extra_data = {"foo": "bar"}
-
-        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1")
-
-        self.client.events.channels.replace(event.key, [
+        event = self.client.events.create(chart_key, channels=[
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1"])
         ])
+        extra_data = {"foo": "bar"}
+        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1", ignore_channels=true)
 
         report = self.client.events.reports.by_label(event.key)
 
@@ -311,8 +308,7 @@ class EventReportsTest(SeatsioClientTest):
 
     def testByChannel(self):
         chart_key = self.create_test_chart()
-        event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, [
+        event = self.client.events.create(chart_key, channels=[
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
 
@@ -324,8 +320,7 @@ class EventReportsTest(SeatsioClientTest):
 
     def testBySpecificChannel(self):
         chart_key = self.create_test_chart()
-        event = self.client.events.create(chart_key)
-        self.client.events.channels.replace(event.key, [
+        event = self.client.events.create(chart_key, channels=[
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
 
