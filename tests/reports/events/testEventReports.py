@@ -12,7 +12,7 @@ class EventReportsTest(SeatsioClientTest):
             Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1"])
         ])
         extra_data = {"foo": "bar"}
-        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1", ignore_channels=true)
+        self.client.events.book(event.key, [ObjectProperties("A-1", ticket_type="tt1", extra_data=extra_data)], order_id="order1", ignore_channels=True)
 
         report = self.client.events.reports.by_label(event.key)
 
