@@ -96,3 +96,17 @@ class UpdateEventTest(SeatsioClientTest):
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.date).is_equal_to(date(2023, 1, 10))
+
+    def test_updateIsInThePast(self):
+        chart = self.client.charts.create()
+        event = self.client.events.create(chart.key, name="An event")
+
+        self.client.events.update(event.key, is_in_the_past=True)
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.is_in_the_past).is_true()
+
+        self.client.events.update(event.key, is_in_the_past=False)
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.is_in_the_past).is_false()
+

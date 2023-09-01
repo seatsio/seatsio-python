@@ -5,11 +5,11 @@ from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObje
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsClient import ChannelsClient
-from seatsio.events.channelsRequests import AssignObjectsToChannelsRequest
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
+from seatsio.events.updateEventRequest import UpdateEventRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -36,10 +36,11 @@ class EventsClient(ListableObjectsClient):
         return Event.create_list(response.json().get("events"))
 
     def update(self, key, chart_key=None, event_key=None, name=None, date=None, table_booking_config=None,
-               object_categories=None, categories=None):
+               object_categories=None, categories=None, is_in_the_past=None):
+        request = UpdateEventRequest(chart_key, event_key, name, date, table_booking_config, object_categories,
+                                     categories, is_in_the_past)
         self.http_client.url("/events/{key}", key=key).post(
-            CreateSingleEventRequest(chart_key, event_key, name, date, table_booking_config,
-                                     object_categories, categories))
+            request)
 
     def remove_object_categories(self, key):
         self.update(key, object_categories={})

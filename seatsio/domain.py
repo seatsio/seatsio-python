@@ -73,6 +73,7 @@ class Event:
         self.top_level_season_key = data.get("topLevelSeasonKey")
         self.object_categories = data.get("objectCategories")
         self.categories = Category.create_list(data.get("categories"))
+        self.is_in_the_past = data.get("isInThePast")
 
     @classmethod
     def create_list(cls, lst):
