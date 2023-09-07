@@ -357,17 +357,6 @@ class UsageForObjectV2:
         self.usage_by_reason = json.get("usageByReason")
 
 
-class Subaccount:
-
-    def __init__(self, data):
-        self.id = data.get("id")
-        self.secret_key = data.get("secretKey")
-        self.designer_key = data.get("designerKey")
-        self.public_key = data.get("publicKey")
-        self.name = data.get("name")
-        self.active = data.get("active")
-
-
 class Workspace:
 
     def __init__(self, data):
