@@ -6,7 +6,6 @@ import time
 import requests
 
 import seatsio
-from seatsio.domain import Subaccount
 from seatsio.region import Region
 
 BASE_URL = "https://api-staging-eu.seatsio.net"
@@ -18,7 +17,6 @@ class SeatsioClientTest(unittest.TestCase):
         super(SeatsioClientTest, self).setUp()
         company = self.create_test_company()
         self.user = company["admin"]
-        self.subaccount = Subaccount(company["subaccount"])
         self.client = self.create_client(self.user["secretKey"], None)
 
     def tearDown(self):

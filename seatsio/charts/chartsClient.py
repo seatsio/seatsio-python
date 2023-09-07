@@ -47,13 +47,6 @@ class ChartsClient(ListableObjectsClient):
             .url("/charts/{key}/version/published/actions/copy", key=key) \
             .post_empty_and_return(Chart)
 
-    def copy_to_subaccount(self, chart_key, subaccount_id):
-        return self.http_client \
-            .url("/charts/{key}/version/published/actions/copy-to/{subaccountId}",
-                 key=chart_key,
-                 subaccountId=subaccount_id) \
-            .post_empty_and_return(Chart)
-
     def copy_to_workspace(self, chart_key, to_workspace_key):
         return self.http_client \
             .url("/charts/{key}/version/published/actions/copy-to-workspace/{toWorkspaceKey}",
