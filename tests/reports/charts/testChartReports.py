@@ -1,3 +1,5 @@
+from parameterized import parameterized
+
 from seatsio.domain import ChartReport, ChartObjectInfo
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -5,10 +7,21 @@ from tests.util.asserts import assert_that
 
 class ChartReportsTest(SeatsioClientTest):
 
-    def test_reportItemProperties(self):
+    @parameterized.expand([
+        [
+                lambda instance, chart_key: {},
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key)
+        ],
+        [
+                lambda instance, chart_key: instance.create_draft_chart(chart_key=chart_key),
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, version='draft')
+        ]
+    ])
+    def test_reportItemProperties(self, update_chart, get_report):
         chart_key = self.create_test_chart()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key)
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         report_item = report.get("A-1")[0]
@@ -29,10 +42,21 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.is_companion_seat).is_not_none()
         assert_that(report_item.has_restricted_view).is_not_none()
 
-    def test_reportItemPropertiesForGA(self):
+    @parameterized.expand([
+        [
+                lambda instance, chart_key: {},
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key)
+        ],
+        [
+                lambda instance, chart_key: instance.create_draft_chart(chart_key),
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, version='draft')
+        ]
+    ])
+    def test_reportItemPropertiesForGA(self, update_chart, get_report):
         chart_key = self.create_test_chart()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key)
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         report_item = report.get("GA1")[0]
@@ -46,61 +70,152 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.capacity).is_equal_to(100)
         assert_that(report_item.book_as_a_whole).is_equal_to(False)
 
-    def test_reportItemPropertiesForTable(self):
+    @parameterized.expand([
+        [
+                lambda instance, chart_key: {},
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, book_whole_tables='true')
+        ],
+        [
+                lambda instance, chart_key: instance.create_draft_chart(chart_key),
+                lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, book_whole_tables='true', version='draft')
+        ]
+    ])
+    def test_reportItemPropertiesForTable(self, update_chart, get_report):
         chart_key = self.create_test_chart_with_tables()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key, "true")
+        report = get_report(self, chart_key)
 
         report_item = report.get("T1")[0]
         assert_that(report_item.num_seats).is_equal_to(6)
         assert_that(report_item.book_as_a_whole).is_false()
 
-    def testByLabel(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, version='draft')
+        ]
+    ])
+    def testByLabel(self, update_chart, get_report):
         chart_key = self.create_test_chart()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key)
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.get("A-1")).has_size(1)
         assert_that(report.get("A-2")).has_size(1)
 
-    def testByObjectType(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_object_type(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_object_type(chart_key=chart_key,
+                                                                                      version='draft')
+        ]
+    ])
+    def testByObjectType(self, update_chart, get_report):
         chart_key = self.create_test_chart()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_object_type(chart_key)
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.get("seat")).has_size(32)
         assert_that(report.get("generalAdmission")).has_size(2)
 
-    def testByLabel_BookWholeTablesNone(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, version='draft')
+        ]
+    ])
+    def testByLabel_BookWholeTablesNone(self, update_chart, get_report):
         chart_key = self.create_test_chart_with_tables()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key)
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.items).has_size(14)
 
-    def testByLabel_BookWholeTablesChart(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='chart')
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='chart',
+                                                                                version='draft')
+        ]
+    ])
+    def testByLabel_BookWholeTablesChart(self, update_chart, get_report):
         chart_key = self.create_test_chart_with_tables()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key, 'chart')
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.items).has_size(7)
 
-    def testByLabel_BookWholeTablesTrue(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='true')
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='true',
+                                                                                version='draft')
+        ]
+    ])
+    def testByLabel_BookWholeTablesTrue(self, update_chart, get_report):
         chart_key = self.create_test_chart_with_tables()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key, 'true')
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.items).has_size(2)
 
-    def testByLabel_BookWholeTablesFalse(self):
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='false')
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key,
+                                                                                book_whole_tables='false',
+                                                                                version='draft')
+        ]
+    ])
+    def testByLabel_BookWholeTablesFalse(self, update_chart, get_report):
         chart_key = self.create_test_chart_with_tables()
+        update_chart(self, chart_key)
 
-        report = self.client.charts.reports.by_label(chart_key, 'false')
+        report = get_report(self, chart_key)
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.items).has_size(12)
+
+    def create_draft_chart(self, chart_key):
+        self.client.events.create(chart_key)
+        self.client.charts.update(chart_key, "Foo")
