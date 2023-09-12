@@ -22,6 +22,9 @@ setup(
         "future==0.18.3",
         "six==1.16",
     ],
+    tests_require=[
+        "parameterized==0.9.0"
+    ],
 
     test_suite='tests'
 )
