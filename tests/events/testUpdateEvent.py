@@ -1,6 +1,7 @@
 from datetime import datetime, date
 
 from seatsio import TableBookingConfig, Category
+from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -99,14 +100,14 @@ class UpdateEventTest(SeatsioClientTest):
 
     def test_updateIsInThePast(self):
         chart = self.client.charts.create()
-        event = self.client.events.create(chart.key, name="An event")
+        self.client.seasons.create(chart.key, event_keys=["event1"])
 
-        self.client.events.update(event.key, is_in_the_past=True)
-        retrieved_event = self.client.events.retrieve(event.key)
+        self.client.events.update("event1", is_in_the_past=True)
+        retrieved_event = self.client.events.retrieve("event1")
         assert_that(retrieved_event.is_in_the_past).is_true()
 
-        self.client.events.update(event.key, is_in_the_past=False)
-
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.is_in_the_past).is_false()
-
+        try:
+            self.client.events.update("event1", is_in_the_past=False)
+            self.fail("expected exception")
+        except SeatsioException as e:
+            assert_that(e.message).is_equal_to("Events in the past cannot be updated.")
