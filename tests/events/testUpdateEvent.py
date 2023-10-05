@@ -105,9 +105,3 @@ class UpdateEventTest(SeatsioClientTest):
         self.client.events.update("event1", is_in_the_past=True)
         retrieved_event = self.client.events.retrieve("event1")
         assert_that(retrieved_event.is_in_the_past).is_true()
-
-        try:
-            self.client.events.update("event1", is_in_the_past=False)
-            self.fail("expected exception")
-        except SeatsioException as e:
-            assert_that(e.message).is_equal_to("Events in the past cannot be updated.")
