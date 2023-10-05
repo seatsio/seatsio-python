@@ -1,6 +1,7 @@
 from datetime import datetime, date
 
 from seatsio import TableBookingConfig, Category
+from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -96,3 +97,11 @@ class UpdateEventTest(SeatsioClientTest):
 
         retrieved_event = self.client.events.retrieve(event.key)
         assert_that(retrieved_event.date).is_equal_to(date(2023, 1, 10))
+
+    def test_updateIsInThePast(self):
+        chart = self.client.charts.create()
+        self.client.seasons.create(chart.key, event_keys=["event1"])
+
+        self.client.events.update("event1", is_in_the_past=True)
+        retrieved_event = self.client.events.retrieve("event1")
+        assert_that(retrieved_event.is_in_the_past).is_true()
