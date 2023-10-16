@@ -54,6 +54,21 @@ class ChartsClient(ListableObjectsClient):
                  toWorkspaceKey=to_workspace_key) \
             .post_empty_and_return(Chart)
 
+    def copy_from_workspace_to(self, chart_key, from_workspace_key, to_workspace_key):
+        return self.http_client \
+            .url("/charts/{key}/version/published/actions/copy/from/{fromWorkspaceKey}/to{toWorkspaceKey}",
+                 key=chart_key,
+                 toWorkspaceKey=to_workspace_key) \
+            .post_empty_and_return(Chart)
+
+    def copy_from_workspace_to(self, chart_key, from_workspace_key, to_workspace_key):
+        return self.http_client \
+            .url("/charts/{key}/version/published/actions/copy/from/{fromWorkspaceKey}/to/{toWorkspaceKey}",
+                 key=chart_key,
+                 fromWorkspaceKey=from_workspace_key,
+                 toWorkspaceKey=to_workspace_key) \
+            .post_empty_and_return(Chart)
+
     def copy_draft_version(self, key):
         return self.http_client \
             .url("/charts/{key}/version/draft/actions/copy", key=key) \

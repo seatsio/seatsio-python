@@ -17,6 +17,7 @@ class SeatsioClientTest(unittest.TestCase):
         super(SeatsioClientTest, self).setUp()
         company = self.create_test_company()
         self.user = company["admin"]
+        self.workspace = seatsio.Workspace.create(company["workspace"])
         self.client = self.create_client(self.user["secretKey"], None)
 
     def tearDown(self):
