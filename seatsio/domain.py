@@ -113,11 +113,33 @@ class ForSaleConfig:
         self.area_places = data.get("areaPlaces")
         self.categories = data.get("categories")
 
+    def __eq__(self, other):
+        return self.for_sale == other.for_sale and \
+               self.objects == other.objects and \
+               self.area_places == other.area_places and \
+               self.categories == other.categories
+
+    def __hash__(self):
+        return hash((self.for_sale, self.objects, self.area_places, self.categories))
+
     @classmethod
     def create(cls, param):
         if param is not None:
             return ForSaleConfig(param)
 
+    def to_json(self):
+        json = {"forSale": self.for_sale}
+        if self.objects is not None:
+            json["objects"] = self.objects
+        if self.area_places is not None:
+            json["areaPlaces"] = self.area_places
+        if self.categories is not None:
+            json["categories"] = self.categories
+        return json
+
+    @classmethod
+    def create_new(cls, for_sale, objects=None, area_places=None, categories=None):
+        return ForSaleConfig({"forSale": for_sale, "objects": objects, "areaPlaces": area_places, "categories": categories})
 
 class TableBookingConfig:
     def __init__(self, mode, tables=None):

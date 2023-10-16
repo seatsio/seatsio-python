@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from seatsio import TableBookingConfig, Category, Channel
+from seatsio import TableBookingConfig, Category, Channel, ForSaleConfig
 from seatsio.events.eventProperties import EventProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -106,3 +106,15 @@ class CreateEventsTest(SeatsioClientTest):
         ])
 
         assert_that(events).extracting("channels").contains_exactly(channels)
+
+    def test_for_sale_config_can_be_passed_in(self):
+        chart_key = self.create_test_chart()
+        for_sale_config_1 = ForSaleConfig.create_new(False, ["A-1"], {"GA1": 3}, ["Cat1"])
+        for_sale_config_2 = ForSaleConfig.create_new(False, ["A-2"], {"GA1": 7}, ["Cat1"])
+
+        events = self.client.events.create_multiple(chart_key, [
+            EventProperties(for_sale_config=for_sale_config_1),
+            EventProperties(for_sale_config=for_sale_config_2)
+        ])
+
+        assert_that(events).extracting("for_sale_config").contains_exactly(for_sale_config_1, for_sale_config_2)
