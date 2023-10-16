@@ -1,6 +1,6 @@
 class CreateSingleEventRequest:
     def __init__(self, chart_key, event_key=None, name=None, date=None, table_booking_config=None,
-                 object_categories=None, categories=None, channels=None):
+                 object_categories=None, categories=None, channels=None, for_sale_config=None):
         if chart_key:
             self.chartKey = chart_key
         if event_key:
@@ -17,4 +17,6 @@ class CreateSingleEventRequest:
             self.categories = categories
         if channels is not None:
             self.channels = channels
+        if for_sale_config is not None:
+            self.forSaleConfig = for_sale_config.to_json()
 

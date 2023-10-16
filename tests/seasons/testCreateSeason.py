@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import TableBookingConfig, Channel
+from seatsio import TableBookingConfig, Channel, ForSaleConfig
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -66,3 +66,11 @@ class CreateSeasonTest(SeatsioClientTest):
         season = self.client.seasons.create(chart_key, channels=channels)
 
         assert_that(season.channels).is_equal_to(channels)
+
+    def test_for_sale_config_optional(self):
+        chart_key = self.create_test_chart()
+        for_sale_config = ForSaleConfig.create_new(False, ["A-1", "A-2"], {"GA1": 5}, ["Cat1"])
+
+        season = self.client.seasons.create(chart_key, for_sale_config=for_sale_config)
+
+        assert_that(season.for_sale_config).is_equal_to(for_sale_config)
