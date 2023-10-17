@@ -297,7 +297,8 @@ class EventObjectInfo:
 
 class UsageSummaryForAllMonths:
     def __init__(self, json):
-        self.items = list(map(lambda x: UsageSummaryForMonth(x), json))
+        self.usage = list(map(lambda x: UsageSummaryForMonth(x), json.get("usage")))
+        self.usage_cutoff_date = parse_date(json.get("usageCutoffDate"))
 
 
 class UsageSummaryForMonth(object):
@@ -320,8 +321,9 @@ class Month(object):
 
 
 class UsageDetailsForMonth:
-    def __init__(self, json):
-        self.items = list(map(lambda x: UsageDetails(x), json))
+    @classmethod
+    def from_json(cls, json):
+        return list(map(lambda x: UsageDetails(x), json))
 
 
 class UsageDetails:
@@ -334,7 +336,7 @@ class UsageByChart:
     def __init__(self, json):
         if json.get("chart") is not None:
             self.chart = UsageChart(json.get("chart"))
-        self.usageByEvent = list(map(lambda x: UsageByEvent(x), json.get("usageByEvent")))
+        self.usage_by_event = list(map(lambda x: UsageByEvent(x), json.get("usageByEvent")))
 
 
 class UsageChart:
@@ -355,9 +357,13 @@ class UsageEvent:
         self.key = json.get("key")
 
 
-class UsageDetailsForEventInMonthV1:
-    def __init__(self, json):
-        self.items = list(map(lambda x: UsageForObjectV1(x), json))
+class UsageDetailsForEventInMonth:
+    @classmethod
+    def from_json(cls, json):
+        if len(json) == 0 or "usageByReason" not in json[0]:
+            return list(map(lambda x: UsageForObjectV1(x), json))
+        else:
+            return list(map(lambda x: UsageForObjectV2(x), json))
 
 
 class UsageForObjectV1:
@@ -367,10 +373,6 @@ class UsageForObjectV1:
         self.first_booking_date = parse_date(json.get("firstBookingDate"))
         self.num_first_selections = json.get("numFirstSelections")
         self.num_first_bookings_or_selections = json.get("numFirstBookingsOrSelections")
-
-class UsageDetailsForEventInMonthV2:
-    def __init__(self, json):
-        self.items = list(map(lambda x: UsageForObjectV2(x), json))
 
 
 class UsageForObjectV2:

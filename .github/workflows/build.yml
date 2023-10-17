@@ -28,3 +28,5 @@ jobs:
       with:
         timezone: Europe/Brussels
     - run: python setup.py test
+      env:
+        DEMO_COMPANY_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
