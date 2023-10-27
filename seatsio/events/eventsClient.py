@@ -9,6 +9,7 @@ from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsReque
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
+from seatsio.events.overrideSeasonObjectStatusRequest import OverrideSeasonObjectStatusRequest
 from seatsio.events.updateEventRequest import UpdateEventRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
@@ -188,6 +189,16 @@ class EventsClient(ListableObjectsClient):
 
     def mark_everything_as_for_sale(self, key):
         self.http_client.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
+
+    def override_season_object_status(self, key, objects):
+        self.http_client \
+            .url("/events/{key}/actions/override-season-status", key=key) \
+            .post(OverrideSeasonObjectStatusRequest(objects))
+
+    def use_season_object_status(self, key, objects):
+        self.http_client \
+            .url("/events/{key}/actions/use-season-status", key=key) \
+            .post(OverrideSeasonObjectStatusRequest(objects))
 
     def update_extra_data(self, key, o, extra_data):
         self.http_client \
