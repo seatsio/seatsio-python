@@ -12,3 +12,4 @@ class AddEventsToPartialSeasonTest(SeatsioClientTest):
         updated_partial_season = self.client.seasons.add_events_to_partial_season(season.key, partial_season.key, ["event1", "event2"])
 
         assert_that(updated_partial_season.events).extracting("key").contains_exactly("event1", "event2")
+        assert_that(updated_partial_season.events[0].partial_season_keys_for_event).contains_exactly(updated_partial_season.key)
