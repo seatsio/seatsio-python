@@ -74,6 +74,7 @@ class Event:
         self.object_categories = data.get("objectCategories")
         self.categories = Category.create_list(data.get("categories"))
         self.is_in_the_past = data.get("isInThePast")
+        self.partial_season_keys_for_event = data.get("partialSeasonKeysForEvent")
 
     @classmethod
     def create_list(cls, lst):

@@ -23,3 +23,4 @@ class CreatePartialSeasonTest(SeatsioClientTest):
         assert_that(partial_season.events)\
             .extracting("key")\
             .contains_exactly("event1", "event2")
+        assert_that(partial_season.events[0].partial_season_keys_for_event).contains_exactly(partial_season.key)
