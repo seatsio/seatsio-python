@@ -1,4 +1,4 @@
-# seatsio-python, the official Seats.io Python client library
+# seatsio-python, the official Seats.io Python SDK
 
 [![Build](https://github.com/seatsio/seatsio-python/workflows/Build/badge.svg)](https://github.com/seatsio/seatsio-python/actions/workflows/build.yml)
 [![PyPI version](https://badge.fury.io/py/seatsio.svg)](https://badge.fury.io/py/seatsio)
