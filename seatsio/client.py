@@ -1,4 +1,5 @@
 from seatsio.charts.chartsClient import ChartsClient
+from seatsio.eventlog.eventLogClient import EventLogClient
 from seatsio.events.eventsClient import EventsClient
 from seatsio.holdtokens.HoldTokenClient import HoldTokensClient
 from seatsio.httpClient import HttpClient
@@ -18,3 +19,4 @@ class Client:
         self.workspaces = WorkspacesClient(self.http_client)
         self.hold_tokens = HoldTokensClient(self.http_client)
         self.usage_reports = UsageReports(self.http_client)
+        self.event_log = EventLogClient(self.http_client)
