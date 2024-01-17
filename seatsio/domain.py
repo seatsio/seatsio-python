@@ -29,7 +29,7 @@ class ChartValidation:
 
 class Category:
 
-    def __init__(self, key, label, color, accessible = False):
+    def __init__(self, key, label, color, accessible=False):
         self.key = key
         self.label = label
         self.color = color
@@ -37,9 +37,9 @@ class Category:
 
     def __eq__(self, other):
         return self.key == other.key and \
-               self.label == other.label and \
-               self.color == other.color and \
-               self.accessible == other.accessible
+            self.label == other.label and \
+            self.color == other.color and \
+            self.accessible == other.accessible
 
     def __hash__(self):
         return hash((self.key, self.label, self.color, self.accessible))
@@ -116,9 +116,9 @@ class ForSaleConfig:
 
     def __eq__(self, other):
         return self.for_sale == other.for_sale and \
-               self.objects == other.objects and \
-               self.area_places == other.area_places and \
-               self.categories == other.categories
+            self.objects == other.objects and \
+            self.area_places == other.area_places and \
+            self.categories == other.categories
 
     def __hash__(self):
         return hash((self.for_sale, self.objects, self.area_places, self.categories))
@@ -142,6 +142,7 @@ class ForSaleConfig:
     def create_new(cls, for_sale, objects=None, area_places=None, categories=None):
         return ForSaleConfig({"forSale": for_sale, "objects": objects, "areaPlaces": area_places, "categories": categories})
 
+
 class TableBookingConfig:
     def __init__(self, mode, tables=None):
         self.mode = mode
@@ -149,7 +150,7 @@ class TableBookingConfig:
 
     def __eq__(self, other):
         return self.mode == other.mode and \
-               self.tables == other.tables
+            self.tables == other.tables
 
     def __hash__(self):
         return hash((self.mode, self.tables))
@@ -191,10 +192,10 @@ class Channel:
 
     def __eq__(self, other):
         return self.key == other.key and \
-               self.name == other.name and \
-               self.color == other.color and \
-               self.index == other.index and \
-               self.objects == other.objects
+            self.name == other.name and \
+            self.color == other.color and \
+            self.index == other.index and \
+            self.objects == other.objects
 
     def __hash__(self):
         return hash((self.key, self.name, self.color, self.index, self.objects))
@@ -398,6 +399,21 @@ class Workspace:
     def create(cls, param):
         if param is not None:
             return Workspace(param)
+
+
+class EventLogItem:
+
+    def __init__(self, data):
+        self.id = data.get("id")
+        self.workspace_key = data.get("workspaceKey")
+        self.type = data.get("type")
+        self.date = parse_date(data.get("date"))
+        self.data = data.get("data")
+
+    @classmethod
+    def create(cls, param):
+        if param is not None:
+            return EventLogItem(param)
 
 
 class HoldToken:
