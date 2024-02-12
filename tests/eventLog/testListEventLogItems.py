@@ -25,6 +25,5 @@ class ListEventLogItems(SeatsioClientTest):
 
         assert_that(event_log_item.id > 0).is_true()
         assert_that(event_log_item.type).is_equal_to("chart.created")
-        assert_that(event_log_item.workspace_key).is_equal_to(self.workspace.key)
-        assert_that(event_log_item.date).is_not_none()
-        assert_that(event_log_item.data).is_equal_to({"key": chart.key})
+        assert_that(event_log_item.timestamp).is_not_none()
+        assert_that(event_log_item.data).is_equal_to({"key": chart.key, "workspaceKey": self.workspace.key})

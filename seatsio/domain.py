@@ -405,9 +405,8 @@ class EventLogItem:
 
     def __init__(self, data):
         self.id = data.get("id")
-        self.workspace_key = data.get("workspaceKey")
         self.type = data.get("type")
-        self.date = parse_date(data.get("date"))
+        self.timestamp = parse_date(data.get("timestamp"))
         self.data = data.get("data")
 
     @classmethod
