@@ -44,6 +44,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.is_available).is_false()
         assert_that(report_item.channel).is_equal_to('channelKey1')
         assert_that(report_item.distance_to_focal_point).is_not_none()
+        assert_that(report_item.season_status_overridden_quantity).is_equal_to(0)
 
         ga_item = report.get("GA1")[0]
         assert_that(ga_item.variable_occupancy).is_true()
@@ -61,6 +62,18 @@ class EventReportsTest(SeatsioClientTest):
 
         report_item = report.get("A-1")[0]
         assert_that(report_item.hold_token).is_equal_to(hold_token.hold_token)
+
+    def test_seasonStatusOverriddenQuantity(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, number_of_events=1)
+        event = season.events[0]
+
+        self.client.events.override_season_object_status(event.key, ["A-1"])
+
+        report = self.client.events.reports.by_label(event.key)
+
+        report_item = report.get("A-1")[0]
+        assert_that(report_item.season_status_overridden_quantity).is_equal_to(1)
 
     def test_reportItemPropertiesForGA(self):
         chart_key = self.create_test_chart()

@@ -295,6 +295,7 @@ class EventObjectInfo:
         self.variable_occupancy = item_data.get('variableOccupancy')
         self.min_occupancy = item_data.get('minOccupancy')
         self.max_occupancy = item_data.get('maxOccupancy')
+        self.season_status_overridden_quantity = item_data.get('seasonStatusOverriddenQuantity')
 
 
 class UsageSummaryForAllMonths:
