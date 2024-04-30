@@ -97,6 +97,12 @@ class ChartsClient(ListableObjectsClient):
             .get()
         return Category.create_list(response["categories"])
 
+    def update_category(self, chart_key, category_key, label, color, accessible):
+        self.http_client.url("/charts/{chart_key}/categories/{category_key}",
+                             chart_key=chart_key,
+                             category_key=category_key) \
+            .post(UpdateCategoryRequest(label, color, accessible))
+
     def move_to_archive(self, chart_key):
         self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
 
@@ -133,3 +139,12 @@ class ChartsClient(ListableObjectsClient):
     def validate_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
         return ChartValidation(json.loads(response.text))
+
+class UpdateCategoryRequest:
+    def __init__(self, label, color, accessible):
+        if label:
+            self.label = label
+        if color:
+            self.color = color
+        if accessible:
+            self.accessible = accessible

@@ -106,6 +106,14 @@ for category in category_list:
   print(category.label)
 ```
 
+### Updating a category
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key")
+client.charts.update_category(chart_key=chart.key, category_key=1, label="Updated label", color="#bbbbbb", accessible=True)
+```
+
 ### Listing all charts
 
 ```python
