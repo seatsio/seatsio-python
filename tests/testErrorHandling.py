@@ -12,11 +12,10 @@ class ErrorHandlingTest(SeatsioClientTest):
             self.client.charts.retrieve("unexistingChart")
             self.fail("expected exception")
         except SeatsioException as e:
-            assert_that(e.message).is_equal_to("Chart not found: unexistingChart.")
-            assert_that(e.errors).has_size(1).is_equal_to([{
-                "code": "CHART_NOT_FOUND",
-                "message": "Chart not found: unexistingChart"
-            }])
+            assert_that(e.message).contains("Chart not found: unexistingChart was not found in workspace")
+            assert_that(e.errors).has_size(1)
+            assert_that(e.errors[0]['code']).is_equal_to("CHART_NOT_FOUND")
+            assert_that(e.errors[0]['message']).contains("Chart not found: unexistingChart was not found in workspace")
             assert_that(e.requestId).is_not_none()
 
     def test_weird_error(self):

@@ -15,4 +15,4 @@ class DeleteEventTest(SeatsioClientTest):
             self.client.events.retrieve(event.key)
             self.fail("expected an exception")
         except SeatsioException as e:
-            assert_that(e.message).is_equal_to("Event not found: " + event.key + ".")
+            assert_that(e.message).contains("Event not found: " + event.key + " was not found in workspace")
