@@ -18,6 +18,7 @@ class Chart:
         self.tags = data.get("tags")
         self.archived = data.get("archived")
         self.validation = data.get("validation")
+        self.venue_type = data.get("venueType")
 
 
 class ChartValidation:
