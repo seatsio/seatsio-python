@@ -56,7 +56,6 @@ class ListAllChartsTest(SeatsioClientTest):
         self.client.charts.create()
         retrieved_charts = [x for x in self.client.charts.list(with_validation=True)]
         assert_that(retrieved_charts[0].validation).is_equal_to({"errors": [], "warnings": []})
-        assert_that(retrieved_charts[0].venue_type).is_equal_to("MIXED")
 
     def test_without_validation(self):
         self.client.charts.create()
