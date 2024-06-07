@@ -39,3 +39,12 @@ class MarkObjectsAsNotForSaleTest(SeatsioClientTest):
         assert_that(retrieved_event.for_sale_config.objects).is_empty()
         assert_that(retrieved_event.for_sale_config.area_places).is_equal_to({})
         assert_that(retrieved_event.for_sale_config.categories).contains_exactly("cat1", "cat2")
+
+    def test_num_not_for_sale_is_correctly_exposed(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        self.client.events.mark_as_not_for_sale(event.key, [], {"GA1": 3}, [])
+
+        info = self.client.events.retrieve_object_info(event.key, "GA1")
+        assert_that(info.num_not_for_sale).is_equal_to(3)
