@@ -126,6 +126,30 @@ class ChartReportsSummaryTest(SeatsioClientTest):
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1")).is_equal_to(116)
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat2")).is_equal_to(116)
 
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.summary_by_zone(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key=chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.summary_by_zone(chart_key=chart_key,
+                                                                                          version='draft')
+        ]
+    ])
+    def test_summaryByZone(self, update_chart, get_report):
+        chart_key = self.create_test_chart_with_zones()
+        update_chart(self, chart_key)
+
+        report = get_report(self, chart_key)
+
+        assert_that(report.get("midtrack").get("count")).is_equal_to(6032)
+        assert_that(report.get("midtrack").get("byCategoryKey").get("2")).is_equal_to(6032)
+        assert_that(report.get("midtrack").get("byCategoryLabel").get("Mid Track Stand")).is_equal_to(6032)
+        assert_that(report.get("midtrack").get("bySection").get("MT1")).is_equal_to(2418)
+        assert_that(report.get("midtrack").get("bySection").get("MT3")).is_equal_to(3614)
+        assert_that(report.get("midtrack").get("byObjectType").get("seat")).is_equal_to(6032)
+
     def create_draft_chart(self, chart_key):
         self.client.events.create(chart_key)
         self.client.charts.update(chart_key, "Foo")

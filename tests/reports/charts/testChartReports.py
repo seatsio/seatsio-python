@@ -216,6 +216,29 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(ChartReport)
         assert_that(report.items).has_size(12)
 
+
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_zone(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_zone(chart_key=chart_key,
+                                                                                      version='draft')
+        ]
+    ])
+    def testByZone(self, update_chart, get_report):
+        chart_key = self.create_test_chart_with_zones()
+        update_chart(self, chart_key)
+
+        report = get_report(self, chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.get("midtrack")).has_size(6032)
+        assert_that(report.get("finishline")).has_size(2865)
+        assert_that(report.get("NO_ZONE")).has_size(0)
+
     def create_draft_chart(self, chart_key):
         self.client.events.create(chart_key)
         self.client.charts.update(chart_key, "Foo")

@@ -33,6 +33,12 @@ class ChartReports:
     def summary_by_section(self, chart_key, book_whole_tables=None, version=None):
         return self.__fetch_summary_report("bySection", chart_key, book_whole_tables, version)
 
+    def by_zone(self, chart_key, book_whole_tables=None, version=None):
+        return self.__fetch_report("byZone", chart_key, book_whole_tables, version)
+
+    def summary_by_zone(self, chart_key, book_whole_tables=None, version=None):
+        return self.__fetch_summary_report("byZone", chart_key, book_whole_tables, version)
+
     def __fetch_report(self, report_type, chart_key, book_whole_tables, version):
         url = "/reports/charts/{key}/{reportType}"
         query_params = {"bookWholeTables": book_whole_tables} if book_whole_tables is not None else {}
