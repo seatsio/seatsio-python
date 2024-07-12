@@ -107,6 +107,16 @@ class EventReportsSummaryTest(SeatsioClientTest):
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1")).is_equal_to(116)
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat2")).is_equal_to(116)
         assert_that(report.get("NO_SECTION").get("byChannel").get("NO_CHANNEL")).is_equal_to(232)
+        assert_that(report.get("NO_SECTION").get("byZone").get("NO_ZONE")).is_equal_to(232)
+
+    def test_summaryByZone(self):
+        chart_key = self.create_test_chart_with_zones()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.summary_by_zone(event.key)
+
+        assert_that(report.get("midtrack").get("count")).is_equal_to(6032)
+        assert_that(report.get("midtrack").get("byStatus").get("free")).is_equal_to(6032)
 
     def test_summaryByAvailability(self):
         chart_key = self.create_test_chart()
