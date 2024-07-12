@@ -236,6 +236,7 @@ class ChartReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(ChartReport)
         assert_that(report.get("midtrack")).has_size(6032)
+        assert_that(report.get("midtrack")[0].zone).is_equal_to("midtrack")
         assert_that(report.get("finishline")).has_size(2865)
         assert_that(report.get("NO_ZONE")).has_size(0)
 

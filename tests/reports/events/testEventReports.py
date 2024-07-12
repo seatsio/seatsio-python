@@ -283,6 +283,7 @@ class EventReportsTest(SeatsioClientTest):
 
         assert_that(report).is_instance(EventReport)
         assert_that(report.get("midtrack")).has_size(6032)
+        assert_that(report.get("midtrack")[0].zone).is_equal_to("midtrack")
 
     def testBySpecificZone(self):
         chart_key = self.create_test_chart_with_zones()
