@@ -275,6 +275,26 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(34)
 
+    def testByZone(self):
+        chart_key = self.create_test_chart_with_zones()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_zone(event.key)
+
+        assert_that(report).is_instance(EventReport)
+        assert_that(report.get("midtrack")).has_size(6032)
+        assert_that(report.get("midtrack")[0].zone).is_equal_to("midtrack")
+
+    def testBySpecificZone(self):
+        chart_key = self.create_test_chart_with_zones()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_zone(event.key, "midtrack")
+
+        assert_that(report).is_instance(list)
+        assert_that(report[0]).is_instance(EventObjectInfo)
+        assert_that(report).has_size(6032)
+
     def testByAvailability(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

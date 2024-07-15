@@ -243,6 +243,7 @@ class ChartObjectInfo:
         self.is_accessible = item_data.get("isAccessible")
         self.is_companion_seat = item_data.get("isCompanionSeat")
         self.has_restricted_view = item_data.get("hasRestrictedView")
+        self.zone = item_data.get("zone")
 
 
 class EventReport:
@@ -298,6 +299,7 @@ class EventObjectInfo:
         self.max_occupancy = item_data.get('maxOccupancy')
         self.season_status_overridden_quantity = item_data.get('seasonStatusOverriddenQuantity')
         self.num_not_for_sale = item_data.get('numNotForSale')
+        self.zone = item_data.get('zone')
 
 
 class UsageSummaryForAllMonths:

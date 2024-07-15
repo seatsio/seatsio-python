@@ -56,6 +56,15 @@ class EventReports:
     def deep_summary_by_section(self, event_key):
         return self.__fetch_deep_summary_report("bySection", event_key)
 
+    def by_zone(self, event_key, zone=None):
+        return self.__fetch_report("byZone", event_key, zone)
+
+    def summary_by_zone(self, event_key):
+        return self.__fetch_summary_report("byZone", event_key)
+
+    def deep_summary_by_zone(self, event_key):
+        return self.__fetch_deep_summary_report("byZone", event_key)
+
     def by_availability(self, event_key, availability=None):
         return self.__fetch_report("byAvailability", event_key, availability)
 

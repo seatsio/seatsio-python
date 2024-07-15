@@ -64,6 +64,15 @@ class EventReportsDeepSummaryTest(SeatsioClientTest):
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1").get("count")).is_equal_to(116)
         assert_that(report.get("NO_SECTION").get("byCategoryLabel").get("Cat1").get("byAvailability").get("not_available")).is_equal_to(1)
 
+    def test_deepSummaryByZone(self):
+        chart_key = self.create_test_chart_with_zones()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.deep_summary_by_zone(event.key)
+
+        assert_that(report.get("midtrack").get("count")).is_equal_to(6032)
+        assert_that(report.get("midtrack").get("byCategoryLabel").get("Mid Track Stand").get("count")).is_equal_to(6032)
+
     def test_deepSummaryByAvailability(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
