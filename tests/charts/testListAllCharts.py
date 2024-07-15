@@ -42,28 +42,30 @@ class ListAllChartsTest(SeatsioClientTest):
 
         assert_that(charts).extracting("key").contains_exactly(chart1.key)
 
-    def test_expand(self):
+    def test_expand_all(self):
         chart = self.client.charts.create()
         event1 = self.client.events.create(chart.key)
         event2 = self.client.events.create(chart.key)
 
-        retrieved_charts = self.client.charts.list(expand_events=True)
+        retrieved_charts = self.client.charts.list(expand_events=True, expand_validation=True, expand_venue_type=True)
 
         assert_that(retrieved_charts[0].events[0]).is_instance(Event)
         assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)
-
-    def test_with_validation(self):
-        self.client.charts.create()
-        retrieved_charts = [x for x in self.client.charts.list(with_validation=True)]
         assert_that(retrieved_charts[0].validation).is_equal_to({"errors": [], "warnings": []})
+        assert_that(retrieved_charts[0].venue_type).is_equal_to("MIXED")
 
-    def test_without_validation(self):
-        self.client.charts.create()
-        retrieved_charts = [x for x in self.client.charts.list()]
-        assert_that(retrieved_charts[0].validation).is_equal_to(None)
+    def test_expand_none(self):
+            chart = self.client.charts.create()
+            event1 = self.client.events.create(chart.key)
+            event2 = self.client.events.create(chart.key)
 
+            retrieved_charts = self.client.charts.list()
+
+            assert_that(retrieved_charts[0].events).is_none()
+            assert_that(retrieved_charts[0].validation).is_none()
+            assert_that(retrieved_charts[0].venue_type).is_none()
 
     def __chart_with_tag(self, name=None, tag=None):
-        chart = self.client.charts.create(name)
-        self.client.charts.add_tag(chart.key, tag)
-        return chart
+            chart = self.client.charts.create(name)
+            self.client.charts.add_tag(chart.key, tag)
+            return chart
