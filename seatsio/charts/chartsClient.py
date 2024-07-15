@@ -122,14 +122,11 @@ class ChartsClient(ListableObjectsClient):
     def remove_tag(self, key, tag):
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
-    def list(self, chart_filter=None, tag=None, expand_events=None, with_validation=False):
+    def list(self, chart_filter=None, tag=None, expand_events=False, expand_validation=False, expand_venue_type=False):
         page_fetcher = PageFetcher(Chart, self.http_client, "/charts") \
             .set_query_param("filter", chart_filter) \
             .set_query_param("tag", tag) \
-            .set_query_param("validation", with_validation)
-
-        if expand_events is not None:
-            page_fetcher.set_query_param("expand", "events")
+            .set_query_param("expand", self.list_expand_params(expand_events, expand_validation, expand_venue_type))
         return Lister(page_fetcher).list()
 
     def validate_published_version(self, key):
@@ -139,6 +136,17 @@ class ChartsClient(ListableObjectsClient):
     def validate_draft_version(self, key):
         response = self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
         return ChartValidation(json.loads(response.text))
+
+    def list_expand_params(self, expand_events, expand_validation, expand_venue_type):
+        result = []
+        if expand_events:
+            result.append("events")
+        if expand_validation:
+            result.append("validation")
+        if expand_venue_type:
+            result.append("venueType")
+        return result
+
 
 class UpdateCategoryRequest:
     def __init__(self, label, color, accessible):
