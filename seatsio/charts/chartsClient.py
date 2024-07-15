@@ -122,11 +122,11 @@ class ChartsClient(ListableObjectsClient):
     def remove_tag(self, key, tag):
         self.http_client.url("/charts/{key}/tags/{tag}", key=key, tag=tag).delete()
 
-    def list(self, chart_filter=None, tag=None, expand_events=False, expand_validation=False, expand_venue_type=False):
+    def list(self, chart_filter=None, tag=None, expand_events=False, expand_validation=False, expand_venue_type=False, expand_zones=False):
         page_fetcher = PageFetcher(Chart, self.http_client, "/charts") \
             .set_query_param("filter", chart_filter) \
             .set_query_param("tag", tag) \
-            .set_query_param("expand", self.list_expand_params(expand_events, expand_validation, expand_venue_type))
+            .set_query_param("expand", self.list_expand_params(expand_events, expand_validation, expand_venue_type, expand_zones))
         return Lister(page_fetcher).list()
 
     def validate_published_version(self, key):
@@ -137,7 +137,7 @@ class ChartsClient(ListableObjectsClient):
         response = self.http_client.url("/charts/{key}/version/draft/actions/validate", key=key).post()
         return ChartValidation(json.loads(response.text))
 
-    def list_expand_params(self, expand_events, expand_validation, expand_venue_type):
+    def list_expand_params(self, expand_events, expand_validation, expand_venue_type, expand_zones):
         result = []
         if expand_events:
             result.append("events")
@@ -145,6 +145,8 @@ class ChartsClient(ListableObjectsClient):
             result.append("validation")
         if expand_venue_type:
             result.append("venueType")
+        if expand_zones:
+            result.append("zones")
         return result
 
 

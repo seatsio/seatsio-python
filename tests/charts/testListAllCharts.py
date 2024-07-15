@@ -1,4 +1,4 @@
-from seatsio.domain import Event
+from seatsio.domain import Event, Zone
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -43,27 +43,27 @@ class ListAllChartsTest(SeatsioClientTest):
         assert_that(charts).extracting("key").contains_exactly(chart1.key)
 
     def test_expand_all(self):
-        chart = self.client.charts.create()
-        event1 = self.client.events.create(chart.key)
-        event2 = self.client.events.create(chart.key)
+        chart = self.create_test_chart_with_zones()
+        event1 = self.client.events.create(chart)
+        event2 = self.client.events.create(chart)
 
-        retrieved_charts = self.client.charts.list(expand_events=True, expand_validation=True, expand_venue_type=True)
+        retrieved_charts = self.client.charts.list(expand_events=True, expand_validation=True, expand_venue_type=True, expand_zones=True)
 
         assert_that(retrieved_charts[0].events[0]).is_instance(Event)
         assert_that(retrieved_charts[0].events).extracting("id").contains_exactly(event2.id, event1.id)
         assert_that(retrieved_charts[0].validation).is_equal_to({"errors": [], "warnings": []})
-        assert_that(retrieved_charts[0].venue_type).is_equal_to("MIXED")
+        assert_that(retrieved_charts[0].venue_type).is_equal_to("WITH_ZONES")
+        assert_that(retrieved_charts[0].zones).contains_exactly(Zone({"key": "finishline", "label": "Finish Line"}), Zone({"key": "midtrack", "label": "Mid Track"}))
 
     def test_expand_none(self):
-            chart = self.client.charts.create()
-            event1 = self.client.events.create(chart.key)
-            event2 = self.client.events.create(chart.key)
+            chart = self.create_test_chart_with_zones()
 
             retrieved_charts = self.client.charts.list()
 
             assert_that(retrieved_charts[0].events).is_none()
             assert_that(retrieved_charts[0].validation).is_none()
             assert_that(retrieved_charts[0].venue_type).is_none()
+            assert_that(retrieved_charts[0].zones).is_none()
 
     def __chart_with_tag(self, name=None, tag=None):
             chart = self.client.charts.create(name)

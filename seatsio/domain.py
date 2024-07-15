@@ -19,6 +19,23 @@ class Chart:
         self.archived = data.get("archived")
         self.validation = data.get("validation")
         self.venue_type = data.get("venueType")
+        self.zones = Zone.create_list(data.get("zones"))
+
+
+class Zone:
+
+    def __init__(self, data):
+        self.key = data.get("key")
+        self.label = data.get("label")
+
+    def __eq__(self, other):
+        return self.key == other.key and \
+            self.label == other.label
+
+    @classmethod
+    def create_list(cls, lst):
+        if lst is not None:
+            return list(map(Zone, lst))
 
 
 class ChartValidation:
