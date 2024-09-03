@@ -38,11 +38,22 @@ class BookObjectsTest(SeatsioClientTest):
         assert_that(list(res.objects)).contains_exactly_in_any_order("Section A-A-1", "Section A-A-2")
         assert_that(res.objects["Section A-A-1"].entrance).is_equal_to("Entrance 1")
         assert_that(res.objects["Section A-A-1"].section).is_equal_to("Section A")
+        assert_that(res.objects["Section A-A-1"].floor).is_none()
         assert_that(res.objects["Section A-A-1"].labels).is_equal_to(
             {"own": {"label": "1", "type": "seat"}, "parent": {"label": "A", "type": "row"}, "section": "Section A",
              "entrance": {"label": "Entrance 1"}}
         )
         assert_that(res.objects["Section A-A-1"].ids).is_equal_to({"own": "1", "parent": "A", "section": "Section A"})
+
+    def test_floors(self):
+        chart_key = self.create_test_chart_with_floors()
+        event = self.client.events.create(chart_key)
+
+        res = self.client.events.book(event.key, ["S1-A-1"])
+
+        assert_that(res.objects["S1-A-1"].floor).is_equal_to(
+            {"name": "1", "displayName": "Floor 1"}
+        )
 
     def test_withHoldToken(self):
         chart_key = self.create_test_chart()
