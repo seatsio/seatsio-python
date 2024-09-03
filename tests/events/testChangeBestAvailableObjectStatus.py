@@ -193,3 +193,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", ignore_channels=True)
 
         assert_that(result.objects).contains_exactly("A-5")
+
+    def test_accessibleSeats(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        result = self.client.events.change_best_available_object_status(event.key, 3, "myStatus", accessible_seats=1)
+        assert_that(result.next_to_each_other).is_true()
+        assert_that(result.objects).contains_exactly("A-6", "A-7", "A-8")
