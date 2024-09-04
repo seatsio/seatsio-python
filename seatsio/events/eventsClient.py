@@ -121,12 +121,12 @@ class EventsClient(ListableObjectsClient):
     def change_best_available_object_status(self, event_key, number, status, categories=None, hold_token=None,
                                             extra_data=None, ticket_types=None, order_id=None, keep_extra_data=None,
                                             ignore_channels=None, channel_keys=None, try_to_prevent_orphan_seats=None,
-                                            zone=None):
+                                            zone=None, accessible_seats=None):
         response = self.http_client.url("/events/{key}/actions/change-object-status", key=event_key).post(
             ChangeBestAvailableObjectStatusRequest(number, categories, zone, extra_data, ticket_types, status,
                                                    hold_token,
                                                    order_id, keep_extra_data, ignore_channels, channel_keys,
-                                                   try_to_prevent_orphan_seats))
+                                                   try_to_prevent_orphan_seats, accessible_seats))
         return BestAvailableObjects(response.json())
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None,
