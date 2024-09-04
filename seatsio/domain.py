@@ -317,6 +317,7 @@ class EventObjectInfo:
         self.season_status_overridden_quantity = item_data.get('seasonStatusOverriddenQuantity')
         self.num_not_for_sale = item_data.get('numNotForSale')
         self.zone = item_data.get('zone')
+        self.floor = item_data.get('floor')
 
 
 class UsageSummaryForAllMonths:

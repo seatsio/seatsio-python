@@ -47,6 +47,9 @@ class SeatsioClientTest(unittest.TestCase):
     def create_test_chart_with_sections(self):
         return self.create_test_chart_from_file('sampleChartWithSections.json')
 
+    def create_test_chart_with_floors(self):
+        return self.create_test_chart_from_file('sampleChartWithFloors.json')
+
     def create_test_chart_with_zones(self):
         return self.create_test_chart_from_file('sampleChartWithZones.json')
 
