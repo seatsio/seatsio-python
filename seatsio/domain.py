@@ -261,6 +261,8 @@ class ChartObjectInfo:
         self.is_companion_seat = item_data.get("isCompanionSeat")
         self.has_restricted_view = item_data.get("hasRestrictedView")
         self.zone = item_data.get("zone")
+        self.floor = item_data.get("floor")
+
 
 
 class EventReport:

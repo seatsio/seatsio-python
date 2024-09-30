@@ -41,6 +41,7 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.is_accessible).is_not_none()
         assert_that(report_item.is_companion_seat).is_not_none()
         assert_that(report_item.has_restricted_view).is_not_none()
+        assert_that(report_item.floor).is_none()
 
     @parameterized.expand([
         [
@@ -113,6 +114,29 @@ class ChartReportsTest(SeatsioClientTest):
     @parameterized.expand([
         [
             lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_label(chart_key=chart_key, version='draft')
+        ]
+    ])
+    def testByLabelWithFloors(self, update_chart, get_report):
+        chart_key = self.create_test_chart_with_floors()
+        update_chart(self, chart_key)
+
+        report = get_report(self, chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.get("S1-A-1")[0].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("S1-A-2")[0].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("S2-B-1")[0].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
+        assert_that(report.get("S2-B-2")[0].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
+
+
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
             lambda instance, chart_key: instance.client.charts.reports.by_object_type(chart_key=chart_key)
         ],
         [
@@ -130,6 +154,29 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(ChartReport)
         assert_that(report.get("seat")).has_size(32)
         assert_that(report.get("generalAdmission")).has_size(2)
+
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_object_type(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_object_type(chart_key=chart_key,
+                                                                                      version='draft')
+        ]
+    ])
+    def testByObjectTypeWithFloors(self, update_chart, get_report):
+        chart_key = self.create_test_chart_with_floors()
+        update_chart(self, chart_key)
+
+        report = get_report(self, chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.get("seat")[0].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("seat")[1].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("seat")[2].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
+        assert_that(report.get("seat")[3].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
 
     @parameterized.expand([
         [
@@ -239,6 +286,30 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report.get("midtrack")[0].zone).is_equal_to("midtrack")
         assert_that(report.get("finishline")).has_size(2865)
         assert_that(report.get("NO_ZONE")).has_size(0)
+
+
+    @parameterized.expand([
+        [
+            lambda instance, chart_key: {},
+            lambda instance, chart_key: instance.client.charts.reports.by_section(chart_key=chart_key)
+        ],
+        [
+            lambda instance, chart_key: instance.create_draft_chart(chart_key),
+            lambda instance, chart_key: instance.client.charts.reports.by_section(chart_key=chart_key,
+                                                                                      version='draft')
+        ]
+    ])
+    def testBySectionWithFloors(self, update_chart, get_report):
+        chart_key = self.create_test_chart_with_floors()
+        update_chart(self, chart_key)
+
+        report = get_report(self, chart_key)
+
+        assert_that(report).is_instance(ChartReport)
+        assert_that(report.get("S1")[0].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("S1")[1].floor).is_equal_to({"name": "1", "displayName": "Floor 1"})
+        assert_that(report.get("S2")[0].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
+        assert_that(report.get("S2")[1].floor).is_equal_to({"name": "2", "displayName": "Floor 2"})
 
     def create_draft_chart(self, chart_key):
         self.client.events.create(chart_key)
