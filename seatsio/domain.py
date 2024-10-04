@@ -281,6 +281,7 @@ class EventObjectInfo:
     FREE = "free"
     BOOKED = "booked"
     HELD = "reservedByToken"
+    RESALE = "resale"
 
     def __init__(self, item_data):
         self.status = item_data.get("status")

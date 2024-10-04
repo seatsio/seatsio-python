@@ -36,6 +36,22 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
         assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
 
+    def test_put_up_for_resale(self):
+        chart_key = self.create_test_chart()
+        event1 = self.client.events.create(chart_key)
+        event2 = self.client.events.create(chart_key)
+
+        self.client.events.put_up_for_resale(
+            event_key_or_keys=[event1.key, event2.key],
+            object_or_objects=["A-1", "A-2"],
+        )
+
+        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.RESALE)
+
+
     def test_hold(self):
         chart_key = self.create_test_chart()
         event1 = self.client.events.create(chart_key)

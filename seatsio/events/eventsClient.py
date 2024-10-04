@@ -81,6 +81,9 @@ class EventsClient(ListableObjectsClient):
         return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.BOOKED, hold_token,
                                          order_id, keep_extra_data, ignore_channels, channel_keys)
 
+    def put_up_for_resale(self, event_key_or_keys, object_or_objects):
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.RESALE)
+
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None,
                             ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None,
                             channel_keys=None, try_to_prevent_orphan_seats=None, zone=None):
