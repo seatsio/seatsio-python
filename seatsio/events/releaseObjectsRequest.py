@@ -3,11 +3,10 @@ from past.builtins import basestring
 from seatsio.events.objectProperties import ObjectProperties
 
 
-class ChangeObjectStatusRequest:
-    def __init__(self, object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, allowed_previous_statuses=None, rejected_previous_statuses=None):
+class ReleaseObjectsRequest:
+    def __init__(self, object_or_objects, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys, allowed_previous_statuses=None, rejected_previous_statuses=None):
         self.objects = self.__normalize_objects(object_or_objects)
-        self.type = 'CHANGE_STATUS_TO'
-        self.status = status
+        self.type = 'RELEASE'
         if hold_token:
             self.holdToken = hold_token
         if order_id:

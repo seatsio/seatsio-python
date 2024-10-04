@@ -10,6 +10,7 @@ from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.events.overrideSeasonObjectStatusRequest import OverrideSeasonObjectStatusRequest
+from seatsio.events.releaseObjectsRequest import ReleaseObjectsRequest
 from seatsio.events.updateEventRequest import UpdateEventRequest
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
@@ -131,8 +132,10 @@ class EventsClient(ListableObjectsClient):
 
     def release(self, event_key_or_keys, object_or_objects, hold_token=None, order_id=None, keep_extra_data=None,
                 ignore_channels=None, channel_keys=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.FREE, hold_token,
-                                         order_id, keep_extra_data, ignore_channels, channel_keys)
+        request = ReleaseObjectsRequest(
+            object_or_objects, hold_token, order_id, event_key_or_keys,
+            keep_extra_data, ignore_channels, channel_keys)
+        return self.__do_change_status(request)
 
     def hold(self, event_key_or_keys, object_or_objects, hold_token, order_id=None, keep_extra_data=None,
              ignore_channels=None, channel_keys=None):
@@ -146,6 +149,9 @@ class EventsClient(ListableObjectsClient):
         request = ChangeObjectStatusRequest(object_or_objects, status, hold_token, order_id, event_key_or_keys,
                                             keep_extra_data, ignore_channels, channel_keys,
                                             allowed_previous_statuses, rejected_previous_statuses)
+        return self.__do_change_status(request)
+
+    def __do_change_status(self, request):
         response = self.http_client.url("/events/groups/actions/change-object-status",
                                         query_params={"expand": "objects"}).post(request)
         return ChangeObjectStatusResult(response.json())
