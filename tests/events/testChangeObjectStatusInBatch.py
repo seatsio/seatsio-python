@@ -1,4 +1,4 @@
-from seatsio import Channel
+from seatsio import Channel, EventObjectInfo
 from seatsio.events.statusChangeRequest import StatusChangeRequest
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -14,8 +14,8 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
         event2 = self.client.events.create(chart_key2)
 
         res = self.client.events.change_object_status_in_batch([
-            StatusChangeRequest(event1.key, ["A-1"], "lolzor"),
-            StatusChangeRequest(event2.key, ["A-2"], "lolzor")
+            StatusChangeRequest(event1.key, ["A-1"], "lolzor", type=StatusChangeRequest.TYPE_CHANGE_STATUS_TO),
+            StatusChangeRequest(event2.key, ["A-2"], "lolzor", type=StatusChangeRequest.TYPE_CHANGE_STATUS_TO)
         ])
 
         assert_that(self.client.events.retrieve_object_info(event1.key, "A-1").status).is_equal_to("lolzor")
@@ -77,3 +77,15 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
                 "code": "ILLEGAL_STATUS_CHANGE",
                 "message": "Cannot change from [free] to [lolzor]: free is in the list of rejected previous statuses"
             }])
+
+    def test_release(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.book(event.key, ["A-1"])
+
+        res = self.client.events.change_object_status_in_batch([
+            StatusChangeRequest(event.key, ["A-1"], type=StatusChangeRequest.RELEASE)
+        ])
+
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-1").status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(res[0].objects["A-1"].status).is_equal_to(EventObjectInfo.FREE)
