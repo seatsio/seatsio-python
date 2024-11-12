@@ -36,10 +36,10 @@ class EventsClient(ListableObjectsClient):
             CreateMultipleEventsRequest(chart_key, events_properties))
         return Event.create_list(response.json().get("events"))
 
-    def update(self, key, chart_key=None, event_key=None, name=None, date=None, table_booking_config=None,
+    def update(self, key, event_key=None, name=None, date=None, table_booking_config=None,
                object_categories=None, categories=None, is_in_the_past=None):
-        request = UpdateEventRequest(chart_key, event_key, name, date, table_booking_config, object_categories,
-                                     categories, is_in_the_past)
+        request = UpdateEventRequest(event_key, name, date, table_booking_config, object_categories, categories,
+                                     is_in_the_past)
         self.http_client.url("/events/{key}", key=key).post(
             request)
 
