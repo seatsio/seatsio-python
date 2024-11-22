@@ -89,3 +89,16 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
 
         assert_that(self.client.events.retrieve_object_info(event.key, "A-1").status).is_equal_to(EventObjectInfo.FREE)
         assert_that(res[0].objects["A-1"].status).is_equal_to(EventObjectInfo.FREE)
+
+    def test_override_season_status(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, event_keys=["event1"])
+        self.client.events.book(season.key, ["A-1", "A-2"])
+
+        res = self.client.events.change_object_status_in_batch([
+            StatusChangeRequest("event1", ["A-1"], type=StatusChangeRequest.OVERRIDE_SEASON_STATUS)
+        ])
+
+        assert_that(res[0].objects["A-1"].status).is_equal_to(EventObjectInfo.FREE)
+        a1_status = self.client.events.retrieve_object_info("event1", "A-1").status
+        assert_that(a1_status).is_equal_to(EventObjectInfo.FREE)

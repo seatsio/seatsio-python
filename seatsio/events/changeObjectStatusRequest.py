@@ -8,7 +8,7 @@ class ChangeObjectStatusRequest:
         self.objects = self.__normalize_objects(object_or_objects)
         if type is not None:
             self.type = type
-        if type is not 'RELEASE':
+        if status is not None:
             self.status = status
         if hold_token:
             self.holdToken = hold_token
