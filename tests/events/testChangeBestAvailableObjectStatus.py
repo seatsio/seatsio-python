@@ -209,7 +209,7 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             self.client.events.change_best_available_object_status(event.key, 3000, "myStatus")
             self.fail("expected exception")
         except BestAvailableObjectsNotFoundException as e:
-            assert_that(e.message).is_equal_to("No best available objects found")
+            assert_that(e.message).is_equal_to("Best available objects not found.")
 
     def test_genericSeatsioExceptionWhenEventNotFound(self):
         try :
