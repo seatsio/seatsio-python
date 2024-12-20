@@ -15,6 +15,13 @@ class SeatsioException(Exception):
             self.message = "Error while executing " + request.http_method + " " + request.url
             super(SeatsioException, self).__init__(self.message)
 
+    @staticmethod
+    def from_response(request, response, cause=None):
+        if response.status_code == 429:
+            return RateLimitExceededException(request, response)
+        else:
+            return SeatsioException(request, response)
+
     def __build_exception_message(self):
         return ", ".join(self.__map_errors_to_message(self.errors)) + "."
 
