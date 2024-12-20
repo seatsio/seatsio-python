@@ -26,3 +26,8 @@ class RateLimitExceededException(SeatsioException):
 
     def __init__(self, request, response=None, cause=None):
         super(RateLimitExceededException, self).__init__(request, response, cause)
+
+class BestAvailableObjectsNotFoundException(SeatsioException):
+
+    def __init__(self, request, response=None, cause=None):
+        super(BestAvailableObjectsNotFoundException, self).__init__(request, response, cause)

@@ -31,6 +31,11 @@ class AbstractAssert():
             type(self.actual))
         return self
 
+    def is_not_instance(self, cls):
+        assert not isinstance(self.actual, cls), "expected actual to not be of type " + str(cls) + ", but was " + str(
+            type(self.actual))
+        return self
+
     def is_none(self):
         assert self.actual is None, "expected actual to be None, but it was not: " + str(self.actual)
 
