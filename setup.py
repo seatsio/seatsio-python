@@ -19,8 +19,7 @@ setup(
         "requests>=2.0, <3.0",
         "munch==4.0",
         "jsonpickle>=3.0, <4.0",
-        "future==1.0.0",
-        "six==1.16.0",
+        "future==1.0.0"
     ],
     tests_require=[
         "parameterized==0.9.0"

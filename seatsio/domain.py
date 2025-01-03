@@ -1,7 +1,5 @@
 from datetime import date
 
-from six import iteritems
-
 from seatsio.util import parse_date
 
 
@@ -232,7 +230,7 @@ class Channel:
 class ChartReport:
     def __init__(self, response_body):
         self.items = {}
-        for key, value in iteritems(response_body):
+        for key, value in response_body.items():
             self.items[key] = []
             for item in value:
                 self.items[key].append(ChartObjectInfo(item))
@@ -268,7 +266,7 @@ class ChartObjectInfo:
 class EventReport:
     def __init__(self, response_body):
         self.items = {}
-        for key, value in iteritems(response_body):
+        for key, value in response_body.items():
             self.items[key] = []
             for item in value:
                 self.items[key].append(EventObjectInfo(item))
@@ -475,12 +473,12 @@ class BestAvailableObjects:
         self.next_to_each_other = data.get("nextToEachOther")
         self.objects = data.get("objects")
         self.objectDetails = {}
-        for key, value in iteritems(data.get("objectDetails")):
+        for key, value in data.get("objectDetails").items():
             self.objectDetails[key] = EventObjectInfo(value)
 
 
 class ChangeObjectStatusResult:
     def __init__(self, data):
         self.objects = {}
-        for key, value in iteritems(data.get("objects")):
+        for key, value in data.get("objects").items():
             self.objects[key] = EventObjectInfo(value)
