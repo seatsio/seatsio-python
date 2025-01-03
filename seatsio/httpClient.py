@@ -8,10 +8,7 @@ from seatsio.exceptions import SeatsioException, RateLimitExceededException
 
 
 def handle_error(request, response):
-    if response.status_code == 429:
-        raise RateLimitExceededException(request, response)
-    else:
-        raise SeatsioException(request, response)
+    raise SeatsioException.from_response(request, response)
 
 
 class HttpClient:

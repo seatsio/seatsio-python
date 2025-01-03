@@ -1,4 +1,5 @@
 from seatsio.domain import EventObjectInfo, Channel
+from seatsio.exceptions import BestAvailableObjectsNotFoundException, SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -200,3 +201,18 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         result = self.client.events.change_best_available_object_status(event.key, 3, "myStatus", accessible_seats=1)
         assert_that(result.next_to_each_other).is_true()
         assert_that(result.objects).contains_exactly("A-6", "A-7", "A-8")
+
+    def test_throwsBestAvailableObjectsNotFoundException(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        try :
+            self.client.events.change_best_available_object_status(event.key, 3000, "myStatus")
+            self.fail("expected exception")
+        except BestAvailableObjectsNotFoundException as e:
+            assert_that(e.message).is_equal_to("Best available objects not found.")
+
+    def test_genericSeatsioExceptionWhenEventNotFound(self):
+        try :
+            self.client.events.change_best_available_object_status("unexisting_event", 3000, "myStatus")
+        except SeatsioException as e:
+            assert_that(e).is_not_instance(BestAvailableObjectsNotFoundException)

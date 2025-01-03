@@ -15,6 +15,28 @@ class SeatsioException(Exception):
             self.message = "Error while executing " + request.http_method + " " + request.url
             super(SeatsioException, self).__init__(self.message)
 
+    @staticmethod
+    def from_response(request, response):
+        if response.status_code == 429:
+            return RateLimitExceededException(request, response)
+        elif SeatsioException.__is_best_available_objects_not_found(response):
+            return BestAvailableObjectsNotFoundException(request, response)
+        else:
+            return SeatsioException(request, response)
+
+    @staticmethod
+    def __is_best_available_objects_not_found(response):
+        if "application/json" not in response.headers.get("content-type", ""):
+            return False
+        body = response.json()
+        if "errors" not in body:
+            return False
+        for error in body["errors"]:
+            if isinstance(error, dict) and 'code' in error:
+                if error['code'] == 'BEST_AVAILABLE_OBJECTS_NOT_FOUND':
+                    return True
+        return False
+
     def __build_exception_message(self):
         return ", ".join(self.__map_errors_to_message(self.errors)) + "."
 
@@ -26,3 +48,8 @@ class RateLimitExceededException(SeatsioException):
 
     def __init__(self, request, response=None, cause=None):
         super(RateLimitExceededException, self).__init__(request, response, cause)
+
+class BestAvailableObjectsNotFoundException(SeatsioException):
+
+    def __init__(self, request, response=None, cause=None):
+        super(BestAvailableObjectsNotFoundException, self).__init__(request, response, cause)
