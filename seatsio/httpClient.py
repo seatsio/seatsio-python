@@ -1,8 +1,8 @@
 import time
+from urllib.parse import quote, urlencode
 
 import jsonpickle
 import requests
-from six.moves.urllib.parse import quote, urlencode
 
 from seatsio.exceptions import SeatsioException, RateLimitExceededException
 

@@ -1,5 +1,3 @@
-from six import iteritems
-
 from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo, \
     event_from_json
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
@@ -188,7 +186,7 @@ class EventsClient(ListableObjectsClient):
         query_params = {"label": object_labels}
         response_body = self.http_client.url("/events/{key}/objects", query_params, key=key).get()
         items = {}
-        for key, value in iteritems(response_body):
+        for key, value in response_body.items():
             items[key] = EventObjectInfo(value)
         return items
 
