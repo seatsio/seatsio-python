@@ -7,12 +7,14 @@ class SeasonsClient:
         self.http_client = http_client
         self.seatsio_client = seatsio_client
 
-    def create(self, chart_key, key=None, number_of_events=None, event_keys=None, table_booking_config=None, channels=None, for_sale_config=None):
+    def create(self, chart_key, key=None, name=None, number_of_events=None, event_keys=None, table_booking_config=None, channels=None, for_sale_config=None):
         request = {}
         if chart_key:
             request['chartKey'] = chart_key
         if key:
             request['key'] = key
+        if name:
+            request['name'] = name
         if number_of_events:
             request['numberOfEvents'] = number_of_events
         if event_keys:
@@ -27,10 +29,12 @@ class SeasonsClient:
         response = self.http_client.url("/seasons").post(request)
         return Season(response.json())
 
-    def create_partial_season(self, top_level_season_key, partial_season_key=None, event_keys=None):
+    def create_partial_season(self, top_level_season_key, partial_season_key=None, name=None, event_keys=None):
         request = {}
         if partial_season_key:
             request['key'] = partial_season_key
+        if name:
+            request['name'] = name
         if event_keys:
             request['eventKeys'] = event_keys
 
