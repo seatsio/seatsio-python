@@ -32,6 +32,13 @@ class CreateSeasonTest(SeatsioClientTest):
 
         assert_that(season.key).is_equal_to("aSeason")
 
+    def test_name_is_optional(self):
+        chart = self.client.charts.create()
+
+        season = self.client.seasons.create(chart.key, name="aSeason")
+
+        assert_that(season.name).is_equal_to("aSeason")
+
     def test_number_of_events_is_optional(self):
         chart = self.client.charts.create()
 

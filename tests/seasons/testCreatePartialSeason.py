@@ -14,6 +14,14 @@ class CreatePartialSeasonTest(SeatsioClientTest):
         assert_that(partial_season.is_partial_season).is_true()
         assert_that(partial_season.top_level_season_key).is_equal_to(season.key)
 
+    def test_name_is_optional(self):
+        chart = self.client.charts.create()
+        season = self.client.seasons.create(chart.key)
+
+        partial_season = self.client.seasons.create_partial_season(season.key, name="aPartialSeason")
+
+        assert_that(partial_season.name).is_equal_to("aPartialSeason")
+
     def test_event_keys_is_optional(self):
         chart = self.client.charts.create()
         season = self.client.seasons.create(chart.key, event_keys=["event1", "event2"])
