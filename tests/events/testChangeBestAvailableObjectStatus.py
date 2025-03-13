@@ -52,6 +52,16 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
         result_finishline = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", zone="finishline")
         assert_that(result_finishline.objects).contains_exactly("Goal Stand 4-A-1")
 
+    def test_sections(self):
+        chart_key = self.create_test_chart_with_sections()
+        event = self.client.events.create(chart_key)
+
+        result_section_a = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", sections=["Section A"])
+        assert_that(result_section_a.objects).contains_exactly("Section A-A-1")
+
+        result_section_b = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", sections=["Section B"])
+        assert_that(result_section_b.objects).contains_exactly("Section B-A-1")
+
     def test_extra_data(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)

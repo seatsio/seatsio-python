@@ -1,10 +1,12 @@
 class ChangeBestAvailableObjectStatusRequest:
-    def __init__(self, number, categories, zone, extra_data, ticket_types, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, try_to_prevent_orphan_seats, accessible_seats):
+    def __init__(self, number, categories, zone, sections, extra_data, ticket_types, status, hold_token, order_id, keep_extra_data, ignore_channels, channel_keys, try_to_prevent_orphan_seats, accessible_seats):
         best_available = {"number": number}
         if categories:
             best_available["categories"] = categories
         if zone:
             best_available["zone"] = zone
+        if sections:
+            best_available["sections"] = sections
         if extra_data:
             best_available["extraData"] = extra_data
         if ticket_types:
