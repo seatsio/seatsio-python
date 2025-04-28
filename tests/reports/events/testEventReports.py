@@ -88,7 +88,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(EventReport)
         report_item = report.get("GA1")[0]
         assert_that(report_item).is_instance(EventObjectInfo)
-        assert_that(report_item.status).is_equal_to("booked")
+        assert_that(report_item.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")
