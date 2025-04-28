@@ -78,8 +78,8 @@ class EventsClient(ListableObjectsClient):
         return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.BOOKED, hold_token,
                                          order_id, keep_extra_data, ignore_channels, channel_keys)
 
-    def put_up_for_resale(self, event_key_or_keys, object_or_objects):
-        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.RESALE)
+    def put_up_for_resale(self, event_key_or_keys, object_or_objects, resale_listing_id=None):
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.RESALE, None, None, None, None, None, None, None, resale_listing_id)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None,
                             ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None,
@@ -143,11 +143,10 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None,
                              keep_extra_data=None, ignore_channels=None, channel_keys=None,
-                             allowed_previous_statuses=None,
-                             rejected_previous_statuses=None):
+                             allowed_previous_statuses=None, rejected_previous_statuses=None, resale_listing_id=None):
         request = ChangeObjectStatusRequest('CHANGE_STATUS_TO', object_or_objects, status, hold_token, order_id, event_key_or_keys,
                                             keep_extra_data, ignore_channels, channel_keys,
-                                            allowed_previous_statuses, rejected_previous_statuses)
+                                            allowed_previous_statuses, rejected_previous_statuses, resale_listing_id)
         return self.__do_change_status(request)
 
     def __do_change_status(self, request):
@@ -160,8 +159,7 @@ class EventsClient(ListableObjectsClient):
             map(lambda r: self.__change_object_status_in_batch_request(r.type, r.event_key, r.object_or_objects, r.status,
                                                                        r.hold_token, r.order_id, r.keep_extra_data,
                                                                        r.ignore_channels, r.channel_keys,
-                                                                       r.allowed_previous_statuses,
-                                                                       r.rejected_previous_statuses),
+                                                                       r.allowed_previous_statuses, r.rejected_previous_statuses, r.resale_listing_id),
                 status_change_requests))
         response = self.http_client.url("/events/actions/change-object-status",
                                         query_params={"expand": "objects"}).post({"statusChanges": requests})
@@ -169,10 +167,10 @@ class EventsClient(ListableObjectsClient):
 
     def __change_object_status_in_batch_request(self, type, event_key, object_or_objects, status, hold_token, order_id,
                                                 keep_extra_data, ignore_channels, channel_keys,
-                                                allowed_previous_statuses, rejected_previous_statuses):
+                                                allowed_previous_statuses, rejected_previous_statuses, resale_listing_id):
         request = ChangeObjectStatusRequest(type, object_or_objects, status, hold_token, order_id, "", keep_extra_data,
                                             ignore_channels, channel_keys, allowed_previous_statuses,
-                                            rejected_previous_statuses)
+                                            rejected_previous_statuses, resale_listing_id)
         request.event = event_key
         delattr(request, "events")
         return request

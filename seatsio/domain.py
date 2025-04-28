@@ -319,6 +319,7 @@ class EventObjectInfo:
         self.num_not_for_sale = item_data.get('numNotForSale')
         self.zone = item_data.get('zone')
         self.floor = item_data.get('floor')
+        self.resale_listing_id = item_data.get('resaleListingId')
 
 
 class UsageSummaryForAllMonths:
