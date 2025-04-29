@@ -45,6 +45,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.channel).is_equal_to('channelKey1')
         assert_that(report_item.distance_to_focal_point).is_not_none()
         assert_that(report_item.season_status_overridden_quantity).is_equal_to(0)
+        assert_that(report_item.left_neighbour).is_none()
 
         ga_item = report.get("GA1")[0]
         assert_that(ga_item.variable_occupancy).is_true()
@@ -87,7 +88,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(EventReport)
         report_item = report.get("GA1")[0]
         assert_that(report_item).is_instance(EventObjectInfo)
-        assert_that(report_item.status).is_equal_to("free")
+        assert_that(report_item.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")
@@ -362,3 +363,13 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report).is_instance(list)
         assert_that(report[0]).is_instance(EventObjectInfo)
         assert_that(report).has_size(2)
+
+    def test_resaleListingId(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.put_up_for_resale(event.key, "A-1", "listing1")
+
+        report = self.client.events.reports.by_label(event.key)
+
+        report_item = report.get("A-1")[0]
+        assert_that(report_item.resale_listing_id).is_equal_to("listing1")

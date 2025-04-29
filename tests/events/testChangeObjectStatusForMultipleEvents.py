@@ -16,10 +16,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             status="stat"
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to("stat")
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to("stat")
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to("stat")
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to("stat")
+        assert_that(self.fetch_status(event1.key, "A-1").status).is_equal_to("stat")
+        assert_that(self.fetch_status(event2.key, "A-1").status).is_equal_to("stat")
+        assert_that(self.fetch_status(event1.key, "A-2").status).is_equal_to("stat")
+        assert_that(self.fetch_status(event2.key, "A-2").status).is_equal_to("stat")
 
     def test_book(self):
         chart_key = self.create_test_chart()
@@ -31,10 +31,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             object_or_objects=["A-1", "A-2"],
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.BOOKED)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event1.key, "A-1").status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event2.key, "A-1").status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event1.key, "A-2").status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.fetch_status(event2.key, "A-2").status).is_equal_to(EventObjectInfo.BOOKED)
 
     def test_put_up_for_resale(self):
         chart_key = self.create_test_chart()
@@ -46,10 +46,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             object_or_objects=["A-1", "A-2"],
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.RESALE)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.RESALE)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.RESALE)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event1.key, "A-1").status).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event2.key, "A-1").status).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event1.key, "A-2").status).is_equal_to(EventObjectInfo.RESALE)
+        assert_that(self.fetch_status(event2.key, "A-2").status).is_equal_to(EventObjectInfo.RESALE)
 
 
     def test_hold(self):
@@ -64,10 +64,10 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             hold_token=hold_token.hold_token
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.HELD)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.HELD)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.HELD)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event1.key, "A-1").status).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event2.key, "A-1").status).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event1.key, "A-2").status).is_equal_to(EventObjectInfo.HELD)
+        assert_that(self.fetch_status(event2.key, "A-2").status).is_equal_to(EventObjectInfo.HELD)
 
     def test_release(self):
         chart_key = self.create_test_chart()
@@ -84,10 +84,25 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
             object_or_objects=["A-1", "A-2"],
         )
 
-        assert_that(self.fetch_status(event1.key, "A-1")).is_equal_to(EventObjectInfo.FREE)
-        assert_that(self.fetch_status(event2.key, "A-1")).is_equal_to(EventObjectInfo.FREE)
-        assert_that(self.fetch_status(event1.key, "A-2")).is_equal_to(EventObjectInfo.FREE)
-        assert_that(self.fetch_status(event2.key, "A-2")).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event1.key, "A-1").status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event2.key, "A-1").status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event1.key, "A-2").status).is_equal_to(EventObjectInfo.FREE)
+        assert_that(self.fetch_status(event2.key, "A-2").status).is_equal_to(EventObjectInfo.FREE)
+
+    def test_resale_listing_id(self):
+        chart_key = self.create_test_chart()
+        event1 = self.client.events.create(chart_key)
+        event2 = self.client.events.create(chart_key)
+
+        self.client.events.change_object_status(
+            event_key_or_keys=[event1.key, event2.key],
+            object_or_objects=["A-1"],
+            status=EventObjectInfo.RESALE,
+            resale_listing_id="listing1"
+        )
+
+        assert_that(self.fetch_status(event1.key, "A-1").resale_listing_id).is_equal_to("listing1")
+        assert_that(self.fetch_status(event2.key, "A-1").resale_listing_id).is_equal_to("listing1")
 
     def fetch_status(self, event, o):
-        return self.client.events.retrieve_object_info(event, o).status
+        return self.client.events.retrieve_object_info(event, o)

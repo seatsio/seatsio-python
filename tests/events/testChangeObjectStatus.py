@@ -1,4 +1,4 @@
-from seatsio import Channel
+from seatsio import Channel, EventObjectInfo
 from seatsio.events.objectProperties import ObjectProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -61,7 +61,7 @@ class ChangeObjectStatusTest(SeatsioClientTest):
         assert_that(self.client.events.retrieve_object_info(event.key, "A-1").order_id).is_equal_to("myOrder")
         assert_that(self.client.events.retrieve_object_info(event.key, "A-2").order_id).is_equal_to("myOrder")
 
-    def test_tickettype(self):
+    def test_ticketType(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
         props1 = ObjectProperties("A-1", ticket_type="Ticket Type 1")
@@ -179,3 +179,15 @@ class ChangeObjectStatusTest(SeatsioClientTest):
                 "code": "ILLEGAL_STATUS_CHANGE",
                 "message": "Cannot change from [free] to [lolzor]: free is in the list of rejected previous statuses"
             }])
+
+    def test_resale_listing_id(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        res = self.client.events.change_object_status(event.key, ["A-1"], EventObjectInfo.RESALE, resale_listing_id="listing1")
+
+        assert_that(self.client.events.retrieve_object_info(event.key, "A-1").resale_listing_id).is_equal_to("listing1")
+
+        assert_that(list(res.objects)).contains_exactly_in_any_order("A-1")
+        object = res.objects["A-1"]
+        assert_that(object.resale_listing_id).is_equal_to("listing1")

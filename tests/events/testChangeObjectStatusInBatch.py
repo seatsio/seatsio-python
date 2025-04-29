@@ -102,3 +102,20 @@ class ChangeObjectStatusInBatchTest(SeatsioClientTest):
         assert_that(res[0].objects["A-1"].status).is_equal_to(EventObjectInfo.FREE)
         a1_status = self.client.events.retrieve_object_info("event1", "A-1").status
         assert_that(a1_status).is_equal_to(EventObjectInfo.FREE)
+
+    def test_resale_listing_id(self):
+        chart_key1 = self.create_test_chart()
+        event1 = self.client.events.create(chart_key1)
+        chart_key2 = self.create_test_chart()
+        event2 = self.client.events.create(chart_key2)
+
+        res = self.client.events.change_object_status_in_batch([
+            StatusChangeRequest(event1.key, ["A-1"], EventObjectInfo.RESALE, type=StatusChangeRequest.TYPE_CHANGE_STATUS_TO, resale_listing_id="listing1"),
+            StatusChangeRequest(event2.key, ["A-2"], EventObjectInfo.RESALE, type=StatusChangeRequest.TYPE_CHANGE_STATUS_TO, resale_listing_id="listing1")
+        ])
+
+        assert_that(self.client.events.retrieve_object_info(event1.key, "A-1").resale_listing_id).is_equal_to("listing1")
+        assert_that(res[0].objects["A-1"].resale_listing_id).is_equal_to("listing1")
+
+        assert_that(self.client.events.retrieve_object_info(event2.key, "A-2").resale_listing_id).is_equal_to("listing1")
+        assert_that(res[1].objects["A-2"].resale_listing_id).is_equal_to("listing1")
