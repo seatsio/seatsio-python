@@ -1,3 +1,7 @@
+from uuid import UUID
+
+from seatsio.pagination.pageFetcher import PageFetcher
+from seatsio.pagination.pagedIterator import PagedIterator
 from seatsio.ticketBuyers.addTicketBuyerIdsResponse import AddTicketBuyerIdsResponse
 from seatsio.ticketBuyers.removeTicketBuyerIdsResponse import RemoveTicketBuyerIdsResponse
 
@@ -21,3 +25,5 @@ class TicketBuyersClient:
             .delete({"ids": filtered_ids})
         return RemoveTicketBuyerIdsResponse(response.json())
 
+    def list_all(self):
+        return PagedIterator(PageFetcher(UUID, self.http_client, "/ticket-buyers"))
