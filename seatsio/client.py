@@ -5,6 +5,7 @@ from seatsio.holdtokens.HoldTokenClient import HoldTokensClient
 from seatsio.httpClient import HttpClient
 from seatsio.reports.usage.usageReports import UsageReports
 from seatsio.seasons.seasonsClient import SeasonsClient
+from seatsio.ticketBuyers.ticketBuyersClient import TicketBuyersClient
 from seatsio.workspaces.workspacesClient import WorkspacesClient
 
 
@@ -20,3 +21,4 @@ class Client:
         self.hold_tokens = HoldTokensClient(self.http_client)
         self.usage_reports = UsageReports(self.http_client)
         self.event_log = EventLogClient(self.http_client)
+        self.ticket_buyers = TicketBuyersClient(self.http_client)
