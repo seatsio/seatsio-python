@@ -15,4 +15,4 @@ class DeactivateWorkspaceTest(SeatsioClientTest):
             self.client.workspaces.retrieve(workspace.key)
             self.fail("expected an exception")
         except SeatsioException as e:
-            assert_that(e.message).contains("No workspace found with public key '" + workspace.key + "'")
+            assert_that(e.errors[0]['code']).contains("WORKSPACE_NOT_FOUND")
