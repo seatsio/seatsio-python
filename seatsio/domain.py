@@ -305,6 +305,7 @@ class EventObjectInfo:
         self.is_companion_seat = item_data.get("isCompanionSeat")
         self.has_restricted_view = item_data.get("hasRestrictedView")
         self.displayed_object_type = item_data.get("displayedObjectType")
+        self.parent_displayed_object_type = item_data.get("parentDisplayedObjectType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
         self.is_available = item_data.get('isAvailable')
