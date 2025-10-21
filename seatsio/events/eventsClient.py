@@ -219,3 +219,7 @@ class EventsClient(ListableObjectsClient):
         self.http_client \
             .url("/events/{key}/actions/update-extra-data", key=key) \
             .post(ExtraDataRequest(extra_datas))
+
+    def move_event_to_new_chart_copy(self, event_key: str):
+        response = self.http_client.url("/events/{event_key}/actions/move-to-new-chart-copy", event_key=event_key).post()
+        return Event(response.json())
