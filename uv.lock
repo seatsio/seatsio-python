@@ -286,7 +286,7 @@ wheels = [
 [[package]]
 name = "seatsio"
 version = "81.13.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "future" },
     { name = "jsonpickle" },
