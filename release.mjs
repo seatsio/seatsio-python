@@ -53,7 +53,7 @@ async function determineNextVersionNumber(previous) {
 }
 
 async function bumpVersionInFiles() {
-    await replaceInFile("pyproject.toml", `version='v${latestVersion}'`, `version='v${nextVersion}'`)
+    await replaceInFile("pyproject.toml", `version='${latestVersion}'`, `version='${nextVersion}'`)
 }
 
 async function replaceInFile(filename, latestVersion, nextVersion) {
