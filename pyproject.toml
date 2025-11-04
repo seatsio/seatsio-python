@@ -23,3 +23,7 @@ dev = [
 [project.urls]
 Repository = "https://github.com/seatsio/seatsio-python/"
 Issues = "https://github.com/seatsio/seatsio-python/issues"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
