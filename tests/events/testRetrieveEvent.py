@@ -30,7 +30,7 @@ class RetrieveEventTest(SeatsioClientTest):
         )
         assert_that(retrieved_event.partial_season_keys_for_event).is_none()
 
-def test_retrieve_season(self):
+    def test_retrieve_season(self):
         chart_key = self.create_test_chart()
         season = self.client.seasons.create(chart_key)
 
