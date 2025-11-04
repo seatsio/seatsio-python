@@ -35,10 +35,11 @@ jobs:
         env:
           VERSION_TO_BUMP: ${{ inputs.versionToBump }}
           GH_TOKEN: ${{ github.token }}
+      - uses: astral-sh/setup-uv@v6
       - uses: actions/setup-python@v6
         with:
           python-version: 3.9
-      - run: python setup.py sdist
+      - run: uv build --sdist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
