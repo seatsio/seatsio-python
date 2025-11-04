@@ -27,6 +27,6 @@ jobs:
     - uses: zcong1993/setup-timezone@master
       with:
         timezone: Europe/Brussels
-    - run: pytest -n 1
+    - run: pytest -n 16
       env:
         DEMO_COMPANY_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
