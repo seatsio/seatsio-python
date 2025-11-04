@@ -13,17 +13,5 @@ setup(
     license="MIT",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
-
-    packages=find_packages(),
-    install_requires=[
-        "requests>=2.0, <3.0",
-        "munch==4.0",
-        "jsonpickle>=3.0, <4.0",
-        "future==1.0.0"
-    ],
-    tests_require=[
-        "parameterized==0.9.0"
-    ],
-
-    test_suite='tests'
+    packages=find_packages()
 )
