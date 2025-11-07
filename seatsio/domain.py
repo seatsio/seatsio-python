@@ -111,6 +111,7 @@ class Season(Event):
         Event.__init__(self, data)
         self.partial_season_keys = data.get("partialSeasonKeys")
         self.events = Event.create_list(data.get("events"))
+        self.for_sale_propagated = data.get("forSalePropagated")
 
     def is_season(self):
         return True

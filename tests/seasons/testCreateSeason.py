@@ -81,3 +81,10 @@ class CreateSeasonTest(SeatsioClientTest):
         season = self.client.seasons.create(chart_key, for_sale_config=for_sale_config)
 
         assert_that(season.for_sale_config).is_equal_to(for_sale_config)
+
+    def test_for_sale_propagated_optional(self):
+        chart_key = self.create_test_chart()
+
+        season = self.client.seasons.create(chart_key, for_sale_propagated=False)
+
+        assert_that(season.for_sale_propagated).is_false()
