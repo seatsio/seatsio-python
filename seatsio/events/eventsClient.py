@@ -1,10 +1,12 @@
 from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo, \
-    event_from_json
+    event_from_json, ForSaleConfig, EditForSaleConfigResult
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsClient import ChannelsClient
 from seatsio.events.createMultipleEventsRequest import CreateMultipleEventsRequest
 from seatsio.events.createSingleEventRequest import CreateSingleEventRequest
+from seatsio.events.editForSaleConfigForEventsRequest import EditForSaleConfigForEventsRequest
+from seatsio.events.editForSaleConfigRequest import EditForSaleConfigRequest
 from seatsio.events.extraDataRequest import ExtraDataRequest
 from seatsio.events.forSaleRequest import ForSaleRequest
 from seatsio.events.overrideSeasonObjectStatusRequest import OverrideSeasonObjectStatusRequest
@@ -36,10 +38,8 @@ class EventsClient(ListableObjectsClient):
 
     def update(self, key, event_key=None, name=None, date=None, table_booking_config=None,
                object_categories=None, categories=None, is_in_the_past=None):
-        request = UpdateEventRequest(event_key, name, date, table_booking_config, object_categories, categories,
-                                     is_in_the_past)
-        self.http_client.url("/events/{key}", key=key).post(
-            request)
+        request = UpdateEventRequest(event_key, name, date, table_booking_config, object_categories, categories, is_in_the_past)
+        self.http_client.url("/events/{key}", key=key).post(request)
 
     def remove_object_categories(self, key):
         self.update(key, object_categories={})
@@ -79,7 +79,8 @@ class EventsClient(ListableObjectsClient):
                                          order_id, keep_extra_data, ignore_channels, channel_keys)
 
     def put_up_for_resale(self, event_key_or_keys, object_or_objects, resale_listing_id=None):
-        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.RESALE, None, None, None, None, None, None, None, resale_listing_id)
+        return self.change_object_status(event_key_or_keys, object_or_objects, EventObjectInfo.RESALE, None, None, None,
+                                         None, None, None, None, resale_listing_id)
 
     def book_best_available(self, event_key, number, categories=None, hold_token=None, extra_data=None,
                             ticket_types=None, order_id=None, keep_extra_data=None, ignore_channels=None,
@@ -144,7 +145,8 @@ class EventsClient(ListableObjectsClient):
     def change_object_status(self, event_key_or_keys, object_or_objects, status, hold_token=None, order_id=None,
                              keep_extra_data=None, ignore_channels=None, channel_keys=None,
                              allowed_previous_statuses=None, rejected_previous_statuses=None, resale_listing_id=None):
-        request = ChangeObjectStatusRequest('CHANGE_STATUS_TO', object_or_objects, status, hold_token, order_id, event_key_or_keys,
+        request = ChangeObjectStatusRequest('CHANGE_STATUS_TO', object_or_objects, status, hold_token, order_id,
+                                            event_key_or_keys,
                                             keep_extra_data, ignore_channels, channel_keys,
                                             allowed_previous_statuses, rejected_previous_statuses, resale_listing_id)
         return self.__do_change_status(request)
@@ -156,10 +158,13 @@ class EventsClient(ListableObjectsClient):
 
     def change_object_status_in_batch(self, status_change_requests):
         requests = list(
-            map(lambda r: self.__change_object_status_in_batch_request(r.type, r.event_key, r.object_or_objects, r.status,
+            map(lambda r: self.__change_object_status_in_batch_request(r.type, r.event_key, r.object_or_objects,
+                                                                       r.status,
                                                                        r.hold_token, r.order_id, r.keep_extra_data,
                                                                        r.ignore_channels, r.channel_keys,
-                                                                       r.allowed_previous_statuses, r.rejected_previous_statuses, r.resale_listing_id),
+                                                                       r.allowed_previous_statuses,
+                                                                       r.rejected_previous_statuses,
+                                                                       r.resale_listing_id),
                 status_change_requests))
         response = self.http_client.url("/events/actions/change-object-status",
                                         query_params={"expand": "objects"}).post({"statusChanges": requests})
@@ -167,7 +172,8 @@ class EventsClient(ListableObjectsClient):
 
     def __change_object_status_in_batch_request(self, type, event_key, object_or_objects, status, hold_token, order_id,
                                                 keep_extra_data, ignore_channels, channel_keys,
-                                                allowed_previous_statuses, rejected_previous_statuses, resale_listing_id):
+                                                allowed_previous_statuses, rejected_previous_statuses,
+                                                resale_listing_id):
         request = ChangeObjectStatusRequest(type, object_or_objects, status, hold_token, order_id, "", keep_extra_data,
                                             ignore_channels, channel_keys, allowed_previous_statuses,
                                             rejected_previous_statuses, resale_listing_id)
@@ -187,15 +193,35 @@ class EventsClient(ListableObjectsClient):
             items[key] = EventObjectInfo(value)
         return items
 
-    def mark_as_for_sale(self, event_key, objects=None, area_places=None, categories=None):
+    def edit_for_sale_config(self, event_key, for_sale=None, not_for_sale=None):
+        response = self.http_client \
+            .url("/events/{key}/actions/edit-for-sale-config", key=event_key) \
+            .post(EditForSaleConfigRequest(for_sale, not_for_sale))
+        return EditForSaleConfigResult(response.json())
+
+    def edit_for_sale_config_for_events(self, events):
+        response = self.http_client \
+            .url("/events/actions/edit-for-sale-config") \
+            .post(EditForSaleConfigForEventsRequest(events))
+        items = {}
+        parsed_response = response.json()
+        for key in parsed_response:
+            items[key] = EditForSaleConfigResult(parsed_response[key])
+        return items
+
+    def replace_for_sale_config(self, event_key, for_sale, objects=None, area_places=None, categories=None):
+        action = "mark-as-for-sale" if for_sale else "mark-as-not-for-sale"
         self.http_client \
-            .url("/events/{key}/actions/mark-as-for-sale", key=event_key) \
+            .url("/events/{key}/actions/" + action, key=event_key) \
             .post(ForSaleRequest(objects, area_places, categories))
 
-    def mark_as_not_for_sale(self, key, objects=None, area_places=None, categories=None):
-        self.http_client \
-            .url("/events/{key}/actions/mark-as-not-for-sale", key=key) \
-            .post(ForSaleRequest(objects, area_places, categories))
+    # @deprecated
+    def mark_as_for_sale(self, event_key, objects=None, area_places=None, categories=None):
+        self.replace_for_sale_config(event_key, True, objects, area_places, categories)
+
+    # @deprecated
+    def mark_as_not_for_sale(self, event_key, objects=None, area_places=None, categories=None):
+        self.replace_for_sale_config(event_key, False, objects, area_places, categories)
 
     def mark_everything_as_for_sale(self, key):
         self.http_client.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
@@ -221,5 +247,6 @@ class EventsClient(ListableObjectsClient):
             .post(ExtraDataRequest(extra_datas))
 
     def move_event_to_new_chart_copy(self, event_key: str):
-        response = self.http_client.url("/events/{event_key}/actions/move-to-new-chart-copy", event_key=event_key).post()
+        response = self.http_client.url("/events/{event_key}/actions/move-to-new-chart-copy",
+                                        event_key=event_key).post()
         return Event(response.json())

@@ -111,6 +111,7 @@ class Season(Event):
         Event.__init__(self, data)
         self.partial_season_keys = data.get("partialSeasonKeys")
         self.events = Event.create_list(data.get("events"))
+        self.for_sale_propagated = data.get("forSalePropagated")
 
     def is_season(self):
         return True
@@ -484,3 +485,13 @@ class ChangeObjectStatusResult:
         self.objects = {}
         for key, value in data.get("objects").items():
             self.objects[key] = EventObjectInfo(value)
+
+class ForSaleRateLimitInfo:
+    def __init__(self, data):
+        self.rate_limit_remaining_calls = data.get("rateLimitRemainingCalls")
+        self.rate_limit_reset_date = parse_date(data.get("rateLimitResetDate"))
+
+class EditForSaleConfigResult:
+    def __init__(self, data):
+        self.for_sale_config = ForSaleConfig(data.get("forSaleConfig"))
+        self.rate_limit_info = ForSaleRateLimitInfo(data.get("rateLimitInfo"))
