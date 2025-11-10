@@ -1,7 +1,5 @@
 from datetime import date
 
-from pygments.lexers import data
-
 from seatsio.util import parse_date
 
 
