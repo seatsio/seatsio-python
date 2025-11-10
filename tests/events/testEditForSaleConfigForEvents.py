@@ -25,6 +25,26 @@ class EditForSaleConfigForEventsTest(SeatsioClientTest):
         assert_that(retrieved_event2.for_sale_config.for_sale).is_false()
         assert_that(retrieved_event2.for_sale_config.objects).contains_exactly("A-1", "A-3")
 
+    def test_result_is_returned(self):
+        chart_key = self.create_test_chart()
+        for_sale_config = ForSaleConfig.create_new(False, ["A-1", "A-2", "A-3"])
+        event1 = self.client.events.create(chart_key, for_sale_config=for_sale_config)
+        event2 = self.client.events.create(chart_key, for_sale_config=for_sale_config)
+        request = {
+            event1.key: {"for_sale": [{"object": "A-1"}]},
+            event2.key: {"for_sale": [{"object": "A-2"}]}
+        }
+
+        result = self.client.events.edit_for_sale_config_for_events(request)
+
+        assert_that(result[event1.key].for_sale_config.for_sale).is_false()
+        assert_that(result[event1.key].for_sale_config.objects).contains_exactly("A-2", "A-3")
+        assert_that(result[event1.key].rate_limit_info.rate_limit_remaining_calls).is_equal_to(9)
+
+        assert_that(result[event2.key].for_sale_config.for_sale).is_false()
+        assert_that(result[event2.key].for_sale_config.objects).contains_exactly("A-1", "A-3")
+        assert_that(result[event2.key].rate_limit_info.rate_limit_remaining_calls).is_equal_to(9)
+
     def test_mark_objects_not_for_sale(self):
         chart_key = self.create_test_chart()
         event1 = self.client.events.create(chart_key)

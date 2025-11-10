@@ -1,5 +1,5 @@
 from seatsio.domain import Event, StatusChange, BestAvailableObjects, ChangeObjectStatusResult, EventObjectInfo, \
-    event_from_json, ForSaleConfig
+    event_from_json, ForSaleConfig, EditForSaleConfigResult
 from seatsio.events.changeBestAvailableObjectStatusRequest import ChangeBestAvailableObjectStatusRequest
 from seatsio.events.changeObjectStatusRequest import ChangeObjectStatusRequest
 from seatsio.events.channelsClient import ChannelsClient
@@ -197,12 +197,17 @@ class EventsClient(ListableObjectsClient):
         response = self.http_client \
             .url("/events/{key}/actions/edit-for-sale-config", key=event_key) \
             .post(EditForSaleConfigRequest(for_sale, not_for_sale))
-        return ForSaleConfig(response.json()["forSaleConfig"])
+        return EditForSaleConfigResult(response.json())
 
     def edit_for_sale_config_for_events(self, events):
-        self.http_client \
+        response = self.http_client \
             .url("/events/actions/edit-for-sale-config") \
             .post(EditForSaleConfigForEventsRequest(events))
+        items = {}
+        parsed_response = response.json()
+        for key in parsed_response:
+            items[key] = EditForSaleConfigResult(parsed_response[key])
+        return items
 
     def replace_for_sale_config(self, event_key, for_sale, objects=None, area_places=None, categories=None):
         action = "mark-as-for-sale" if for_sale else "mark-as-not-for-sale"

@@ -1,5 +1,7 @@
 from datetime import date
 
+from pygments.lexers import data
+
 from seatsio.util import parse_date
 
 
@@ -485,3 +487,13 @@ class ChangeObjectStatusResult:
         self.objects = {}
         for key, value in data.get("objects").items():
             self.objects[key] = EventObjectInfo(value)
+
+class ForSaleRateLimitInfo:
+    def __init__(self, data):
+        self.rate_limit_remaining_calls = data.get("rateLimitRemainingCalls")
+        self.rate_limit_reset_date = parse_date(data.get("rateLimitResetDate"))
+
+class EditForSaleConfigResult:
+    def __init__(self, data):
+        self.for_sale_config = ForSaleConfig(data.get("forSaleConfig"))
+        self.rate_limit_info = ForSaleRateLimitInfo(data.get("rateLimitInfo"))
