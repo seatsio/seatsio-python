@@ -30,16 +30,16 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn add -D -E zx@8.1.4 semver@7.6.3
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.9
+      - uses: astral-sh/setup-uv@v7
       - name: Run release script
         run: yarn zx ./release.mjs -v $VERSION_TO_BUMP
         env:
           VERSION_TO_BUMP: ${{ inputs.versionToBump }}
           GH_TOKEN: ${{ github.token }}
       - run: rm -Rf node_modules
-      - uses: astral-sh/setup-uv@v7
-      - uses: actions/setup-python@v6
-        with:
-          python-version: 3.9
       - run: uv build --sdist
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
