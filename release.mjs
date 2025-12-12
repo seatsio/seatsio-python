@@ -64,7 +64,7 @@ async function ensurePyProjectVersionMatchesTheLatestTag() {
 
 async function bumpVersionInFiles() {
     await ensurePyProjectVersionMatchesTheLatestTag()
-    await $`uv version ${nextVersion} --no-sync`
+    await $`uv version ${nextVersion}`
     await gitAdd("pyproject.toml")
     await gitAdd("uv.lock")
 }
