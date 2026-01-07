@@ -40,7 +40,7 @@ jobs:
           VERSION_TO_BUMP: ${{ inputs.versionToBump }}
           GH_TOKEN: ${{ github.token }}
       - run: rm -Rf node_modules
-      - run: uv build --sdist
+      - run: uv build
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__

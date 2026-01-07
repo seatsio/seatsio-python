@@ -25,5 +25,8 @@ Repository = "https://github.com/seatsio/seatsio-python/"
 Issues = "https://github.com/seatsio/seatsio-python/issues"
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["seatsio*"]

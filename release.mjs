@@ -52,21 +52,21 @@ async function determineNextVersionNumber(previous) {
     return semver.inc(previous, versionToBump)
 }
 
-async function bumpVersionInFiles() {
-    await replaceInFile("pyproject.toml", `version = "${latestVersion}"`, `version = "${nextVersion}"`)
+async function ensurePyProjectVersionMatchesTheLatestTag() {
+    const pyproject = await fs.readFile("pyproject.toml", "utf8")
+    const match = pyproject.match(/^\s*version\s*=\s*"([^"]+)"\s*$/m)
+    if (!match) throw new Error("Could not find version in pyproject.toml")
+    const currentVersion = match[1]
+    if (currentVersion !== latestVersion) {
+        throw new Error(`pyproject.toml version (${currentVersion}) does not match latest release tag (${latestVersion})`)
+    }
 }
 
-async function replaceInFile(filename, latestVersion, nextVersion) {
-    return await fs.readFile(filename, 'utf8')
-        .then(text => {
-            if (text.indexOf(latestVersion) < 0) {
-                throw new Error('Not the correct version. Could not find ' + latestVersion + ' in ' + filename)
-            }
-            return text
-        })
-        .then(text => text.replace(latestVersion, nextVersion))
-        .then(text => fs.writeFileSync(filename, text))
-        .then(() => gitAdd(filename))
+async function bumpVersionInFiles() {
+    await ensurePyProjectVersionMatchesTheLatestTag()
+    await $`uv version ${nextVersion}`
+    await gitAdd("pyproject.toml")
+    await gitAdd("uv.lock")
 }
 
 async function gitAdd(filename) {
