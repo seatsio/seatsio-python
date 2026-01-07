@@ -1,6 +1,6 @@
 [project]
 name = "seatsio"
-version = "83.3.0"
+version = "83.4.0"
 description = "The official Seats.io Python SDK"
 readme = "README.md"
 requires-python = ">=3.9"
