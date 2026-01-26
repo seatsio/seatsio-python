@@ -27,7 +27,10 @@ class SeatsioClientTest(unittest.TestCase):
         return seatsio.Client(Region(BASE_URL), secret_key)
 
     def create_test_company(self):
-        response = requests.post(BASE_URL + "/system/public/users/actions/create-test-company")
+        response = requests.post(
+            url=BASE_URL + "/system/private/create-test-company",
+            auth=(os.environ["CORE_V2_STAGING_EU_SYSTEM_API_SECRET"], '')
+        )
         if response.ok:
             return response.json()
         else:
