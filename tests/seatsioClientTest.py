@@ -29,7 +29,7 @@ class SeatsioClientTest(unittest.TestCase):
     def create_test_company(self):
         response = requests.post(
             url=BASE_URL + "/system/private/create-test-company",
-            auth=(os.environ["CORE_V2_STAGING_EU_SYSTEM_API_SECRET"], '')
+            auth=(self.system_api_secret(), '')
         )
         if response.ok:
             return response.json()
@@ -89,6 +89,11 @@ class SeatsioClientTest(unittest.TestCase):
                     time.sleep(1)
             else:
                 return status_changes
+
+    def system_api_secret(self):
+        secret = os.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET")
+        assert secret, "Missing CORE_V2_STAGING_EU_SYSTEM_API_SECRET"
+        return secret
 
     def demo_company_secret_key(self):
         return os.environ["DEMO_COMPANY_SECRET_KEY"]
