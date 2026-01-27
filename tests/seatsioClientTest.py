@@ -1,14 +1,12 @@
 import os
+import time
 import unittest
 import uuid
-import time
 
 import requests
 
 import seatsio
 from seatsio.region import Region
-
-BASE_URL = "https://api-staging-eu.seatsio.net"
 
 
 class SeatsioClientTest(unittest.TestCase):
@@ -24,11 +22,11 @@ class SeatsioClientTest(unittest.TestCase):
         super(SeatsioClientTest, self).tearDown()
 
     def newClient(self, secret_key):
-        return seatsio.Client(Region(BASE_URL), secret_key)
+        return seatsio.Client(Region(self.base_url()), secret_key)
 
     def create_test_company(self):
         response = requests.post(
-            url=BASE_URL + "/system/private/create-test-company",
+            url=self.base_url() + "/system/private/create-test-company",
             auth=(self.system_api_secret(), '')
         )
         if response.ok:
@@ -36,9 +34,8 @@ class SeatsioClientTest(unittest.TestCase):
         else:
             raise Exception("Failed to create a test user")
 
-    @staticmethod
-    def create_client(secret_key, workspace_key):
-        return seatsio.Client(Region(BASE_URL), secret_key, workspace_key)
+    def create_client(self, secret_key, workspace_key):
+        return seatsio.Client(Region(self.base_url()), secret_key, workspace_key)
 
     @staticmethod
     def random_email():
@@ -66,7 +63,7 @@ class SeatsioClientTest(unittest.TestCase):
         with open(os.path.join(os.path.dirname(__file__), file), 'r') as test_chart_json:
             data = test_chart_json.read().replace('\n', '')
             chart_key = str(uuid.uuid4())
-            url = BASE_URL + "/system/public/charts/" + chart_key
+            url = self.base_url() + "/system/public/charts/" + chart_key
             response = requests.post(
                 url=url,
                 headers={"Accept": "application/json"},
@@ -90,10 +87,13 @@ class SeatsioClientTest(unittest.TestCase):
             else:
                 return status_changes
 
-    def system_api_secret(self):
-        secret = os.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET")
-        assert secret, "Missing CORE_V2_STAGING_EU_SYSTEM_API_SECRET"
-        return secret
+    @staticmethod
+    def base_url():
+        return os.getenv("API_URL") or "http://localhost:9001"
+
+    @staticmethod
+    def system_api_secret():
+        return os.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET") or "superSecretSystemApi"
 
     def demo_company_secret_key(self):
         return os.environ["DEMO_COMPANY_SECRET_KEY"]
