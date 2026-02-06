@@ -38,9 +38,14 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item.left_neighbour).is_none()
         assert_that(report_item.right_neighbour).is_equal_to("A-2")
         assert_that(report_item.distance_to_focal_point).is_not_none()
-        assert_that(report_item.is_accessible).is_not_none()
-        assert_that(report_item.is_companion_seat).is_not_none()
-        assert_that(report_item.has_restricted_view).is_not_none()
+        assert_that(report_item.is_accessible).is_false()
+        assert_that(report_item.is_companion_seat).is_false()
+        assert_that(report_item.has_lift_up_armrests).is_false()
+        assert_that(report_item.is_hearing_impaired).is_false()
+        assert_that(report_item.is_semi_ambulatory_seat).is_false()
+        assert_that(report_item.has_sign_language_interpretation).is_false()
+        assert_that(report_item.is_plus_size).is_false()
+        assert_that(report_item.has_restricted_view).is_false()
         assert_that(report_item.floor).is_none()
 
     @parameterized.expand([
