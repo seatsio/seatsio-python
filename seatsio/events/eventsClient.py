@@ -164,7 +164,8 @@ class EventsClient(ListableObjectsClient):
                                                                        r.ignore_channels, r.channel_keys,
                                                                        r.allowed_previous_statuses,
                                                                        r.rejected_previous_statuses,
-                                                                       r.resale_listing_id),
+                                                                       r.resale_listing_id,
+                                                                       r.season),
                 status_change_requests))
         response = self.http_client.url("/events/actions/change-object-status",
                                         query_params={"expand": "objects"}).post({"statusChanges": requests})
@@ -173,10 +174,10 @@ class EventsClient(ListableObjectsClient):
     def __change_object_status_in_batch_request(self, type, event_key, object_or_objects, status, hold_token, order_id,
                                                 keep_extra_data, ignore_channels, channel_keys,
                                                 allowed_previous_statuses, rejected_previous_statuses,
-                                                resale_listing_id):
+                                                resale_listing_id, season=None):
         request = ChangeObjectStatusRequest(type, object_or_objects, status, hold_token, order_id, "", keep_extra_data,
                                             ignore_channels, channel_keys, allowed_previous_statuses,
-                                            rejected_previous_statuses, resale_listing_id)
+                                            rejected_previous_statuses, resale_listing_id, season)
         request.event = event_key
         delattr(request, "events")
         return request
@@ -226,15 +227,15 @@ class EventsClient(ListableObjectsClient):
     def mark_everything_as_for_sale(self, key):
         self.http_client.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
 
-    def override_season_object_status(self, key, objects):
+    def override_season_object_status(self, key, objects, season=None):
         self.http_client \
             .url("/events/{key}/actions/override-season-status", key=key) \
-            .post(OverrideSeasonObjectStatusRequest(objects))
+            .post(OverrideSeasonObjectStatusRequest(objects, season))
 
-    def use_season_object_status(self, key, objects):
+    def use_season_object_status(self, key, objects, season=None):
         self.http_client \
             .url("/events/{key}/actions/use-season-status", key=key) \
-            .post(OverrideSeasonObjectStatusRequest(objects))
+            .post(OverrideSeasonObjectStatusRequest(objects, season))
 
     def update_extra_data(self, key, o, extra_data):
         self.http_client \

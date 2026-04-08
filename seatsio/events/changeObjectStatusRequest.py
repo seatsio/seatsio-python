@@ -5,7 +5,7 @@ from seatsio.events.objectProperties import ObjectProperties
 
 class ChangeObjectStatusRequest:
     def __init__(self, type, object_or_objects, status, hold_token, order_id, event_key_or_keys, keep_extra_data, ignore_channels, channel_keys,
-                 allowed_previous_statuses=None, rejected_previous_statuses=None, resale_listing_id=None):
+                 allowed_previous_statuses=None, rejected_previous_statuses=None, resale_listing_id=None, season=None):
         self.objects = self.__normalize_objects(object_or_objects)
         if type is not None:
             self.type = type
@@ -31,6 +31,8 @@ class ChangeObjectStatusRequest:
             self.rejectedPreviousStatuses = rejected_previous_statuses
         if resale_listing_id is not None:
             self.resaleListingId = resale_listing_id
+        if season is not None:
+            self.season = season
 
     def __normalize_objects(self, object_or_objects):
         if isinstance(object_or_objects, list):
