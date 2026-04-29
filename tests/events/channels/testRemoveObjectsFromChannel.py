@@ -16,3 +16,16 @@ class AddObjectsToChannelTest(SeatsioClientTest):
         assert_that(retrieved_event.channels).is_equal_to([
             Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'])
         ])
+
+    def test_areaPlaces(self):
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+        self.client.events.channels.add(event.key, 'channelKey1', 'channel 1', '#FFFF98', 1, ['A-1', 'A-2'], area_places={'GA1': 5})
+
+        self.client.events.channels.remove_objects(event.key, "channelKey1", [], area_places={'GA1': 2})
+
+        retrieved_event = self.client.events.retrieve(event.key)
+        assert_that(retrieved_event.channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'], area_places={'GA1': 3})
+        ])
+
