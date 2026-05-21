@@ -16,7 +16,7 @@ class CreateSingleEventRequest:
         if categories is not None:
             self.categories = categories
         if channels is not None:
-            self.channels = channels
+            self.channels = [c.to_json() for c in channels]
         if for_sale_config is not None:
             self.forSaleConfig = for_sale_config.to_json()
 
