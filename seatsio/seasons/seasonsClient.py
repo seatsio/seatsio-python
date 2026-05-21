@@ -28,7 +28,7 @@ class SeasonsClient:
         if categories is not None:
             request["categories"] = categories
         if channels is not None:
-            request['channels'] = channels
+            request['channels'] = [c.to_json() for c in channels]
         if for_sale_config is not None:
             request['forSaleConfig'] = for_sale_config.to_json()
         if for_sale_propagated is not None:
