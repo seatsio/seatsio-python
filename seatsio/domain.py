@@ -200,27 +200,50 @@ class TableBookingConfig:
 
 
 class Channel:
-    def __init__(self, name, color, index, key=None, objects=None):
+    def __init__(self, name, color, index, key=None, objects=None, area_places=None):
         self.key = key
         self.name = name
         self.color = color
         self.index = index
         self.objects = objects
+        self.area_places = area_places
+
+    def to_json(self):
+        json = {
+            'key': self.key,
+            'name': self.name,
+            'color': self.color,
+        }
+        if self.index is not None:
+            json['index'] = self.index
+        if self.objects is not None:
+            json['objects'] = self.objects
+        if self.area_places is not None:
+            json['areaPlaces'] = self.area_places
+        return json
 
     def __eq__(self, other):
         return self.key == other.key and \
             self.name == other.name and \
             self.color == other.color and \
             self.index == other.index and \
-            self.objects == other.objects
+            self.objects == other.objects and \
+            self.area_places == other.area_places
 
     def __hash__(self):
-        return hash((self.key, self.name, self.color, self.index, self.objects))
+        return hash((
+            self.key,
+            self.name,
+            self.color,
+            self.index,
+            tuple(self.objects) if self.objects is not None else None,
+            tuple(sorted(self.area_places.items())) if self.area_places is not None else None,
+        ))
 
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'))
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'), param.get('areaPlaces') or None)
 
     @classmethod
     def createList(cls, param):
