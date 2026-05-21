@@ -231,7 +231,14 @@ class Channel:
             self.area_places == other.area_places
 
     def __hash__(self):
-        return hash((self.key, self.name, self.color, self.index))
+        return hash((
+            self.key,
+            self.name,
+            self.color,
+            self.index,
+            tuple(self.objects) if self.objects is not None else None,
+            tuple(sorted(self.area_places.items())) if self.area_places is not None else None,
+        ))
 
     @classmethod
     def create(cls, param):
