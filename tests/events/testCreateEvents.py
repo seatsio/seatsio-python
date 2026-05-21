@@ -97,7 +97,7 @@ class CreateEventsTest(SeatsioClientTest):
     def test_channel_can_be_passed_in(self):
         chart_key = self.create_test_chart()
         channels = [
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"]),
+            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"], area_places={"GA1": 3}),
             Channel(key='channelKey2', name='channel 2', color='#FF0000', index=2, objects=[]),
         ]
 
