@@ -13,7 +13,7 @@ class AddChannelsTest(SeatsioClientTest):
 
         self.client.events.channels.remove(event.key, "channelKey2")
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'])
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'], area_places={}, id=channels[0].id)
         ])

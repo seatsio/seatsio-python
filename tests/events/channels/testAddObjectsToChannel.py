@@ -13,10 +13,10 @@ class AddObjectToChannelTest(SeatsioClientTest):
 
         self.client.events.channels.add_objects(event.key, "channelKey1", ['A-3', 'A-4'])
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2', 'A-3', 'A-4']),
-            Channel(key='channelKey2', name='channel 2', color='#FFFF99', index=2, objects=[])
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2', 'A-3', 'A-4'], area_places={}, id=channels[0].id),
+            Channel(key='channelKey2', name='channel 2', color='#FFFF99', index=2, objects=[], area_places={}, id=channels[1].id)
         ])
 
     def test_areaPlaces(self):
@@ -26,8 +26,7 @@ class AddObjectToChannelTest(SeatsioClientTest):
 
         self.client.events.channels.add_objects(event.key, "channelKey1", ['A-3'], area_places={'GA1': 7})
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2', 'A-3'], area_places={'GA1': 7})
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2', 'A-3'], area_places={'GA1': 7}, id=channels[0].id)
         ])
-

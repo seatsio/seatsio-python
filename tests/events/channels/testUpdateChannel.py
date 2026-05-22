@@ -12,9 +12,9 @@ class UpdateChannelsTest(SeatsioClientTest):
 
         self.client.events.channels.update(event.key, 'channelKey1', name='new channel name')
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='new channel name', color='#FFFF98', index=1, objects=['A-1', 'A-2'])
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='new channel name', color='#FFFF98', index=1, objects=['A-1', 'A-2'], area_places={}, id=channels[0].id)
         ])
 
     def test_updateColor(self):
@@ -24,9 +24,9 @@ class UpdateChannelsTest(SeatsioClientTest):
 
         self.client.events.channels.update(event.key, 'channelKey1', color='red')
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='red', index=1, objects=['A-1', 'A-2'])
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='red', index=1, objects=['A-1', 'A-2'], area_places={}, id=channels[0].id)
         ])
 
     def test_updateObjects(self):
@@ -36,9 +36,9 @@ class UpdateChannelsTest(SeatsioClientTest):
 
         self.client.events.channels.update(event.key, 'channelKey1', objects=['B-1', 'B-2'])
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['B-1', 'B-2'])
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['B-1', 'B-2'], area_places={}, id=channels[0].id)
         ])
 
     def test_updateAreaPlaces(self):
@@ -48,8 +48,7 @@ class UpdateChannelsTest(SeatsioClientTest):
 
         self.client.events.channels.update(event.key, 'channelKey1', area_places={'GA1': 3})
 
-        retrieved_event = self.client.events.retrieve(event.key)
-        assert_that(retrieved_event.channels).is_equal_to([
-            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'], area_places={'GA1': 3})
+        channels = self.client.events.retrieve(event.key).channels
+        assert_that(channels).is_equal_to([
+            Channel(key='channelKey1', name='channel 1', color='#FFFF98', index=1, objects=['A-1', 'A-2'], area_places={'GA1': 3}, id=channels[0].id)
         ])
-

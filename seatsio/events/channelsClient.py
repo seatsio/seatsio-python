@@ -14,7 +14,7 @@ class ChannelsClient:
     def add_multiple(self, event_key, channels_properties):
         self.http_client \
             .url('/events/{key}/channels', key=event_key) \
-            .post(channels_properties)
+            .post([c.to_json() for c in channels_properties])
 
     def remove(self, event_key, channel_key):
         self.http_client \
