@@ -1,4 +1,4 @@
-from seatsio import Channel
+
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that

@@ -1,14 +1,23 @@
-class ChannelProperties:
-    def __init__(self, key=None, name=None, color=None, index=None, objects=None, area_places=None):
-        if key is not None:
-            self.key = key
-        if name is not None:
-            self.name = name
-        if color is not None:
-            self.color = color
-        if index is not None:
-            self.index = index
-        if objects is not None:
-            self.objects = objects
-        if area_places is not None:
-            self.areaPlaces = area_places
+class ChannelCreationParams:
+    def __init__(self, key, name, color, index=None, objects=None, area_places=None):
+        self.key = key
+        self.name = name
+        self.color = color
+        self.index = index
+        self.objects = objects
+        self.area_places = area_places
+
+    def to_json(self):
+        json = {
+            'key': self.key,
+            'name': self.name,
+            'color': self.color,
+        }
+        if self.index is not None:
+            json['index'] = self.index
+        if self.objects is not None:
+            json['objects'] = self.objects
+        if self.area_places is not None:
+            json['areaPlaces'] = self.area_places
+        return json
+

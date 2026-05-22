@@ -200,7 +200,7 @@ class TableBookingConfig:
 
 
 class Channel:
-    def __init__(self, name, color, index, key=None, objects=None, area_places=None, id=None):
+    def __init__(self, name, id, color, index, key, objects, area_places):
         self.id = id
         self.key = key
         self.name = name
@@ -212,22 +212,9 @@ class Channel:
     def area_partition_label(self, area_label):
         return f"{area_label}##{self.id}"
 
-    def to_json(self):
-        json = {
-            'key': self.key,
-            'name': self.name,
-            'color': self.color,
-        }
-        if self.index is not None:
-            json['index'] = self.index
-        if self.objects is not None:
-            json['objects'] = self.objects
-        if self.area_places is not None:
-            json['areaPlaces'] = self.area_places
-        return json
-
     def __eq__(self, other):
-        return self.key == other.key and \
+        return self.id == other.id and \
+            self.key == other.key and \
             self.name == other.name and \
             self.color == other.color and \
             self.index == other.index and \
@@ -236,18 +223,19 @@ class Channel:
 
     def __hash__(self):
         return hash((
+            self.id,
             self.key,
             self.name,
             self.color,
             self.index,
-            tuple(self.objects) if self.objects is not None else None,
+            tuple(self.objects),
             tuple(sorted(self.area_places.items())) if self.area_places is not None else None,
         ))
 
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'), param.get('areaPlaces') or None, param.get('id'))
+            return Channel(param.get('name'), param.get('id'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'), param.get('areaPlaces'))
 
     @classmethod
     def createList(cls, param):

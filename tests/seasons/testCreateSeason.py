@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from seatsio import TableBookingConfig, Channel, ForSaleConfig
+from seatsio import TableBookingConfig, Channel, ForSaleConfig, ChannelCreationParams
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -66,13 +66,16 @@ class CreateSeasonTest(SeatsioClientTest):
     def test_channels_are_optional(self):
         chart_key = self.create_test_chart()
         channels = [
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"]),
-            Channel(key='channelKey2', name='channel 2', color='#FF0000', index=2, objects=[]),
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"]),
+            ChannelCreationParams(key='channelKey2', name='channel 2', color='#FF0000', index=2, objects=[]),
         ]
 
         season = self.client.seasons.create(chart_key, channels=channels)
 
-        assert_that(season.channels).is_equal_to(channels)
+        assert_that(season.channels).is_equal_to([
+            Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places=None, id=season.channels[0].id),
+            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places=None, id=season.channels[1].id),
+        ])
 
     def test_for_sale_config_optional(self):
         chart_key = self.create_test_chart()

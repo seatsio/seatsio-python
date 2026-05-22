@@ -1,4 +1,4 @@
-from seatsio import Channel, EventObjectInfo
+from seatsio import EventObjectInfo, ChannelCreationParams
 from seatsio.events.objectProperties import ObjectProperties
 from seatsio.exceptions import SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
@@ -135,7 +135,7 @@ class ChangeObjectStatusTest(SeatsioClientTest):
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", channel_keys=["channelKey1"])
@@ -146,7 +146,7 @@ class ChangeObjectStatusTest(SeatsioClientTest):
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
 
         self.client.events.change_object_status(event.key, ["A-1"], "someStatus", ignore_channels=True)

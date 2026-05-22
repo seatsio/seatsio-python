@@ -1,4 +1,5 @@
-from seatsio.domain import EventObjectInfo, Channel
+from seatsio.domain import EventObjectInfo
+from seatsio import ChannelCreationParams
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -50,7 +51,7 @@ class HoldObjectsTest(SeatsioClientTest):
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
         hold_token = self.client.hold_tokens.create()
 
@@ -62,7 +63,7 @@ class HoldObjectsTest(SeatsioClientTest):
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
         hold_token = self.client.hold_tokens.create()
 

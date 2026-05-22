@@ -1,4 +1,4 @@
-from seatsio import Channel
+from seatsio import ChannelCreationParams
 from seatsio.events.objectProperties import ObjectProperties
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -169,7 +169,7 @@ class EventReportsSummaryTest(SeatsioClientTest):
     def test_summaryByChannel(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-1", "A-2"])
         ])
 
         report = self.client.events.reports.summary_by_channel(event.key)

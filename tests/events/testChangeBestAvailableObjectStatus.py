@@ -1,4 +1,5 @@
-from seatsio.domain import EventObjectInfo, Channel
+from seatsio.domain import EventObjectInfo
+from seatsio import ChannelCreationParams
 from seatsio.exceptions import BestAvailableObjectsNotFoundException, SeatsioException
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
@@ -188,7 +189,7 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
     def test_channelKeys(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-6"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-6"])
         ])
 
         result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", channel_keys=["channelKey1"])
@@ -198,7 +199,7 @@ class ChangeBestAvailableObjectStatusTest(SeatsioClientTest):
     def test_ignoreChannels(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
-            Channel(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-5"])
+            ChannelCreationParams(key='channelKey1', name='channel 1', color='#00FF00', index=1, objects=["A-5"])
         ])
 
         result = self.client.events.change_best_available_object_status(event.key, 1, "myStatus", ignore_channels=True)
