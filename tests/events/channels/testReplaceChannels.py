@@ -18,5 +18,5 @@ class ReplaceChannelsTest(SeatsioClientTest):
 
         assert_that(channels).is_equal_to([
             Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places={"GA1": 3}, id=channels[0].id),
-            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places=None, id=channels[1].id)
+            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places={}, id=channels[1].id)
         ])

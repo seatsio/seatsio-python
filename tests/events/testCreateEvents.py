@@ -107,7 +107,7 @@ class CreateEventsTest(SeatsioClientTest):
 
         assert_that(events).extracting("channels").contains_exactly([
             Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places={"GA1": 3}, id=events[0].channels[0].id),
-            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places=None, id=events[0].channels[1].id),
+            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places={}, id=events[0].channels[1].id),
         ])
 
     def test_for_sale_config_can_be_passed_in(self):

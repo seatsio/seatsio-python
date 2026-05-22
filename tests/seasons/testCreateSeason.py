@@ -73,8 +73,8 @@ class CreateSeasonTest(SeatsioClientTest):
         season = self.client.seasons.create(chart_key, channels=channels)
 
         assert_that(season.channels).is_equal_to([
-            Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places=None, id=season.channels[0].id),
-            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places=None, id=season.channels[1].id),
+            Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places={}, id=season.channels[0].id),
+            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places={}, id=season.channels[1].id),
         ])
 
     def test_for_sale_config_optional(self):

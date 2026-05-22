@@ -229,7 +229,7 @@ class Channel:
             self.color,
             self.index,
             tuple(self.objects),
-            tuple(sorted(self.area_places.items())) if self.area_places is not None else None,
+            tuple(sorted(self.area_places.items())),
         ))
 
     @classmethod

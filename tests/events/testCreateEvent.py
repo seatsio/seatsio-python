@@ -91,7 +91,7 @@ class CreateEventTest(SeatsioClientTest):
 
         assert_that(event.channels).is_equal_to([
             Channel(name='channel 1', color='#00FF00', index=1, key='channelKey1', objects=["A-1", "A-2"], area_places={"GA1": 3}, id=event.channels[0].id),
-            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places=None, id=event.channels[1].id),
+            Channel(name='channel 2', color='#FF0000', index=2, key='channelKey2', objects=[], area_places={}, id=event.channels[1].id),
         ])
 
     def test_for_sale_config_is_optional(self):
