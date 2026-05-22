@@ -200,13 +200,17 @@ class TableBookingConfig:
 
 
 class Channel:
-    def __init__(self, name, color, index, key=None, objects=None, area_places=None):
+    def __init__(self, name, color, index, key=None, objects=None, area_places=None, id=None):
+        self.id = id
         self.key = key
         self.name = name
         self.color = color
         self.index = index
         self.objects = objects
         self.area_places = area_places
+
+    def area_partition_label(self, area_label):
+        return f"{area_label}##{self.id}"
 
     def to_json(self):
         json = {
@@ -243,7 +247,7 @@ class Channel:
     @classmethod
     def create(cls, param):
         if param is not None:
-            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'), param.get('areaPlaces') or None)
+            return Channel(param.get('name'), param.get('color'), param.get('index'), param.get('key'), param.get('objects'), param.get('areaPlaces') or None, param.get('id'))
 
     @classmethod
     def createList(cls, param):
