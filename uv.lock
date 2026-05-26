@@ -310,7 +310,7 @@ wheels = [
 
 [[package]]
 name = "seatsio"
-version = "83.9.0"
+version = "83.10.0"
 source = { editable = "." }
 dependencies = [
     { name = "future" },
