@@ -16,7 +16,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "parameterized==0.9.0",
-    "pytest==8.4.2",
+    "pytest==9.0.3",
     "pytest-xdist==3.8.0"
 ]
 
