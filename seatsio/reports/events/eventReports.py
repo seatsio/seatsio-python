@@ -92,6 +92,15 @@ class EventReports:
     def deep_summary_by_channel(self, event_key):
         return self.__fetch_deep_summary_report("byChannel", event_key)
 
+    def flat_list(self, event_key):
+        url = "/reports/events/{key}"
+        body = self.http_client.url(url, key=event_key).get()
+        return [EventObjectInfo(item) for item in body]
+
+    def flat_list_csv(self, event_key):
+        url = "/reports/events/{key}.csv"
+        return self.http_client.url(url, key=event_key).get_raw().decode('utf-8')
+
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"
