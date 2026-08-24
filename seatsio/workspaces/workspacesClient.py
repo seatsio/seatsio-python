@@ -4,6 +4,7 @@ from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
 from seatsio.workspaces.UpdateWorkspaceRequest import UpdateWorkspaceRequest
 from seatsio.workspaces.createWorkspaceRequest import CreateWorkspaceRequest
+from seatsio.workspaces.removeSecretKeyRequest import RemoveSecretKeyRequest
 
 
 class WorkspacesClient(ListableObjectsClient):
@@ -25,6 +26,15 @@ class WorkspacesClient(ListableObjectsClient):
     def regenerate_secret_key(self, key):
         response = self.http_client.url("/workspaces/{key}/actions/regenerate-secret-key", key=key).post()
         return response.json()["secretKey"]
+
+    def add_secret_key(self, key):
+        response = self.http_client.url("/workspaces/{key}/actions/add-secret-key", key=key).post()
+        return response.json()["secretKey"]
+
+    def remove_secret_key(self, key, secret_key_to_remove):
+        self.http_client.url("/workspaces/{key}/actions/remove-secret-key", key=key).post(
+            RemoveSecretKeyRequest(secret_key_to_remove)
+        )
 
     def activate(self, key):
         self.http_client.url("/workspaces/{key}/actions/activate", key=key).post()
