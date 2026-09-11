@@ -227,6 +227,9 @@ class EventsClient(ListableObjectsClient):
     def mark_everything_as_for_sale(self, key):
         self.http_client.url("/events/{key}/actions/mark-everything-as-for-sale", key=key).post()
 
+    def mark_everything_as_for_not_sale(self, key):
+        self.http_client.url("/events/{key}/actions/mark-everything-as-not-for-sale", key=key).post()
+
     def override_season_object_status(self, key, objects, season=None):
         self.http_client \
             .url("/events/{key}/actions/override-season-status", key=key) \
