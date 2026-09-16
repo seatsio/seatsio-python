@@ -121,6 +121,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
+        assert_that(report_item.area_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")
         assert_that(report_item.category_key).is_equal_to("9")
         assert_that(report_item.ticket_type).is_none()
@@ -143,6 +144,9 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.has_restricted_view).is_none()
         assert_that(report_item.displayed_object_type).is_none()
         assert_that(report_item.parent_displayed_object_type).is_none()
+
+        ga_item = report.get("GA2")[0]
+        assert_that(ga_item.area_type).is_equal_to("generalAdmission")
 
     def test_reportItemPropertiesForTable(self):
         chart_key = self.create_test_chart_with_tables()
