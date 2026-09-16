@@ -15,6 +15,12 @@ jobs:
       matrix:
         python-version: ['3.10', '3.14']
 
+    services:
+      httpbin:
+        image: mccutchen/go-httpbin:v2.15.0
+        ports:
+          - 8080:8080
+
     steps:
     - uses: actions/checkout@v7
     - uses: astral-sh/setup-uv@v7
@@ -28,5 +34,6 @@ jobs:
     - run: uv run pytest
       env:
         API_URL: https://api-staging-eu.seatsio.net
+        HTTPBIN_URL: http://localhost:8080
         DEMO_COMPANY_SECRET_KEY: ${{ secrets.DEMO_COMPANY_SECRET_KEY }}
         CORE_V2_STAGING_EU_SYSTEM_API_SECRET: ${{ secrets.CORE_V2_STAGING_EU_SYSTEM_API_SECRET }}

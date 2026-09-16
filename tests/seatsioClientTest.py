@@ -92,6 +92,10 @@ class SeatsioClientTest(unittest.TestCase):
         return os.getenv("API_URL") or "http://localhost:9001"
 
     @staticmethod
+    def httpbin_url():
+        return os.getenv("HTTPBIN_URL") or "https://httpbingo.org"
+
+    @staticmethod
     def system_api_secret():
         return os.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET") or "superSecretSystemApi"
 

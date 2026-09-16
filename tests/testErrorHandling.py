@@ -31,9 +31,9 @@ class ErrorHandlingTest(SeatsioClientTest):
     def test_timeout_raises_seatsio_exception(self):
         from seatsio.httpClient import HttpClient
         try:
-            client = HttpClient("https://httpbingo.org", "aSecretKey", None, 0, timeout=0.1)
+            client = HttpClient(self.httpbin_url(), "aSecretKey", None, 0, timeout=0.1)
             client.url("/delay/1").get()
             self.fail("expected exception")
         except SeatsioException as e:
-            assert_that(e.message).is_equal_to("Error while executing GET https://httpbingo.org/delay/1")
+            assert_that(e.message).is_equal_to("Error while executing GET " + self.httpbin_url() + "/delay/1")
             assert_that(e.cause).is_not_none()
