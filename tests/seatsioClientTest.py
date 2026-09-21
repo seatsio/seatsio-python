@@ -97,11 +97,4 @@ class SeatsioClientTest(unittest.TestCase):
 
     @staticmethod
     def system_api_secret():
-        return os.getenv("CORE_V2_STAGING_EU_SYSTEM_API_SECRET") or "superSecretSystemApi"
-
-    def demo_company_secret_key(self):
-        return os.environ["DEMO_COMPANY_SECRET_KEY"]
-
-    def assert_demo_company_secret_key_set(self):
-        if "DEMO_COMPANY_SECRET_KEY" not in os.environ:
-            self.skipTest("DEMO_COMPANY_SECRET_KEY environment variable not set, skipping test")
+        return os.getenv("CORE_V2_API_SECRET") or "superSecretSystemApi"
