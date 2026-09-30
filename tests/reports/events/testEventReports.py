@@ -157,6 +157,7 @@ class EventReportsTest(SeatsioClientTest):
         report_item = report.get("T1")[0]
         assert_that(report_item.num_seats).is_equal_to(6)
         assert_that(report_item.book_as_a_whole).is_false()
+        assert_that(report_item.table_type).is_equal_to("bookByTable")
 
     def testByStatus(self):
         chart_key = self.create_test_chart()
