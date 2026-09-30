@@ -99,6 +99,7 @@ class ChartReportsTest(SeatsioClientTest):
         report_item = report.get("T1")[0]
         assert_that(report_item.num_seats).is_equal_to(6)
         assert_that(report_item.book_as_a_whole).is_false()
+        assert_that(report_item.table_type).is_equal_to("bookBySeat")
 
     @parameterized.expand([
         [
