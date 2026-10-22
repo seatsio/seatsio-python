@@ -440,6 +440,11 @@ class UsageForObjectV2:
         self.usage_by_reason = json.get("usageByReason")
 
 
+class ForSaleMode:
+    RATE_LIMITED = "RATE_LIMITED"
+    UNLIMITED_BILLABLE = "UNLIMITED_BILLABLE"
+
+
 class Workspace:
 
     def __init__(self, data):
