@@ -1,3 +1,4 @@
+from seatsio import ForSaleMode
 from tests.seatsioClientTest import SeatsioClientTest
 from tests.util.asserts import assert_that
 
@@ -22,4 +23,11 @@ class CreateWorkspaceTest(SeatsioClientTest):
         assert_that(workspace.key).is_not_none()
         assert_that(workspace.secret_key).is_not_none()
         assert_that(workspace.is_test).is_true()
+        assert_that(workspace.is_active).is_true()
+
+    def test_create_workspace_with_for_sale_mode(self):
+        workspace = self.client.workspaces.create("my workspace", for_sale_mode=ForSaleMode.UNLIMITED_BILLABLE)
+
+        assert_that(workspace.name).is_equal_to("my workspace")
+        assert_that(workspace.key).is_not_none()
         assert_that(workspace.is_active).is_true()
