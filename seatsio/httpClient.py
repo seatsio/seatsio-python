@@ -12,7 +12,7 @@ def handle_error(request, response):
 
 
 class HttpClient:
-    def __init__(self, base_url, secret_key, workspace_key, max_retries, timeout=10):
+    def __init__(self, base_url, secret_key, workspace_key, max_retries, timeout=(10, 30)):
         self.base_url = base_url
         self.secret_key = secret_key
         self.workspace_key = workspace_key

@@ -10,10 +10,10 @@ from seatsio.workspaces.workspacesClient import WorkspacesClient
 
 
 class Client:
-    def __init__(self, region, secret_key, workspace_key=None, max_retries=5):
+    def __init__(self, region, secret_key, workspace_key=None, max_retries=5, timeout=(10, 30)):
         base_url = region.url
         self.base_url = base_url
-        self.http_client = HttpClient(base_url, secret_key, workspace_key, max_retries)
+        self.http_client = HttpClient(base_url, secret_key, workspace_key, max_retries, timeout)
         self.charts = ChartsClient(self.http_client)
         self.events = EventsClient(self.http_client)
         self.seasons = SeasonsClient(self.http_client, self)

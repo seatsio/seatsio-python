@@ -207,3 +207,16 @@ client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key
 ```
 
 Passing in 0 disables exponential backoff completely. In that case, the client will never retry a failed request.
+
+## Timeouts
+
+By default, the client waits up to 10 seconds to connect to the server, and up to 30 seconds for the server to respond.
+
+To change this, pass a `timeout` when creating the `Client`. It accepts a single number of seconds, or a `(connect, read)` tuple:
+
+```python
+import seatsio
+client = seatsio.Client(seatsio.Region.EU(), secret_key="my-workspace-secret-key", timeout=(10, 60))
+```
+
+Requests that time out are not retried.
