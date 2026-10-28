@@ -4,7 +4,7 @@ from munch import munchify
 
 from seatsio.reports.charts.chartReports import ChartReports
 from seatsio.charts.chartsRequest import ChartRequest
-from seatsio.domain import Chart, ChartValidation, Category
+from seatsio.domain import Chart, ChartValidation, Category, event_from_json
 from seatsio.pagination.listableObjectsClient import ListableObjectsClient
 from seatsio.pagination.lister import Lister
 from seatsio.pagination.pageFetcher import PageFetcher
@@ -102,6 +102,9 @@ class ChartsClient(ListableObjectsClient):
                              chart_key=chart_key,
                              category_key=category_key) \
             .post(UpdateCategoryRequest(label, color, accessible))
+
+    def events(self, chart_key):
+        return Lister(PageFetcher(event_from_json, self.http_client, "/charts/{key}/events", key=chart_key))
 
     def move_to_archive(self, chart_key):
         self.http_client.url("/charts/{key}/actions/move-to-archive", key=chart_key).post()
