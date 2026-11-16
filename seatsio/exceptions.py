@@ -1,6 +1,18 @@
 class SeatsioException(Exception):
 
     def __init__(self, request, response=None, cause=None):
+        if isinstance(request, str):
+            self.errors = None
+            self.requestId = None
+            self.cause = cause
+            self.message = request
+            self.idempotency_key = None
+            self.idempotencyKey = None
+            super(SeatsioException, self).__init__(self.message)
+            return
+
+        self.idempotency_key = getattr(request, 'idempotency_key', None)
+        self.idempotencyKey = self.idempotency_key
         if (response is not None) and ("application/json" in response.headers.get("content-type", "")):
             body = response.json()
             self.errors = body["errors"]
@@ -12,7 +24,9 @@ class SeatsioException(Exception):
             self.errors = None
             self.requestId = None
             self.cause = cause
-            self.message = "Error while executing " + request.http_method + " " + request.url
+            http_method = getattr(request, 'http_method', '')
+            url = getattr(request, 'url', '')
+            self.message = f"Error while executing {http_method} {url}".strip()
             super(SeatsioException, self).__init__(self.message)
 
     @staticmethod
