@@ -267,6 +267,8 @@ class ChartObjectInfo:
         self.capacity = item_data.get("capacity")
         self.book_as_a_whole = item_data.get("bookAsAWhole")
         self.object_type = item_data.get("objectType")
+        self.area_type = item_data.get("areaType")
+        self.table_type = item_data.get("tableType")
         self.left_neighbour = item_data.get('leftNeighbour')
         self.right_neighbour = item_data.get('rightNeighbour')
         self.distance_to_focal_point = item_data.get('distanceToFocalPoint')
@@ -321,6 +323,8 @@ class EventObjectInfo:
         self.capacity = item_data.get("capacity")
         self.book_as_a_whole = item_data.get("bookAsAWhole")
         self.object_type = item_data.get("objectType")
+        self.area_type = item_data.get("areaType")
+        self.table_type = item_data.get("tableType")
         self.extra_data = item_data.get("extraData")
         self.is_accessible = item_data.get("isAccessible")
         self.is_companion_seat = item_data.get("isCompanionSeat")
@@ -434,6 +438,11 @@ class UsageForObjectV2:
         self.object = json.get("object")
         self.num_usedObjects = json.get("numUsedObjects")
         self.usage_by_reason = json.get("usageByReason")
+
+
+class ForSaleMode:
+    RATE_LIMITED = "RATE_LIMITED"
+    UNLIMITED_BILLABLE = "UNLIMITED_BILLABLE"
 
 
 class Workspace:

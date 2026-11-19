@@ -1,6 +1,6 @@
 [project]
 name = "seatsio"
-version = "83.14.0"
+version = "83.22.0"
 description = "The official Seats.io Python SDK"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -16,7 +16,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "parameterized==0.9.0",
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "pytest-xdist==3.8.0"
 ]
 

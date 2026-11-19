@@ -2,8 +2,12 @@ from seatsio.domain import EventObjectInfo, EventReport
 
 
 class EventReports:
-    def __init__(self, http_client):
+    def __init__(self, http_client, season_bookings_propagated=True):
         self.http_client = http_client
+        self.season_bookings_propagated = season_bookings_propagated
+
+    def with_season_bookings_not_propagated(self):
+        return EventReports(self.http_client, season_bookings_propagated=False)
 
     def by_status(self, event_key, status=None):
         return self.__fetch_report("byStatus", event_key, status)
@@ -94,17 +98,18 @@ class EventReports:
 
     def flat_list(self, event_key):
         url = "/reports/events/{key}"
-        body = self.http_client.url(url, key=event_key).get()
+        body = self.http_client.url(url, key=event_key, query_params=self.__query_params()).get()
         return [EventObjectInfo(item) for item in body]
 
     def flat_list_csv(self, event_key):
         url = "/reports/events/{key}.csv"
-        return self.http_client.url(url, key=event_key).get_raw().decode('utf-8')
+        return self.http_client.url(url, key=event_key, query_params=self.__query_params()).get_raw().decode('utf-8')
 
     def __fetch_report(self, report_type, event_key, report_filter=None):
         if report_filter:
             url = "/reports/events/{key}/{reportType}/{filter}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter).get()
+            body = self.http_client.url(url, key=event_key, reportType=report_type, filter=report_filter,
+                                        query_params=self.__query_params()).get()
             result = []
             if report_filter not in body:
                 return []
@@ -113,13 +118,19 @@ class EventReports:
             return result
         else:
             url = "/reports/events/{key}/{reportType}"
-            body = self.http_client.url(url, key=event_key, reportType=report_type).get()
+            body = self.http_client.url(url, key=event_key, reportType=report_type,
+                                        query_params=self.__query_params()).get()
             return EventReport(body)
 
     def __fetch_summary_report(self, report_type, event_key):
         url = "/reports/events/{key}/{reportType}/summary"
-        return self.http_client.url(url, key=event_key, reportType=report_type).get()
+        return self.http_client.url(url, key=event_key, reportType=report_type, query_params=self.__query_params()).get()
 
     def __fetch_deep_summary_report(self, report_type, event_key):
         url = "/reports/events/{key}/{reportType}/summary/deep"
-        return self.http_client.url(url, key=event_key, reportType=report_type).get()
+        return self.http_client.url(url, key=event_key, reportType=report_type, query_params=self.__query_params()).get()
+
+    def __query_params(self):
+        if self.season_bookings_propagated:
+            return None
+        return {"seasonBookingsPropagated": "false"}

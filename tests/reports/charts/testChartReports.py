@@ -69,12 +69,16 @@ class ChartReportsTest(SeatsioClientTest):
         assert_that(report_item).is_instance(ChartObjectInfo)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
+        assert_that(report_item.area_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")
         assert_that(report_item.category_key).is_equal_to("9")
         assert_that(report_item.section).is_none()
         assert_that(report_item.entrance).is_none()
         assert_that(report_item.capacity).is_equal_to(100)
         assert_that(report_item.book_as_a_whole).is_equal_to(False)
+
+        report_item = report.get("GA2")[0]
+        assert_that(report_item.area_type).is_equal_to("generalAdmission")
 
     @parameterized.expand([
         [
@@ -95,6 +99,7 @@ class ChartReportsTest(SeatsioClientTest):
         report_item = report.get("T1")[0]
         assert_that(report_item.num_seats).is_equal_to(6)
         assert_that(report_item.book_as_a_whole).is_false()
+        assert_that(report_item.table_type).is_equal_to("bookBySeat")
 
     @parameterized.expand([
         [

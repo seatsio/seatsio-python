@@ -14,14 +14,14 @@ class WorkspacesClient(ListableObjectsClient):
         self.active = Lister(PageFetcher(Workspace, self.http_client, "/workspaces/active"))
         self.inactive = Lister(PageFetcher(Workspace, self.http_client, "/workspaces/inactive"))
 
-    def create(self, name, is_test=None):
+    def create(self, name, is_test=None, for_sale_mode=None):
         response = self.http_client.url("/workspaces").post(
-            CreateWorkspaceRequest(name, is_test))
+            CreateWorkspaceRequest(name, is_test, for_sale_mode))
         return Workspace(response.json())
 
-    def update(self, key, name):
+    def update(self, key, name, for_sale_mode=None):
         self.http_client.url("/workspaces/{key}", key=key).post(
-            UpdateWorkspaceRequest(name))
+            UpdateWorkspaceRequest(name, for_sale_mode))
 
     def regenerate_secret_key(self, key):
         response = self.http_client.url("/workspaces/{key}/actions/regenerate-secret-key", key=key).post()

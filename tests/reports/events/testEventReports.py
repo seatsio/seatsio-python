@@ -7,6 +7,29 @@ from tests.util.asserts import assert_that
 
 class EventReportsTest(SeatsioClientTest):
 
+    def test_withSeasonBookingsNotPropagatedReturnsANewInstanceRatherThanMutatingTheOriginal(self):
+        without_propagation = self.client.events.reports.with_season_bookings_not_propagated()
+
+        assert_that(without_propagation is not self.client.events.reports).is_true()
+
+        chart_key = self.create_test_chart()
+        event = self.client.events.create(chart_key)
+
+        report = self.client.events.reports.by_label(event.key)
+        assert_that(report.get("A-1")).has_size(1)
+
+    def test_withSeasonBookingsNotPropagatedCanBeUsedToFetchAReportForAnEventInASeason(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, number_of_events=1)
+        event = season.events[0]
+        self.client.events.book(season.key, ["A-1", "A-2"])
+        self.client.events.book(event.key, ["A-3"])
+
+        report = self.client.events.reports.with_season_bookings_not_propagated().by_label(event.key)
+
+        assert_that(report.get("A-1")[0].status).is_not_equal_to(EventObjectInfo.BOOKED)
+        assert_that(report.get("A-3")[0].status).is_equal_to(EventObjectInfo.BOOKED)
+
     def test_reportItemProperties(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key, channels=[
@@ -98,6 +121,7 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.status).is_equal_to(EventObjectInfo.HELD)
         assert_that(report_item.label).is_equal_to("GA1")
         assert_that(report_item.object_type).is_equal_to("generalAdmission")
+        assert_that(report_item.area_type).is_equal_to("generalAdmission")
         assert_that(report_item.category_label).is_equal_to("Cat1")
         assert_that(report_item.category_key).is_equal_to("9")
         assert_that(report_item.ticket_type).is_none()
@@ -121,6 +145,9 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report_item.displayed_object_type).is_none()
         assert_that(report_item.parent_displayed_object_type).is_none()
 
+        ga_item = report.get("GA2")[0]
+        assert_that(ga_item.area_type).is_equal_to("generalAdmission")
+
     def test_reportItemPropertiesForTable(self):
         chart_key = self.create_test_chart_with_tables()
         event = self.client.events.create(chart_key, table_booking_config=TableBookingConfig.all_by_table())
@@ -130,6 +157,7 @@ class EventReportsTest(SeatsioClientTest):
         report_item = report.get("T1")[0]
         assert_that(report_item.num_seats).is_equal_to(6)
         assert_that(report_item.book_as_a_whole).is_false()
+        assert_that(report_item.table_type).is_equal_to("bookByTable")
 
     def testByStatus(self):
         chart_key = self.create_test_chart()
@@ -143,6 +171,19 @@ class EventReportsTest(SeatsioClientTest):
         assert_that(report.get("mystatus")).has_size(2)
         assert_that(report.get("booked")).has_size(1)
         assert_that(report.get("free")).has_size(31)
+
+    def testByStatusWithSeasonBookingsNotPropagated(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, number_of_events=1)
+        event = season.events[0]
+        self.client.events.book(season.key, ["A-1", "A-2"])
+        self.client.events.book(event.key, ["A-3"])
+
+        report_with_propagation = self.client.events.reports.by_status(season.key)
+        report_without_propagation = self.client.events.reports.with_season_bookings_not_propagated().by_status(season.key)
+
+        assert_that(self.__find_by_label(report_with_propagation, "A-3").status).is_equal_to(EventObjectInfo.BOOKED)
+        assert_that(self.__find_by_label(report_without_propagation, "A-3").status).is_not_equal_to(EventObjectInfo.BOOKED)
 
     def testByObjectType(self):
         chart_key = self.create_test_chart()
@@ -386,3 +427,10 @@ class EventReportsTest(SeatsioClientTest):
 
         report_item = report.get("A-1")[0]
         assert_that(report_item.resale_listing_id).is_equal_to("listing1")
+
+    def __find_by_label(self, report, label):
+        for items in report.items.values():
+            for item in items:
+                if item.label == label:
+                    return item
+        raise ValueError("no report item found with label " + label)

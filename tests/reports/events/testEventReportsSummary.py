@@ -6,6 +6,29 @@ from tests.util.asserts import assert_that
 
 class EventReportsSummaryTest(SeatsioClientTest):
 
+    def test_withSeasonBookingsNotPropagatedCanBeUsedToFetchAReportForAnEventInASeason(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, number_of_events=1)
+        event = season.events[0]
+        self.client.events.book(season.key, ["A-1", "A-2"])
+
+        report = self.client.events.reports.with_season_bookings_not_propagated().summary_by_status(event.key)
+
+        assert_that(report.get("free").get("count")).is_equal_to(232)
+
+    def test_summaryByStatusWithSeasonBookingsNotPropagated(self):
+        chart_key = self.create_test_chart()
+        season = self.client.seasons.create(chart_key, number_of_events=1)
+        event = season.events[0]
+        self.client.events.book(season.key, ["A-1", "A-2"])
+        self.client.events.book(event.key, ["A-3"])
+
+        report_with_propagation = self.client.events.reports.summary_by_status(season.key)
+        report_without_propagation = self.client.events.reports.with_season_bookings_not_propagated().summary_by_status(season.key)
+
+        assert_that(report_with_propagation.get("booked").get("count")).is_equal_to(3)
+        assert_that(report_without_propagation.get("booked").get("count")).is_equal_to(2)
+
     def test_summaryByStatus(self):
         chart_key = self.create_test_chart()
         event = self.client.events.create(chart_key)
