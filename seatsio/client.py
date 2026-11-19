@@ -10,10 +10,20 @@ from seatsio.workspaces.workspacesClient import WorkspacesClient
 
 
 class Client:
+    IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
+
     def __init__(self, region, secret_key, workspace_key=None, max_retries=5):
-        base_url = region.url
-        self.base_url = base_url
-        self.http_client = HttpClient(base_url, secret_key, workspace_key, max_retries)
+        self.__init_with_http_client(HttpClient(region.url, secret_key, workspace_key, max_retries))
+
+    @classmethod
+    def _from_http_client(cls, http_client):
+        client = cls.__new__(cls)
+        client.__init_with_http_client(http_client)
+        return client
+
+    def __init_with_http_client(self, http_client):
+        self.http_client = http_client
+        self.base_url = http_client.base_url
         self.charts = ChartsClient(self.http_client)
         self.events = EventsClient(self.http_client)
         self.seasons = SeasonsClient(self.http_client, self)
@@ -22,3 +32,9 @@ class Client:
         self.usage_reports = UsageReports(self.http_client)
         self.event_log = EventLogClient(self.http_client)
         self.ticket_buyers = TicketBuyersClient(self.http_client)
+
+    def with_idempotency_key(self, idempotency_key):
+        return Client._from_http_client(self.http_client.with_idempotency_key(idempotency_key))
+
+    def withIdempotencyKey(self, idempotency_key):
+        return self.with_idempotency_key(idempotency_key)
