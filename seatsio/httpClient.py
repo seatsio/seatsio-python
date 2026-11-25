@@ -112,8 +112,9 @@ class HttpClient:
                 retry_count += 1
                 continue
             if response.status_code >= 400:
-                raise SeatsioException.from_response(request, response,
-                                                     route_honors_keys=write is not None and write.route_honors_keys())
+                if write is None:
+                    raise SeatsioException.from_response(request, response)
+                raise write.response_failure(request, response)
             return response
 
     def __headers(self, request):
@@ -134,7 +135,8 @@ class HttpClient:
             return False
         # A KeyboardInterrupt (or any other exception) raised while sleeping ends the call: no further attempt
         self._state.clock.sleep(delay)
-        return True
+        # The sleep may have lasted far longer than asked (a suspended process): check the window again
+        return write is None or write.may_retry_after(0)
 
 
 class ApiResource:
@@ -296,6 +298,12 @@ class _Write:
 
     def route_honors_keys(self):
         return self.state.honors_keys(self.route)
+
+    def response_failure(self, request, response):
+        return SeatsioException.from_response(
+            request, response, route_honors_keys=self.route_honors_keys(),
+            earlier_attempt_may_have_run=self.may_have_run,
+            retry_window_open=self.__starts_within_retry_window(0))
 
     def connection_failure(self, request, cause, delivery):
         if delivery == Delivery.NOT_RETRYABLE:

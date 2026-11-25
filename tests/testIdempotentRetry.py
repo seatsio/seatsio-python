@@ -435,8 +435,36 @@ class IdempotentRetryTest(unittest.TestCase):
 
         assert_that(self.server.request_count).is_equal_to(1)
         assert_that(self.clock.sleeps).is_equal_to(1)
-        assert_that(e.cause).is_not_none()
+        assert_that(isinstance(e, RateLimitExceededException)).is_true()
         assert_that(e.outcome_is_unknown()).is_false()
+
+    def test_an_oversleep_ends_the_retries_even_when_the_delay_itself_was_short(self):
+        self.server.enqueue(LOST_RESPONSE, key_status(200, "executed"))
+        self.server.enqueue(key_status(200, "executed"))
+
+        def on_sleep():
+            self.clock.current += 11 * 60
+
+        self.clock.on_sleep = on_sleep
+
+        e = self.fails(lambda: self.send(self.client(), "POST"))
+
+        assert_that(self.server.request_count).is_equal_to(1)
+        assert_that(e.outcome_is_unknown()).is_true()
+        assert_that(e.is_safe_to_retry_with_same_key()).is_false()
+
+    def test_a_final_429_after_a_lost_response_keeps_the_outcome_unknown(self):
+        client = self.client()
+        self.server.enqueue(key_status(200, "executed"))
+        self.server.enqueue(LOST_RESPONSE, error(429, "RATE_LIMIT_EXCEEDED"))
+
+        self.send(client, "POST")
+        client.max_retries = 1
+        e = self.fails(lambda: self.send(client, "POST"))
+
+        assert_that(isinstance(e, RateLimitExceededException)).is_true()
+        assert_that(e.outcome_is_unknown()).is_true()
+        assert_that(e.is_safe_to_retry_with_same_key()).is_true()
 
     def test_a_request_that_was_never_sent_is_retried_whatever_the_time_if_no_attempt_was_sent(self):
         url = self.server.url()
@@ -464,7 +492,7 @@ class IdempotentRetryTest(unittest.TestCase):
         self.send(client, "POST")
         e = self.fails(lambda: self.send(client, "POST"))
 
-        assert_that(self.server.request_count).is_equal_to(1 + 4)
+        assert_that(self.server.request_count).is_equal_to(1 + 3)
         assert_that(e.outcome_is_unknown()).is_true()
         assert_that(e.is_safe_to_retry_with_same_key()).is_false()
 
@@ -479,7 +507,7 @@ class IdempotentRetryTest(unittest.TestCase):
         with self.assertRaises(RateLimitExceededException):
             self.send(self.client(), "POST")
 
-        assert_that(self.server.request_count).is_equal_to(2)
+        assert_that(self.server.request_count).is_equal_to(1)
 
     def test_gets_are_not_retried_after_a_lost_response(self):
         self.server.enqueue(LOST_RESPONSE, status(200))

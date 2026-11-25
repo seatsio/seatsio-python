@@ -11,7 +11,8 @@ class SeatsioException(Exception):
     ``outcome_is_unknown()`` and ``is_safe_to_retry_with_same_key()`` say whether and how the request can be retried.
     """
 
-    def __init__(self, request, response=None, cause=None, route_honors_keys=False):
+    def __init__(self, request, response=None, cause=None, route_honors_keys=False,
+                 earlier_attempt_may_have_run=False, retry_window_open=True):
         self.cause = cause
         self.errors = None
         self.requestId = None
@@ -33,11 +34,11 @@ class SeatsioException(Exception):
             if response is None:
                 self._outcome_is_unknown = True
             else:
-                self.__describe_response(response, route_honors_keys)
+                self.__describe_response(response, route_honors_keys, earlier_attempt_may_have_run, retry_window_open)
         self.idempotencyKey = self.idempotency_key
         super(SeatsioException, self).__init__(self.message)
 
-    def __describe_response(self, response, route_honors_keys):
+    def __describe_response(self, response, route_honors_keys, earlier_attempt_may_have_run, retry_window_open):
         error_response = ErrorResponse.parse_if_any(response)
         if error_response is not None:
             self.errors = error_response.errors
@@ -48,11 +49,13 @@ class SeatsioException(Exception):
         status = IdempotencyKeyStatus.of(response)
         self.idempotency_key_honored = None if status is None else status.key_honored
         self.replayed = status is IdempotencyKeyStatus.REPLAYED
-        self._outcome_is_unknown = response.status_code >= 500 or is_idempotency_key_in_use(response)
+        self._outcome_is_unknown = response.status_code >= 500 or is_idempotency_key_in_use(response) \
+            or earlier_attempt_may_have_run
         key_honored = route_honors_keys if status is None else status.key_honored
         self._safe_to_retry_with_same_key = self._outcome_is_unknown \
             and self.idempotency_key is not None \
             and key_honored \
+            and retry_window_open \
             and not self.replayed
 
     @staticmethod
@@ -62,17 +65,27 @@ class SeatsioException(Exception):
         return f"Error while executing {http_method} {url}".strip()
 
     @staticmethod
-    def from_response(request, response, route_honors_keys=False):
+    def from_response(request, response, route_honors_keys=False, earlier_attempt_may_have_run=False,
+                      retry_window_open=True):
         """
         :param route_honors_keys: whether the last response of the same route said the server honors idempotency
             keys for it. Used when this response doesn't say, e.g. a 502 from a proxy.
+        :param earlier_attempt_may_have_run: an earlier attempt with the same key lost its response or found the key
+            in use, so the outcome stays unknown whatever this response says
+        :param retry_window_open: False once the key may have expired on the server
         """
         if response.status_code == 429:
-            return RateLimitExceededException(request, response, route_honors_keys=route_honors_keys)
+            return RateLimitExceededException(request, response, route_honors_keys=route_honors_keys,
+                                              earlier_attempt_may_have_run=earlier_attempt_may_have_run,
+                                              retry_window_open=retry_window_open)
         elif SeatsioException.__is_best_available_objects_not_found(response):
-            return BestAvailableObjectsNotFoundException(request, response, route_honors_keys=route_honors_keys)
+            return BestAvailableObjectsNotFoundException(request, response, route_honors_keys=route_honors_keys,
+                                                         earlier_attempt_may_have_run=earlier_attempt_may_have_run,
+                                                         retry_window_open=retry_window_open)
         else:
-            return SeatsioException(request, response, route_honors_keys=route_honors_keys)
+            return SeatsioException(request, response, route_honors_keys=route_honors_keys,
+                                    earlier_attempt_may_have_run=earlier_attempt_may_have_run,
+                                    retry_window_open=retry_window_open)
 
     @staticmethod
     def from_connection_failure(request, cause, outcome_is_unknown, safe_to_retry_with_same_key):
@@ -114,11 +127,15 @@ class SeatsioException(Exception):
 
 class RateLimitExceededException(SeatsioException):
 
-    def __init__(self, request, response=None, cause=None, route_honors_keys=False):
-        super(RateLimitExceededException, self).__init__(request, response, cause, route_honors_keys)
+    def __init__(self, request, response=None, cause=None, route_honors_keys=False,
+                 earlier_attempt_may_have_run=False, retry_window_open=True):
+        super(RateLimitExceededException, self).__init__(request, response, cause, route_honors_keys,
+                                  earlier_attempt_may_have_run, retry_window_open)
 
 
 class BestAvailableObjectsNotFoundException(SeatsioException):
 
-    def __init__(self, request, response=None, cause=None, route_honors_keys=False):
-        super(BestAvailableObjectsNotFoundException, self).__init__(request, response, cause, route_honors_keys)
+    def __init__(self, request, response=None, cause=None, route_honors_keys=False,
+                 earlier_attempt_may_have_run=False, retry_window_open=True):
+        super(BestAvailableObjectsNotFoundException, self).__init__(request, response, cause, route_honors_keys,
+                                  earlier_attempt_may_have_run, retry_window_open)
