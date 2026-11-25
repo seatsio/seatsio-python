@@ -1,175 +1,188 @@
-import contextlib
 import unittest
-import unittest.mock
 import uuid
-import requests
+
+from parameterized import parameterized
 
 from seatsio import Client, Region
-from seatsio.exceptions import SeatsioException, RateLimitExceededException
+from seatsio.exceptions import SeatsioException, RateLimitExceededException, BestAvailableObjectsNotFoundException
 from seatsio.httpClient import HttpClient
-from tests.httpbin import httpbin_url
 from tests.util.asserts import assert_that
+from tests.util.fakeServer import FakeServer, FakeClock, Reply, status, json_reply, error
 
 
 class IdempotencyKeyTest(unittest.TestCase):
 
-    def test_posts_get_an_idempotency_key(self):
-        client = HttpClient(httpbin_url(), "secretKey", None, 5)
-        response = client.url("/anything").post("{}")
-        key = self.sent_idempotency_key(response)
+    def setUp(self):
+        self.server = FakeServer().start()
+        self.clock = FakeClock()
 
-        assert_that(uuid.UUID(key).version).is_equal_to(4)
+    def tearDown(self):
+        self.server.close()
 
-    def test_deletes_get_an_idempotency_key(self):
-        client = HttpClient(httpbin_url(), "secretKey", None, 5)
-        response = client.url("/anything").delete()
-        key = self.sent_idempotency_key(response)
+    @parameterized.expand([("post",), ("put",), ("delete",)])
+    def test_writes_get_an_idempotency_key(self, method):
+        self.server.enqueue(status(200))
 
-        assert_that(uuid.UUID(key).version).is_equal_to(4)
+        getattr(self.client().url("/anything"), method)({})
 
-    def test_puts_get_an_idempotency_key(self):
-        client = HttpClient(httpbin_url(), "secretKey", None, 5)
-        response = client.url("/anything").put("{}")
-        key = self.sent_idempotency_key(response)
-
-        assert_that(uuid.UUID(key).version).is_equal_to(4)
+        assert_that(uuid.UUID(self.server.sent_idempotency_keys()[0]).version).is_equal_to(4)
 
     def test_gets_do_not_get_an_idempotency_key(self):
-        client = HttpClient(httpbin_url(), "secretKey", None, 5)
-        response = client.url("/anything").get()
+        self.server.enqueue(json_reply(200, "{}"))
 
-        assert_that("Idempotency-Key" in response.get("headers", {})).is_false()
+        self.client().url("/anything").get()
+
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([None])
 
     def test_each_request_gets_its_own_key(self):
-        client = HttpClient(httpbin_url(), "secretKey", None, 5)
+        self.server.enqueue(status(200), status(200))
+        client = self.client()
 
-        first = self.sent_idempotency_key(client.url("/anything").post("{}"))
-        second = self.sent_idempotency_key(client.url("/anything").post("{}"))
+        client.url("/anything").post({})
+        client.url("/anything").post({})
 
-        assert_that(first).is_not_equal_to(second)
+        keys = self.server.sent_idempotency_keys()
+        assert_that(keys[0]).is_not_equal_to(keys[1])
 
     def test_failed_requests_expose_their_idempotency_key(self):
-        with self.spy_on_post() as sent_keys:
-            try:
-                HttpClient(httpbin_url(), "secretKey", None, 5).url("/status/500").post("{}")
-                self.fail("expected exception")
-            except SeatsioException as e:
-                assert_that(sent_keys).has_size(1)
-                assert_that(e.idempotency_key).is_equal_to(sent_keys[0])
-                assert_that(e.idempotencyKey).is_equal_to(sent_keys[0])
+        self.server.enqueue(error(500, "SOME_ERROR"))
+
+        with self.assertRaises(SeatsioException) as context:
+            self.client().url("/anything").post({})
+
+        assert_that(context.exception.idempotency_key).is_equal_to(self.server.sent_idempotency_keys()[0])
+        assert_that(context.exception.idempotencyKey).is_equal_to(self.server.sent_idempotency_keys()[0])
 
     def test_connection_failures_expose_their_idempotency_key(self):
-        with self.spy_on_post() as sent_keys:
-            try:
-                HttpClient("http://localhost:1", "secretKey", None, 5).url("/anything").post("{}")
-                self.fail("expected exception")
-            except SeatsioException as e:
-                assert_that(sent_keys).has_size(1)
-                assert_that(e.idempotency_key).is_equal_to(sent_keys[0])
-                assert_that(e.idempotencyKey).is_equal_to(sent_keys[0])
+        url = self.server.url()
+        self.server.close()
+
+        with self.assertRaises(SeatsioException) as context:
+            HttpClient(url, "secretKey", None, 0, clock=self.clock).url("/anything").post({})
+
+        assert_that(uuid.UUID(context.exception.idempotency_key).version).is_equal_to(4)
+        assert_that(context.exception.idempotencyKey).is_equal_to(context.exception.idempotency_key)
 
     def test_rejects_idempotency_keys_that_are_not_v4_uuids(self):
-        for key in ["", "not-a-uuid", str(uuid.uuid1()), uuid.uuid4(), None]:
+        for key in ["", "not-a-uuid", str(uuid.uuid1()), " " + str(uuid.uuid4()), uuid.uuid4(), None]:
             with self.assertRaises(ValueError):
-                HttpClient(httpbin_url(), "secretKey", None, 5).with_idempotency_key(key)
+                self.client().with_idempotency_key(key)
             with self.assertRaises(ValueError):
-                Client(Region(httpbin_url()), "secretKey").with_idempotency_key(key)
+                Client(Region(self.server.url()), "secretKey").with_idempotency_key(key)
 
     def test_accepts_uppercase_v4_uuids(self):
         key = str(uuid.uuid4()).upper()
-        client = HttpClient(httpbin_url(), "secretKey", None, 5).with_idempotency_key(key)
+        self.server.enqueue(status(200))
 
-        assert_that(self.sent_idempotency_key(client.url("/anything").post("{}"))).is_equal_to(key)
+        self.client().with_idempotency_key(key).url("/anything").post({})
 
-    def test_retries_409_idempotency_key_in_use_with_the_same_key(self):
-        responses = [self.json_response(409, "IDEMPOTENCY_KEY_IN_USE"), self.json_response(200)]
-        with unittest.mock.patch("requests.post", side_effect=responses) as post, \
-                unittest.mock.patch("time.sleep"):
-            response = HttpClient(httpbin_url(), "secretKey", None, 5).url("/anything").post("{}")
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([key])
 
-        assert_that(response.status_code).is_equal_to(200)
-        assert_that(post.call_count).is_equal_to(2)
-        keys = [call.kwargs["headers"]["Idempotency-Key"] for call in post.call_args_list]
-        assert_that(keys[0]).is_equal_to(keys[1])
-
-    def test_does_not_retry_other_409s(self):
-        responses = [self.json_response(409, "SOMETHING_ELSE"), self.json_response(200)]
-        with unittest.mock.patch("requests.post", side_effect=responses) as post, \
-                unittest.mock.patch("time.sleep"):
-            with self.assertRaises(SeatsioException):
-                HttpClient(httpbin_url(), "secretKey", None, 5).url("/anything").post("{}")
-
-        assert_that(post.call_count).is_equal_to(1)
-
-    def test_a_client_can_retry_with_the_same_idempotency_key(self):
+    def test_a_client_with_a_key_sends_it_with_every_write(self):
         key = str(uuid.uuid4())
-        client = HttpClient(httpbin_url(), "secretKey", None, 5).with_idempotency_key(key)
+        self.server.enqueue(status(200), status(200))
+        client = self.client().with_idempotency_key(key)
 
-        assert_that(self.sent_idempotency_key(client.url("/anything").post("{}"))).is_equal_to(key)
-        assert_that(self.sent_idempotency_key(client.url("/anything").post("{}"))).is_equal_to(key)
+        client.url("/anything").post({})
+        client.url("/anything").delete()
+
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([key, key])
+
+    def test_a_client_with_a_key_doesnt_send_it_with_a_get(self):
+        self.server.enqueue(json_reply(200, "{}"))
+
+        self.client().with_idempotency_key(str(uuid.uuid4())).url("/anything").get()
+
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([None])
+
+    def test_the_original_client_keeps_generating_keys(self):
+        key = str(uuid.uuid4())
+        self.server.enqueue(status(200))
+        client = self.client()
+        client.with_idempotency_key(key)
+
+        client.url("/anything").post({})
+
+        assert_that(self.server.sent_idempotency_keys()[0]).is_not_equal_to(key)
 
     def test_seatsio_client_can_retry_with_the_same_idempotency_key(self):
         key = str(uuid.uuid4())
-        client = Client(Region(httpbin_url()), "secretKey").with_idempotency_key(key)
+        self.server.enqueue(status(200), status(200))
+        client = Client(Region(self.server.url()), "secretKey").with_idempotency_key(key)
 
-        res1 = client.http_client.url("/anything").post("{}")
-        res2 = client.http_client.url("/anything").post("{}")
+        client.events.update("event1", event_key="event2")
+        client.events.update("event1", event_key="event2")
 
-        assert_that(self.sent_idempotency_key(res1)).is_equal_to(key)
-        assert_that(self.sent_idempotency_key(res2)).is_equal_to(key)
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([key, key])
 
     def test_seatsio_client_can_retry_with_the_same_idempotency_key_camel_case(self):
         key = str(uuid.uuid4())
-        client = Client(Region(httpbin_url()), "secretKey").withIdempotencyKey(key)
+        self.server.enqueue(status(200))
 
-        res = client.http_client.url("/anything").post("{}")
-        assert_that(self.sent_idempotency_key(res)).is_equal_to(key)
+        Client(Region(self.server.url()), "secretKey").withIdempotencyKey(key).events.update("event1",
+                                                                                            event_key="event2")
 
-    def test_retries_reuse_same_idempotency_key(self):
-        captured_keys = []
-        original_post = requests.post
+        assert_that(self.server.sent_idempotency_keys()).is_equal_to([key])
 
-        def mock_post(*args, **kwargs):
-            headers = kwargs.get("headers", {})
-            if "Idempotency-Key" in headers:
-                captured_keys.append(headers["Idempotency-Key"])
-            return original_post(*args, **kwargs)
+    def test_the_copy_keeps_the_workspace_key(self):
+        self.server.enqueue(status(200))
+        client = Client(Region(self.server.url()), "secretKey", "aWorkspaceKey")
 
-        with unittest.mock.patch("requests.post", side_effect=mock_post):
-            try:
-                HttpClient(httpbin_url(), "secretKey", None, 2, timeout=5).url("/status/429").post("{}")
-            except RateLimitExceededException:
-                pass
+        client.with_idempotency_key(str(uuid.uuid4())).events.update("event1", event_key="event2")
 
-        assert len(captured_keys) > 1
-        assert_that(set(captured_keys)).has_size(1)
-        assert_that(uuid.UUID(captured_keys[0]).version).is_equal_to(4)
+        assert_that(self.server.requests[0].header("X-Workspace-Key")).is_equal_to("aWorkspaceKey")
 
-    @staticmethod
-    @contextlib.contextmanager
-    def spy_on_post():
-        sent_keys = []
-        original_post = requests.post
+    @parameterized.expand([
+        ('{}',),
+        ('{"errors": []}',),
+        ('{"errors": null}',),
+        ('{"errors": [null, "x", {"code": 1}]}',),
+        ('null',),
+        ('[]',),
+        ('"a string"',),
+        ('not json',),
+        ('',),
+    ])
+    def test_unusual_error_bodies_give_a_seatsio_exception(self, body):
+        self.server.enqueue(json_reply(400, body))
 
-        def spy(*args, **kwargs):
-            sent_keys.append(kwargs.get("headers", {}).get("Idempotency-Key"))
-            return original_post(*args, **kwargs)
+        with self.assertRaises(SeatsioException) as context:
+            self.client().url("/anything").post({})
 
-        with unittest.mock.patch("requests.post", side_effect=spy):
-            yield sent_keys
+        assert_that(context.exception.message).is_equal_to("Error while executing POST " + self.server.url("/anything"))
+        assert_that(context.exception.requestId).is_none()
 
-    @staticmethod
-    def json_response(status_code, error_code=None):
-        response = unittest.mock.Mock()
-        response.status_code = status_code
-        response.headers = {"content-type": "application/json"}
-        errors = [{"code": error_code, "message": error_code}] if error_code else []
-        response.json.return_value = {"errors": errors, "requestId": "123"}
-        return response
+    def test_an_error_body_without_content_type_is_not_parsed(self):
+        self.server.enqueue(Reply(400, {}, '{"errors": [{"code": "X", "message": "m"}]}'))
 
-    @staticmethod
-    def sent_idempotency_key(response):
-        data = response.json() if hasattr(response, "json") else response
-        header = data.get("headers", {}).get("Idempotency-Key")
-        # httpbingo returns header values as arrays, httpbin as strings
-        return header[0] if isinstance(header, list) else header
+        with self.assertRaises(SeatsioException) as context:
+            self.client().url("/anything").post({})
+
+        assert_that(context.exception.errors).is_none()
+
+    def test_an_error_body_gives_the_errors_and_message(self):
+        self.server.enqueue(error(400, "SOME_ERROR"))
+
+        with self.assertRaises(SeatsioException) as context:
+            self.client().url("/anything").post({})
+
+        assert_that(context.exception.message).is_equal_to("SOME_ERROR.")
+        assert_that(context.exception.errors).is_equal_to([{"code": "SOME_ERROR", "message": "SOME_ERROR"}])
+        assert_that(context.exception.requestId).is_equal_to("aRequestId")
+
+    def test_a_429_without_an_error_code_is_a_rate_limit_exception(self):
+        self.server.enqueue(status(429))
+        client = self.client()
+        client.max_retries = 0
+
+        with self.assertRaises(RateLimitExceededException):
+            client.url("/anything").post({})
+
+    def test_best_available_objects_not_found(self):
+        self.server.enqueue(error(400, "BEST_AVAILABLE_OBJECTS_NOT_FOUND"))
+
+        with self.assertRaises(BestAvailableObjectsNotFoundException):
+            self.client().url("/anything").post({})
+
+    def client(self):
+        return HttpClient(self.server.url(), "secretKey", None, 5, clock=self.clock)

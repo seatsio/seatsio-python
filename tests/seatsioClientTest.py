@@ -13,7 +13,12 @@ class SeatsioClientTest(unittest.TestCase):
 
     def setUp(self):
         super(SeatsioClientTest, self).setUp()
-        company = self.create_test_company()
+        self.use_test_company(self.create_test_company())
+
+    def use_test_company_with_idempotency_enabled(self):
+        self.use_test_company(self.create_test_company({"idempotencyEnabled": True}))
+
+    def use_test_company(self, company):
         self.user = company["admin"]
         self.workspace = seatsio.Workspace.create(company["workspace"])
         self.client = self.create_client(self.user["secretKey"], None)
@@ -24,10 +29,11 @@ class SeatsioClientTest(unittest.TestCase):
     def newClient(self, secret_key):
         return seatsio.Client(Region(self.base_url()), secret_key)
 
-    def create_test_company(self):
+    def create_test_company(self, params=None):
         response = requests.post(
             url=self.base_url() + "/system/private/create-test-company",
-            auth=(self.system_api_secret(), '')
+            auth=(self.system_api_secret(), ''),
+            json=params or {}
         )
         if response.ok:
             return response.json()

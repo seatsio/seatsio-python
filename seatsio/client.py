@@ -10,8 +10,6 @@ from seatsio.workspaces.workspacesClient import WorkspacesClient
 
 
 class Client:
-    IDEMPOTENCY_KEY_HEADER = "Idempotency-Key"
-
     def __init__(self, region, secret_key, workspace_key=None, max_retries=5):
         self.__init_with_http_client(HttpClient(region.url, secret_key, workspace_key, max_retries))
 
