@@ -34,5 +34,9 @@ class Client:
     def with_idempotency_key(self, idempotency_key):
         return Client._from_http_client(self.http_client.with_idempotency_key(idempotency_key))
 
-    def withIdempotencyKey(self, idempotency_key):
-        return self.with_idempotency_key(idempotency_key)
+    def with_workspace_key(self, workspace_key):
+        """
+        A client for another workspace of the same company. It shares the settings and the retry memory of this
+        client, so it doesn't have to learn again which routes honor idempotency keys.
+        """
+        return Client._from_http_client(self.http_client.with_workspace_key(workspace_key))

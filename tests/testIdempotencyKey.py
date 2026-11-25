@@ -115,15 +115,6 @@ class IdempotencyKeyTest(unittest.TestCase):
 
         assert_that(self.server.sent_idempotency_keys()).is_equal_to([key, key])
 
-    def test_seatsio_client_can_retry_with_the_same_idempotency_key_camel_case(self):
-        key = str(uuid.uuid4())
-        self.server.enqueue(status(200))
-
-        Client(Region(self.server.url()), "secretKey").withIdempotencyKey(key).events.update("event1",
-                                                                                            event_key="event2")
-
-        assert_that(self.server.sent_idempotency_keys()).is_equal_to([key])
-
     def test_the_copy_keeps_the_workspace_key(self):
         self.server.enqueue(status(200))
         client = Client(Region(self.server.url()), "secretKey", "aWorkspaceKey")
@@ -131,6 +122,17 @@ class IdempotencyKeyTest(unittest.TestCase):
         client.with_idempotency_key(str(uuid.uuid4())).events.update("event1", event_key="event2")
 
         assert_that(self.server.requests[0].header("X-Workspace-Key")).is_equal_to("aWorkspaceKey")
+
+    def test_a_client_for_another_workspace_uses_that_workspace_and_generates_its_own_keys(self):
+        self.server.enqueue(status(200), status(200))
+        client = Client(Region(self.server.url()), "secretKey", "workspace1")
+
+        client.with_idempotency_key(str(uuid.uuid4())).events.update("event1", event_key="event2")
+        client.with_workspace_key("workspace2").events.update("event1", event_key="event2")
+
+        assert_that(self.server.requests[1].header("X-Workspace-Key")).is_equal_to("workspace2")
+        keys = self.server.sent_idempotency_keys()
+        assert_that(keys[1]).is_not_equal_to(keys[0])
 
     @parameterized.expand([
         ('{}',),

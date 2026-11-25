@@ -62,8 +62,14 @@ class HttpClient:
         copy._state = self._state
         return copy
 
-    def withIdempotencyKey(self, idempotency_key):
-        return self.with_idempotency_key(idempotency_key)
+    def with_workspace_key(self, workspace_key):
+        """
+        A client for another workspace of the same company. It uses the same secret key, so it shares the settings
+        and the retry memory, and generates its own idempotency keys.
+        """
+        copy = HttpClient(self.base_url, self.secret_key, workspace_key, None, self.timeout)
+        copy._state = self._state
+        return copy
 
     def url(self, relative_url, query_params=None, **path_params):
         if query_params is None:

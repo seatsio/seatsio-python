@@ -157,6 +157,15 @@ class IdempotentRetryTest(unittest.TestCase):
 
         assert_that(self.server.request_count).is_equal_to(3)
 
+    def test_clients_for_another_workspace_share_the_memory(self):
+        client = self.client()
+        self.server.enqueue(key_status(200, "executed"), LOST_RESPONSE, key_status(200, "replayed"))
+
+        self.send(client, "POST")
+        self.send(client.with_workspace_key("workspace2"), "POST")
+
+        assert_that(self.server.request_count).is_equal_to(3)
+
     def test_the_original_client_shares_the_memory_of_its_copies(self):
         client = self.client()
         self.server.enqueue(key_status(200, "executed"), LOST_RESPONSE, key_status(200, "replayed"))
