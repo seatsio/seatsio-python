@@ -258,3 +258,7 @@ class EventsClient(ListableObjectsClient):
         response = self.http_client.url("/events/{event_key}/actions/move-to-new-chart-copy",
                                         event_key=event_key).post()
         return Event(response.json())
+
+    def move_events_to_new_chart_copy(self, event_keys: list[str]):
+        response = self.http_client.url("/events/actions/move-to-new-chart-copy").post({"events": event_keys})
+        return Event.create_list(response.json().get("events"))
